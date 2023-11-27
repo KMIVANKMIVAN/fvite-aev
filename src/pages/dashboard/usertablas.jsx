@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { BuscarUser } from "../../components/BuscarUser";
 import { CrearUser } from "../../components/CrearUser";
 import { TablaUser } from "../../components/TablaUser";
 
 export function UserTablas() {
-  const urltable = "/pages/dashboard/userstablas";
+  const urltable = "/dashboard/userstablas";
   const [showUserTablas, setShowUserTablas] = useState(false);
   // const userData = useSelector((state) => state.user.userData);
 

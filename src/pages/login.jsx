@@ -34,10 +34,11 @@ export function Login() {
 
         if (user.prioridad === 0) {
           // router.push("/pages/updatepassword");
+          navigate("updatepassword");
         } else if (user.prioridad === 1) {
           // router.push("/pages/dashboardclient/viviendanueva");
           // <Link to={`/dashboard/`}>Your Name</Link>;
-          navigate("/dashboard");
+          navigate("dashboard/userstablas");
         }
 
         guardarUserId(user.id);

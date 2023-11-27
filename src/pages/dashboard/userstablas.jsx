@@ -12,7 +12,7 @@ export function UsersTablas() {
   // console.log(datoscontratoData);
 
   // const router = useRouter();
-  const urltable = "/pages/dashboard/usertablas";
+  const urltable = "/dashboard/usertablas";
   const [showUserTablas, setShowUserTablas] = useState(false);
 
   // const userData = useSelector((state) => state.user.userData);

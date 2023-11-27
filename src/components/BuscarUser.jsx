@@ -10,7 +10,7 @@ import { obtenerToken } from "../utils/auth";
 import SendIcon from "@mui/icons-material/Send";
 import Stack from "@mui/material/Stack";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
-// import AcordeonUser from "./AcordeonUser";
+import { AcordeonUser } from "./AcordeonUser";
 
 // import { useDispatch, useSelector } from "react-redux";
 // import { setUserData } from "../app/GlobalRedux/user/userSlice";
@@ -18,8 +18,9 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 export function BuscarUser({ urltable }) {
   // const dispatch = useDispatch();
   // const router = useRouter();
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-   const [buscar, setBuscar] = useState("");
+  const [buscar, setBuscar] = useState("");
   const [datoscontratoData, setDatoscontratoData] = useState([]);
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -35,9 +36,7 @@ export function BuscarUser({ urltable }) {
 
   const handleSearch = async () => {
     try {
-      const url = `${
-        import.meta.env.NEXT_PUBLIC_BASE_URL_BACKEND
-      }/users/buscar/${buscar}`;
+      const url = `${apiKey}/users/buscar/${buscar}`;
       const token = obtenerToken();
       const headers = {
         Authorization: `Bearer ${token}`,

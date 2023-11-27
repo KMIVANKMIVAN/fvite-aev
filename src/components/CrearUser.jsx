@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 import Button from "@mui/material/Button";
@@ -9,11 +9,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Stack from "@mui/material/Stack";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { useNavigate } from "react-router-dom";
 
 export function CrearUser({ urltable }) {
-  const registerUserUrl = `${
-    import.meta.env.NEXT_PUBLIC_BASE_URL_BACKEND
-  }/users`;
+  const navigate = useNavigate();
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const registerUserUrl = `${apiKey}/users`;
   const token = obtenerToken();
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -50,7 +52,7 @@ export function CrearUser({ urltable }) {
 
       if (response.data) {
         console.log("SE REGISTRO CORECTAMENTE");
-        router.push(urltable);
+        navigate(urltable);
       }
     } catch (error) {
       console.log("HUBO UN ERROR");

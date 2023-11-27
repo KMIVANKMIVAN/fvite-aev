@@ -8,6 +8,8 @@ import SubirPdf from "./subirpdf";
 
 // const ViviendaNuevaTabla = () => {
 export function ViviendaNuevaTabla() {
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
   const [datoscontratoData, setDatoscontratoData] = useState([]);
   const [contcodData, setContcodData] = useState([]);
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
@@ -16,9 +18,7 @@ export function ViviendaNuevaTabla() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = `${
-          import.meta.env.NEXT_PUBLIC_BASE_URL_BACKEND
-        }/datoscontrato/findAllDatosContrato`;
+        const url = `${apiKey}/datoscontrato/findAllDatosContrato`;
         const token = obtenerToken();
 
         const headers = {

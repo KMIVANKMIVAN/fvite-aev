@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { UsersTablas } from "./dashboard/userstablas.jsx";
 import { UserTablas } from "./dashboard/usertablas.jsx";
+import { Outlet } from "react-router-dom";
 
 import { eliminarToken } from "../utils/auth";
 
 function Submenu() {
-  // const router = useRouter();
   return (
-    <ul className="pl-3 pt-1 text-sm">
+    <ul className="pl-3 pt-1 text-white text-sm">
       <li className="rounded-sm">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3  hover:bg-c4p2 bg-c3p2 rounded-md"
           // onClick={() => router.push("/pages/dashboardclient/viviendanueva")}
         >
           <button>Vivienda Nueva</button>
@@ -18,7 +18,7 @@ function Submenu() {
       </li>
       <li className="rounded-sm pt-1">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           // onClick={() => router.push("/submenu-option-2")}
         >
           <button>PMAR</button>
@@ -26,7 +26,7 @@ function Submenu() {
       </li>
       <li className="rounded-sm pt-1">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           // onClick={() => router.push("/submenu-option-2")}
         >
           <button>Otros Pagos</button>
@@ -34,7 +34,7 @@ function Submenu() {
       </li>
       <li className="rounded-sm pt-1">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           // onClick={() => router.push("/submenu-option-2")}
         >
           <button>Comunidades Urbanas</button>
@@ -42,7 +42,7 @@ function Submenu() {
       </li>
       <li className="rounded-sm pt-1">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           // onClick={() => router.push("/submenu-option-2")}
         >
           <button>Pagos Extraordinarios/Ordinarios</button>
@@ -50,7 +50,7 @@ function Submenu() {
       </li>
       <li className="rounded-sm pt-1">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           // onClick={() => router.push("/submenu-option-2")}
         >
           <button>Incorporacion de Recursos</button>
@@ -58,7 +58,7 @@ function Submenu() {
       </li>
       <li className="rounded-sm pt-1">
         <div
-          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           // onClick={() => router.push("/submenu-option-2")}
         >
           <button>Otros Pagos (Estudios)</button>
@@ -67,45 +67,22 @@ function Submenu() {
     </ul>
   );
 }
-
 export function Dashboard() {
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
   return (
     <>
       <div className="flex-row lg:flex">
-        <div className="flex flex-col w-full p-3 bg-mi-color-secundario text-white shadow lg:h-screen lg:w-72">
+        <div className="flex flex-col w-full p-3 bg-c1p2 shadow lg:h-screen lg:w-72">
           <div className="space-y-3">
             <div className="flex items-center">
-              <h2 className="text-xl font-bold">Menu</h2>
+              <h2 className="text-xl text-white font-bold">Menu</h2>
             </div>
             <div className="flex-1">
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <div
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
-                    // onClick={() => router.push("/pages/dashboard/usertablas")}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                      />
-                    </svg>
-                    <button>Usuarios</button>
-                  </div>
-                </li>
-                <li className="rounded-sm">
-                  <div
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     onClick={() => setSubmenuOpen(!submenuOpen)}
                   >
                     <svg
@@ -128,7 +105,51 @@ export function Dashboard() {
                 </li>
                 <li className="rounded-sm">
                   <div
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
+                    // onClick={() => router.push("/mail")}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                      />
+                    </svg>
+                    <span>Home</span>
+                  </div>
+                </li>
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3  rounded-md text-white hover:bg-c4p2 bg-c2p2"
+                    // onClick={() => router.push("/mail")}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      />
+                    </svg>
+                    <span>Inbox</span>
+                  </div>
+                </li>
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     // onClick={() => router.push("/mail")}
                   >
                     <svg
@@ -150,34 +171,12 @@ export function Dashboard() {
                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <button>Orders</button>
+                    <span>Orders</span>
                   </div>
                 </li>
                 <li className="rounded-sm">
                   <div
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
-                    // onClick={() => router.push("/mail")}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                      />
-                    </svg>
-                    <button>Settings</button>
-                  </div>
-                </li>
-                <li className="rounded-sm">
-                  <div
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     onClick={() => {
                       eliminarToken();
                       window.location.href = "/";
@@ -197,7 +196,7 @@ export function Dashboard() {
                         d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                       />
                     </svg>
-                    <button>Cerrar Sesion</button>
+                    <span>Cerrar Sesion</span>
                   </div>
                 </li>
               </ul>
@@ -206,7 +205,7 @@ export function Dashboard() {
         </div>
         <div className="container mx-auto ">
           <div className="grid grid-cols-1   lg:grid-cols-1">
-            <UsersTablas />
+            <Outlet />
           </div>
         </div>
       </div>

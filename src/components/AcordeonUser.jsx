@@ -1,11 +1,10 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 
-import ActualizarUser from "./actualizaruser";
-import ResetearPassword from "./resetearpassword";
+import { ActualizarUser } from "./ActualizarUser";
+import { ResetearPassword } from "./ResetearPassword";
 // import  from "./resetearpassword";
 
 import Button from "@mui/material/Button";
@@ -13,7 +12,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 import { styled } from "@mui/material/styles";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
@@ -22,10 +20,8 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 
-import SendIcon from "@mui/icons-material/Send";
 import Stack from "@mui/material/Stack";
 import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
 
 const Accordion = styled((props) => (
@@ -64,8 +60,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
 
-export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
-  const router = useRouter();
+export function AcordeonUser(userId, urltable, selectedHabilitado) {
+  const navigate = useNavigate();
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  console.log("estoy en acordeon", userId);
 
   const [expanded, setExpanded] = useState("panel1");
   const [value, setValue] = useState(0);
@@ -95,7 +94,7 @@ export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
 
   const actualizarEstado = async (selectedUserIdHabilitado, nuevoEstado) => {
     try {
-      const url = `${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/users/${selectedUserIdHabilitado}`;
+      const url = `${apiKey}/users/${selectedUserIdHabilitado}`;
       const token = obtenerToken();
 
       const headers = {
@@ -111,7 +110,8 @@ export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
       if (response.status === 200) {
         console.log("por que no vas");
 
-        router.push(urltable);
+        // router.push(urltable);
+        navigate(urltable);
       } else {
         console.error("Error al actualizar el estado del usuario");
       }

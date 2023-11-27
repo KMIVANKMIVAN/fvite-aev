@@ -6,11 +6,13 @@ import { obtenerToken } from "../utils/auth";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Stack from "@mui/material/Stack";
-// import AcordeonUser from "./acordeonuser";
+import { AcordeonUser } from "./AcordeonUser";
 
 import MarginIcon from "@mui/icons-material/Margin";
 
 export function TablaUser({ urltable }) {
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
   const [datoscontratoData, setDatoscontratoData] = useState([]);
   // const router = useRouter();
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -21,7 +23,7 @@ export function TablaUser({ urltable }) {
 
   const fetchData = async () => {
     try {
-      const url = `${import.meta.env.NEXT_PUBLIC_BASE_URL_BACKEND}/users`;
+      const url = `${apiKey}/users`;
       const token = obtenerToken();
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -254,4 +256,3 @@ export function TablaUser({ urltable }) {
     </>
   );
 }
-

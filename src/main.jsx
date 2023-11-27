@@ -15,16 +15,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { UserTablas } from "./pages/dashboard/usertablas.jsx";
 
 import { Dashboard } from "./pages/dashboard.jsx";
-
+/* 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Provider store={store}>
-        <Navbar />
-        <App />
-        <Footer />
-      </Provider>
+      
     ),
     children: [
       {
@@ -33,10 +29,14 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+]); */
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+        <Navbar />
+        <App />
+        <Footer />
+      </Provider>
   </React.StrictMode>
 );
