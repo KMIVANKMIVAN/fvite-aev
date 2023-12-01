@@ -64,7 +64,7 @@ export function AcordeonUser(userId, urltable, selectedHabilitado) {
   const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-  console.log("estoy en acordeon", userId);
+  console.log("estoy en acordeon y el id seleccionado es: ", userId);
 
   const [expanded, setExpanded] = useState("panel1");
   const [value, setValue] = useState(0);
@@ -129,6 +129,7 @@ export function AcordeonUser(userId, urltable, selectedHabilitado) {
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
+            hola
             <Accordion
               expanded={expanded === "panel1"}
               onChange={handleChange("panel1")}

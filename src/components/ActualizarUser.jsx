@@ -7,12 +7,12 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
 
-export function ActualizarUser({ userId, urltable }) {
+export function ActualizarUser( userId, urltable) {
   const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   console.log("estoy en actualizar");
-  console.log(userId);
+  console.log("el id seleccionado es: ",userId);
 
   const token = obtenerToken();
   const headers = {
