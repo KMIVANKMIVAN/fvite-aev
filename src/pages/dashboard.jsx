@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { UsersTablas } from "./dashboard/userstablas.jsx";
-import { UserTablas } from "./dashboard/usertablas.jsx";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { eliminarToken } from "../utils/auth";

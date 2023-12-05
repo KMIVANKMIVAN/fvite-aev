@@ -1,10 +1,8 @@
-"use client";
-import React, { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { obtenerToken } from "../../utils/auth";
-import  from "";
 import { BuscarViviend } from "../../components/BuscarViviend";
 
-import BuscarViviend from "../../../../componets/buscarviviend";
+// import { BuscarViviend } from "../../../../componets/buscarviviend";
 
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
@@ -13,7 +11,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import MarginIcon from "@mui/icons-material/Margin";
 
-const ViviendaNueva = () => {
+export function ViviendaNueva() {
   const [showUserTabla, setShowUserTabla] = useState(false);
 
   const [datoscontratoData, setDatoscontratoData] = useState([]);
@@ -137,6 +135,4 @@ const ViviendaNueva = () => {
       )}
     </>
   );
-};
-
-export default ViviendaNueva;
+}

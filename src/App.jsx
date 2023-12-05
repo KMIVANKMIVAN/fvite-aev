@@ -10,6 +10,10 @@ import { ErrorPage } from "./pages/errorpage.jsx";
 
 import { UpdatePassword } from "./pages/updatepassword.jsx";
 
+import { Jaco } from "./pages/dashboardclient/jaco.jsx";
+
+import { ViviendaNueva } from "./pages/dashboardclient/viviendanueva.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,12 +46,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "userstablas",
-        element: <UsersTablas />,
+        path: "jaco",
+        element: <Jaco />,
       },
       {
-        path: "usertablas",
-        element: <UserTablas />,
+        path: "viviendanueva",
+        element: <ViviendaNueva />,
       },
     ],
   },
