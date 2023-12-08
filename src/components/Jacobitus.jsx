@@ -9,21 +9,15 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 
-import "../libs/prism/prism.min.css";
-// require("../../libs/prism/prism.min");
-import "../libs/FreezeUI/freeze-ui.min.css";
-// require("../../libs/FreezeUI/freeze-ui.min");
-import Prism from "../libs/prism/prism.min";
-import FreezeUI from "../libs/FreezeUI/freeze-ui.min";
-
-declare function FreezeUI(params: any);
-declare function UnFreezeUI();
-declare const Prism: any;
+require("../libs/prism/prism.min.js");
+require("../libs/prism/prism.min.css");
+require("../libs/FreezeUI/freeze-ui.min.js");
+require("../libs/FreezeUI/freeze-ui.min.css");
 
 const styles = {
   card: {
-    height: "950px", // Establece el ancho deseado
-    margin: "auto", // Centra el elemento horizontalmente
+    height: "950px",
+    margin: "auto",
   },
 };
 
@@ -42,11 +36,11 @@ export function Jacobitus() {
 
   const cargarArchivoBase64 = async (event) => {
     if (event.target.files) {
-      // FreezeUI({ text: "Cargando documento" });
+      FreezeUI({ text: "Cargando documento" });
       const archivoPdf = await obtenerBase64(event.target.files[0]);
       setArchivo(archivoPdf);
-      // UnFreezeUI(); // Uncomment this line if UnFreezeUI is defined elsewhere
     }
+    // UnFreezeUI();
   };
 
   const firmarPdf = async () => {
@@ -147,7 +141,6 @@ export function Jacobitus() {
 
   return (
     <>
-      <br />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Card>
@@ -226,6 +219,7 @@ export function Jacobitus() {
           </Card>
         </Grid>
       </Grid>
+      <br />
     </>
   );
 }

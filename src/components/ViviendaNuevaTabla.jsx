@@ -1,4 +1,3 @@
-"use client";
 import React, { useMemo, useState, useEffect } from "react";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
@@ -6,7 +5,6 @@ import { obtenerToken } from "../utils/auth";
 
 import SubirPdf from "./subirpdf";
 
-// const ViviendaNuevaTabla = () => {
 export function ViviendaNuevaTabla() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
@@ -24,6 +23,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export function SubirBajarEliminarPdf({ nombrepdf }) {
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
   const [respuestasErrorDescargar, setErrorRespuestasDescargar] =
@@ -40,7 +41,7 @@ export function SubirBajarEliminarPdf({ nombrepdf }) {
     Authorization: `Bearer ${token}`,
   };
 
-  const urlBase = `${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/documentpdf`;
+  const urlBase = `${apiKey}/documentpdf`;
 
   const cargarElPDF = (event) => {
     setSelecionarPDF(event.target.files[0]);

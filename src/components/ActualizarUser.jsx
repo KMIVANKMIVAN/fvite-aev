@@ -7,12 +7,11 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
 
-export function ActualizarUser( userId, urltable) {
+export function ActualizarUser({ userId, urltable }) {
   const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-  console.log("estoy en actualizar");
-  console.log("el id seleccionado es: ",userId);
+  // console.log("estoy en actualizar el id seleccionado es: ",userId);
 
   const token = obtenerToken();
   const headers = {
@@ -37,8 +36,6 @@ export function ActualizarUser( userId, urltable) {
     cedulaIdentidad: "",
     expedido: "",
   });
-
-  console.log();
 
   async function fetchUserData() {
     if (!userData.username) {
@@ -103,8 +100,8 @@ export function ActualizarUser( userId, urltable) {
 
   useEffect(() => {
     fetchUserData();
-    handleClickOpen(); // Abre el Dialog cuando el componente se monta
-  }, []); // El segundo argumento es un array vacío para que se ejecute solo una vez al montarse el componente
+    handleClickOpen();
+  }, []);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // import { useRouter } from "next/navigation";
@@ -38,7 +38,7 @@ export function Login() {
         } else if (user.prioridad === 1) {
           // router.push("/pages/dashboardclient/viviendanueva");
           // <Link to={`/dashboard/`}>Your Name</Link>;
-          navigate("dashboard/userstablas");
+          navigate("dashboardclient/viviendanueva");
         }
 
         guardarUserId(user.id);

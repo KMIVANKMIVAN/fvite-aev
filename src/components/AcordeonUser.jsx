@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 import { ActualizarUser } from "./ActualizarUser";
 import { ResetearPassword } from "./ResetearPassword";
-// import  from "./resetearpassword";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -60,24 +59,22 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
 
-export function AcordeonUser(userId, urltable, selectedHabilitado) {
+import { useDispatch } from "react-redux";
+import { setUser } from "../contexts/features/user/userSlice";
+import { increment } from "../contexts/features/user/counterUserSlice";
+
+export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
   const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-  console.log("estoy en acordeon y el id seleccionado es: ", userId);
+  const dispatch = useDispatch();
 
   const [expanded, setExpanded] = useState("panel1");
-  const [value, setValue] = useState(0);
-
-  console.log("estoy en acordeonuse", urltable);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const handleButtonClick = () => {
-    setExpanded(!expanded);
-  };
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -89,8 +86,8 @@ export function AcordeonUser(userId, urltable, selectedHabilitado) {
   };
 
   useEffect(() => {
-    handleClickOpen(); // Abre el Dialog cuando el componente se monta
-  }, []); // El segundo argumento es un array vacío para que se ejecute solo una vez al montarse el componente
+    handleClickOpen();
+  }, []);
 
   const actualizarEstado = async (selectedUserIdHabilitado, nuevoEstado) => {
     try {
@@ -109,9 +106,9 @@ export function AcordeonUser(userId, urltable, selectedHabilitado) {
 
       if (response.status === 200) {
         console.log("por que no vas");
-
-        // router.push(urltable);
-        navigate(urltable);
+        dispatch(setUser(response.data));
+        dispatch(increment());
+        // navigate(urltable);
       } else {
         console.error("Error al actualizar el estado del usuario");
       }

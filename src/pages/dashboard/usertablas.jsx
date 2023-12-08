@@ -1,16 +1,10 @@
-import { useState, useEffect } from "react";
 import { BuscarUser } from "../../components/BuscarUser";
 import { CrearUser } from "../../components/CrearUser";
-import { TablaUser } from "../../components/TablaUser";
-
+import { useSelector } from "react-redux";
 export function UserTablas() {
   const urltable = "/dashboard/userstablas";
-  const [showUserTablas, setShowUserTablas] = useState(false);
-
-  useEffect(() => {
-    setShowUserTablas(false);
-  }, []);
-
+  const user = useSelector((state) => state.user.user);
+  console.log("8989user", user);
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
@@ -20,19 +14,7 @@ export function UserTablas() {
         <CrearUser urltable={urltable} />
       </div>
       <br />
-
-      <br />
-      <BuscarUser
-        urltable={urltable}
-        onHideUserTablas={() => setShowUserTablas(false)}
-      />
-      <br />
-      <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">
-          Usuarios
-        </h2>
-        <TablaUser urltable={urltable} />
-      </div>
+      <BuscarUser urltable={urltable} />
     </>
   );
 }

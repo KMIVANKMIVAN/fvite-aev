@@ -18,19 +18,25 @@ import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 
 import { SubirBajarEliminarAnexos } from "./SubirBajarEliminarAnexos";
 
-import { obtenerDatosFindAllOne } from "./api";
+import { useDispatch } from "react-redux";
+import { increment } from "../contexts/features/counter/counterSlice";
 
-export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
+export function AnexsosPdf({ nombrepdf }) {
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [nomPDFAnex, setNomPDFAnex] = useState("");
 
   const [tipoRespaldoData, setTipoRespaldoData] = useState([]);
+  const [errorTsipoRespaldoData, setErrorTipoRespaldoData] = useState(null);
 
   const [referencias, setReferencias] = useState(null);
 
   const handleReferenciasChange = (event) => {
-    setReferencias(event.target.value); // Actualizar el estado referencias con el valor del TextField
+    setReferencias(event.target.value);
   };
 
   useEffect(() => {
@@ -41,23 +47,15 @@ export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
           Authorization: `Bearer ${token}`,
         };
 
-        const urlTipoRespaldo = `${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/tiporespaldo`;
+        const urlTipoRespaldo = `${apiKey}/tiporespaldo`;
 
         const response = await axios.get(urlTipoRespaldo, { headers });
 
         if (response.status === 200) {
-          console.log("Datos de Tipo Respaldo recibidos:", response.data);
           setTipoRespaldoData(response.data);
-        } else {
-          console.error(
-            "Error al obtener los datos de Tipo Respaldo:",
-            response.statusText
-          );
-          // Manejo del error si es necesario
         }
       } catch (error) {
-        console.error("Error al obtener los datos de Tipo Respaldo:", error);
-        // Manejo del error si es necesario
+        setErrorTipoRespaldoData(`RS: ${error}`);
       }
     };
 
@@ -68,14 +66,12 @@ export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
     const selectedDetalle = event.target.value;
     setSelectedValue(selectedDetalle);
 
-    // Encontrar el objeto correspondiente al detalle seleccionado
     const selectedObject = tipoRespaldoData.find(
       (option) => option.detalle === selectedDetalle
     );
 
     if (selectedObject) {
-      setNomPDFAnex(selectedObject.id); // Guardar el ID en la variable en lugar de la sigla
-      console.log("ID seleccionado:", selectedObject.id); // Imprimir en un log el ID seleccionado
+      setNomPDFAnex(selectedObject.id);
     }
   };
 
@@ -89,14 +85,6 @@ export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
     }
   };
 
-  const handleClick = () => {
-    obtenerDatosFindAllOne(
-      selectedContCod,
-      setContcodComplejaData,
-      setErrorContcodComplejaData
-    );
-  };
-
   return (
     <>
       <Button
@@ -107,6 +95,7 @@ export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
         Anexos
       </Button>
       <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
+        {errorTsipoRespaldoData !== null && <h1>{errorTsipoRespaldoData}</h1>}
         <DialogTitle>Anexos PDFs AEV</DialogTitle>
         <DialogContent>
           <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -143,7 +132,7 @@ export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
               <div className="pt-3">
                 <SubirBajarEliminarAnexos
                   iddesem={nombrepdf}
-                  TipoResId={nomPDFAnex}
+                  tiporesid={nomPDFAnex}
                   referencias={referencias}
                 />
               </div>
@@ -153,7 +142,7 @@ export function AnexsosPdf({ nombrepdf, refrescarFunction }) {
         <DialogActions>
           <Button
             onClick={() => {
-              handleClose();
+              handleClose(), dispatch(increment());
             }}
           >
             Cerrar

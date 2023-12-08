@@ -19,42 +19,34 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-import { obtenerDatosFindAllOne } from "./api";
+import { useDispatch, useSelector } from "react-redux";
+import { increment } from "../contexts/features/counter/counterSlice";
 
 export function BajarEliminarAnexos({ nombrepdf }) {
-  const [respuestas, setRespuestas] = useState(null);
-  const [respuestasError, setErrorRespuestas] = useState(null);
-  const [respuestasErrorDescargar, setErrorRespuestasDescargar] =
-    useState(null);
-  const [respuestasEliminar, setRespuestasEliminar] = useState(null);
-  const [respuestasErrorEliminar, setErrorRespuestasEliminar] = useState(null);
-  const [selecionarPDF, setSelecionarPDF] = useState(null);
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const dispatch = useDispatch();
+  const count = useSelector((state) => state.counter.value);
+
   const [abrirErrorDescarga, setAbrirErrorDescarga] = useState(false);
-  const [abrirErrorEliminar, setAbrirErrorEliminar] = useState(false);
   const [abrirEliminar, setAbrirEliminar] = useState(false);
 
   const [respuestaFindallone, setRespuestaFindallone] = useState(null);
   const [errorRespuestaFindallone, setErrorRespuestaFindallone] =
     useState(null);
 
-  console.log("esto llega nombrepdf", nombrepdf);
+  const [respuestaDescargar, setRespuestaDescargar] = useState(null);
+  const [respuestaEliminar, setRespuestaEliminar] = useState(null);
 
   const token = obtenerToken();
   const headers = {
     Authorization: `Bearer ${token}`,
   };
 
-  const urlBase = `${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}`;
-
   useEffect(() => {
     const obtenerDatosFindAllOne = async () => {
       try {
-        const token = obtenerToken();
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-
-        const url = `${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/respaldodesembolsos/findallone/${nombrepdf}`;
+        const url = `${apiKey}/respaldodesembolsos/findallone/${nombrepdf}`;
 
         const response = await axios.get(url, { headers });
 
@@ -63,32 +55,22 @@ export function BajarEliminarAnexos({ nombrepdf }) {
           setRespuestaFindallone(response.data);
           setErrorRespuestaFindallone(null);
         } else {
-          console.error("Error al obtener los datos:", response.statusText);
-          setErrorRespuestaFindallone(
-            `Error en el estado de respuesta, estado: ${response.statusText}`
-          );
+          setErrorRespuestaFindallone(`RS: ${response.statusText}`);
         }
       } catch (error) {
-        console.error("Error al obtener los datos:", error);
-        setErrorRespuestaFindallone(`Error del servidor: ${error}`);
+        setErrorRespuestaFindallone(`RS: ${error}`);
       }
     };
 
-    if (nombrepdf) {
+    if (nombrepdf || count !== prevCount) {
       obtenerDatosFindAllOne();
     }
-  }, [nombrepdf]);
-
-  const cargarElPDF = (event) => {
-    setSelecionarPDF(event.target.files[0]);
-    setErrorRespuestas(null); // Reiniciar el estado de respuestasError
-    setRespuestas(null); // Reiniciar el estado de respuestasError
-  };
+  }, [nombrepdf, count]);
 
   const descargarPdf = async (desembolsosId, archivo) => {
     try {
       const response = await axios.get(
-        `${urlBase}/respaldodesembolsos/descargardesembidarchiv/${desembolsosId}/${archivo}`,
+        `${apiKey}/respaldodesembolsos/descargardesembidarchiv/${desembolsosId}/${archivo}`,
         {
           headers,
           responseType: "blob",
@@ -96,7 +78,7 @@ export function BajarEliminarAnexos({ nombrepdf }) {
       );
 
       const contentDisposition = response.headers["content-disposition"];
-      let serverFilename = `${archivo} ${desembolsosId}.pdf`; // Nombre predeterminado
+      let serverFilename = `${archivo} ${desembolsosId}.pdf`;
 
       if (contentDisposition) {
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
@@ -115,125 +97,61 @@ export function BajarEliminarAnexos({ nombrepdf }) {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      // Manejo de errores
-    }
-  };
-
-  const eliminarPdf = async (desembolsosId, archivo) => {
-    try {
-      const response = await axios.get(
-        `${urlBase}/respaldodesembolsos/eliminardesembidarchiv/${desembolsosId}/${archivo}`,
-        {
-          headers,
-        }
-      );
-
-      if (response.status === 200 || response.status === 204) {
-        setRespuestasEliminar(`RS: ${response.data}`);
-        setAbrirEliminar(true);
-      }
-    } catch (error) {
       let errorMessage = "Error desconocido al descargar el PDF";
 
       if (error.response && error.response.data instanceof Blob) {
-        // Si hay una respuesta de error desde el servidor
         const blob = await error.response.data;
         const reader = new FileReader();
         reader.onload = () => {
           errorMessage = reader.result;
-          setErrorRespuestasDescargar(`RS: ${errorMessage}`);
-          // Opcionalmente, puedes setear abrirErrorDescarga a true si deseas abrir el diálogo de error automáticamente
-          // setAbrirErrorDescarga(true);
+          setRespuestaDescargar(`RS: ${errorMessage}`);
+          setAbrirErrorDescarga(true);
         };
         reader.readAsText(blob);
       } else if (error.response && error.response.data) {
-        // Si hay un mensaje de error del servidor en formato no-Blob
         errorMessage = error.response.data;
-        setErrorRespuestasDescargar(`RS: ${errorMessage}`);
-        // Opcionalmente, puedes setear abrirErrorDescarga a true si deseas abrir el diálogo de error automáticamente
-        // setAbrirErrorDescarga(true);
+        setRespuestaDescargar(`RS: ${errorMessage}`);
+        setAbrirErrorDescarga(true);
       } else {
-        // Otros casos de error
         errorMessage = error.message || "Error desconocido al descargar el PDF";
-        setErrorRespuestasDescargar(`RS: ${errorMessage}`);
-        // Opcionalmente, puedes setear abrirErrorDescarga a true si deseas abrir el diálogo de error automáticamente
-        // setAbrirErrorDescarga(true);
+        setRespuestaDescargar(`RS: ${errorMessage}`);
+        setAbrirErrorDescarga(true);
       }
-      // Si prefieres abrir el diálogo de error manualmente, puedes hacerlo con:
-      setAbrirErrorDescarga(true);
     }
   };
 
-  console.log("respuestasErrorEliminar", respuestasErrorEliminar);
-  console.log("respuestasEliminar", respuestasEliminar);
-
-  const [abrirGuardar, setAbrirGuardar] = useState(false);
-
-  const abrirGuardarPdf = () => {
-    setAbrirGuardar(true); // Cambiar a true para abrir el diálogo
-  };
-
-  const cerrarGuardarPdf = () => {
-    setAbrirGuardar(false);
-    setRespuestas(null);
-    setErrorRespuestas(null);
-  };
-
-  console.log("111");
-  console.log("respuestaFindallone:", respuestaFindallone);
-
-  const handleClick = () => {
-    obtenerDatosFindAllOne(
-      selectedContCod,
-      setContcodComplejaData,
-      setErrorContcodComplejaData
+  const eliminarPdf = async (desembolsosId, archivo) => {
+    const response = await axios.get(
+      `${apiKey}/respaldodesembolsos/eliminardesembidarchiv/${desembolsosId}/${archivo}`,
+      {
+        headers,
+      }
     );
-    // Aquí puedes realizar otras acciones si es necesario al hacer clic en este botón
+
+    if (response.status === 200 || response.status === 204) {
+      setRespuestaEliminar(`RS: ${response.data}`);
+      setAbrirEliminar(true);
+    }
   };
 
   return (
     <>
-      {respuestasErrorEliminar !== null && (
-        <Dialog
-          open={abrirErrorEliminar}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={() => setAbrirErrorEliminar(false)} // Cierra el diálogo al hacer clic en "Cerrar"
-          aria-describedby="alert-dialog-slide-description"
-        >
-          <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
-              {respuestasErrorEliminar && (
-                <p className="text-center m-2 text-red-500">
-                  {respuestasErrorEliminar}
-                </p>
-              )}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setAbrirErrorEliminar(false);
-              }}
-            >
-              Cerrar
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-      {respuestasEliminar !== null && (
+      {/* {errorRespuestaFindallone !== null && <h1>{errorRespuestaFindallone}</h1>} */}
+      {/* <h1 className="text-center color-mi-color-primario text-5xl">{count}</h1> */}
+
+      {respuestaEliminar !== null && (
         <Dialog
           open={abrirEliminar}
           TransitionComponent={Transition}
           keepMounted
-          onClose={() => setAbrirEliminar(false)} // Cierra el diálogo al hacer clic en "Cerrar"
+          onClose={() => setAbrirEliminar(false)}
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              {respuestasEliminar && (
+              {respuestaEliminar && (
                 <p className="text-center m-2 text-green-500">
-                  {respuestasEliminar}
+                  {respuestaEliminar}
                 </p>
               )}
             </DialogContentText>
@@ -241,7 +159,7 @@ export function BajarEliminarAnexos({ nombrepdf }) {
           <DialogActions>
             <Button
               onClick={() => {
-                setAbrirEliminar(false);
+                setAbrirEliminar(false), dispatch(increment());
               }}
             >
               Cerrar
@@ -249,19 +167,18 @@ export function BajarEliminarAnexos({ nombrepdf }) {
           </DialogActions>
         </Dialog>
       )}
-
-      {respuestasErrorDescargar && (
+      {respuestaDescargar && (
         <Dialog
-          open={abrirErrorDescarga} // Controla la apertura automática del diálogo
+          open={abrirErrorDescarga}
           TransitionComponent={Transition}
           keepMounted
-          onClose={() => setAbrirErrorDescarga(false)} // Cierra el diálogo al hacer clic en "Cerrar"
+          onClose={() => setAbrirErrorDescarga(false)}
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
               <p className="text-center m-2 text-red-500">
-                {respuestasErrorDescargar}
+                {respuestaDescargar}
               </p>
             </DialogContentText>
           </DialogContent>
@@ -278,7 +195,6 @@ export function BajarEliminarAnexos({ nombrepdf }) {
           </DialogActions>
         </Dialog>
       )}
-
       {respuestaFindallone &&
         respuestaFindallone.map((item) => (
           <div key={item.id} className="grid grid-cols-1 ">
@@ -291,9 +207,9 @@ export function BajarEliminarAnexos({ nombrepdf }) {
                   <Button
                     size="small"
                     color="error"
-                    onClick={() =>
-                      descargarPdf(item.desembolsos_id, item.archivo)
-                    }
+                    onClick={() => {
+                      descargarPdf(item.desembolsos_id, item.archivo);
+                    }}
                     endIcon={<PictureAsPdfRoundedIcon size="large" />}
                   ></Button>
                 </Tooltip>
@@ -301,9 +217,9 @@ export function BajarEliminarAnexos({ nombrepdf }) {
                   <Button
                     size="small"
                     color="error"
-                    onClick={() =>
-                      eliminarPdf(item.desembolsos_id, item.archivo)
-                    }
+                    onClick={() => {
+                      eliminarPdf(item.desembolsos_id, item.archivo);
+                    }}
                     endIcon={<DeleteRoundedIcon size="large" />}
                   ></Button>
                 </Tooltip>

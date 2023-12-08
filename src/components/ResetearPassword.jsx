@@ -7,11 +7,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
 
-export function ResetearPassword(userId, urltable) {
-  console.log("estoy en actualizar");
-  console.log(userId);
-  console.log("la url llega?");
-  console.log(urltable);
+export function ResetearPassword({ userId, urltable }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const navigate = useNavigate();
@@ -54,19 +50,15 @@ export function ResetearPassword(userId, urltable) {
   const handleButtonClick = () => {
     setExpanded(!expanded);
   };
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   useEffect(() => {
-    handleClickOpen(); // Abre el Dialog cuando el componente se monta
-  }, []); // El segundo argumento es un array vacío para que se ejecute solo una vez al montarse el componente
+    handleClickOpen();
+  }, []);
 
   return (
     <>
