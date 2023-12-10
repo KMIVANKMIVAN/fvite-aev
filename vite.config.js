@@ -7,6 +7,7 @@ export default defineConfig({
     origin: "http://10.10.1.158",
   }, */
   server: {
-    host: "10.10.1.158",
+    // host: "10.10.1.158",
+    host: "192.168.0.12",
   },
 });

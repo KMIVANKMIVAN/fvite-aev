@@ -21,6 +21,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
+import { HabilitarDes } from "./HabilitarDes";
+import { ActualizarUser } from "./ActualizarUser";
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -123,8 +126,10 @@ export function BuscarUser({ urltable }) {
   console.log("el habilitado del usuario", selectedHabilitado);
 
   const columns = [
-    { id: "seleccionar", label: "SELECCIONAR", minWidth: 100 },
+    // { id: "seleccionar", label: "SELECCIONAR", minWidth: 100 },
     { id: "id", label: "ID", minWidth: 50 },
+    { id: "actualizar", label: "ACTUALIZAR", minWidth: 100 },
+    { id: "habilitardes", label: "HABILITAR DESHABILITAR", minWidth: 100 },
     { id: "habilitado", label: "HABILITADO", minWidth: 50 },
     { id: "username", label: "USUARIO", minWidth: 150 },
     { id: "superior", label: "SUPERIOR", minWidth: 50 },
@@ -243,28 +248,31 @@ export function BuscarUser({ urltable }) {
                             style={{ textAlign: "center" }}
                             className={classes.tableCell}
                           >
-                            {column.id === "seleccionar" ? (
+                            {column.id === "habilitardes" ? (
                               <div
                                 style={{
                                   display: "flex",
                                   justifyContent: "center",
                                 }}
                               >
-                                <Stack direction="row" spacing={2}>
-                                  <Button
-                                    onClick={() => {
-                                      showActualizarUser(row.id);
-                                      setSelectedHabilitado(row.habilitado);
-                                    }}
-                                    variant="outlined"
-                                    size="small"
-                                    endIcon={<SendIcon size="small" />}
-                                  ></Button>
-                                </Stack>
+                                <HabilitarDes
+                                  idActualizarUser={row.id}
+                                  selectedHabilitado={row.habilitado}
+                                />
+                              </div>
+                            ) : column.id === "actualizar" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <ActualizarUser idActualizarUser={row.id} />
                               </div>
                             ) : (
                               value
                             )}
+                            {/* {value} */}
                           </StyledTableCell>
                         );
                       })}
