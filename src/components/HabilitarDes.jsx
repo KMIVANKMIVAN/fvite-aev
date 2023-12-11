@@ -8,6 +8,8 @@ import { increment } from "../contexts/features/user/counterUserSlice";
 
 import Switch from "@material-ui/core/Switch";
 
+const label = { inputProps: { "aria-label": "Color switch demo" } };
+
 export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -62,7 +64,9 @@ export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
       <Switch
         checked={checked}
         onChange={handleChange}
-        inputProps={{ "aria-label": "secondary checkbox" }}
+        {...label}
+        defaultChecked
+        color="secondary"
         onClick={() => {
           const nuevoEstado = selectedHabilitado === 1 ? 0 : 1;
           actualizarEstado(idActualizarUser, nuevoEstado);

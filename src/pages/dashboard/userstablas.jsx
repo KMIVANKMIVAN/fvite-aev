@@ -17,6 +17,7 @@ const useStyles = makeStyles({
     width: "100%",
   },
   container: {
+    backgroundColor: "#C9FFC2",
     // maxHeight: 440,
   },
   tableCell: {
@@ -63,14 +64,14 @@ export function UsersTablas() {
     setShowContent(true); // Mostrar contenido cuando user cambie
     const timeout = setTimeout(() => {
       setShowContent(false);
-    }, 10000); // 30 segundos (medio minuto)
+    }, 5000); // 30 segundos (medio minuto)
 
     return () => clearTimeout(timeout);
   }, [user]); // Agregar user como dependencia
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <h1 className="text-center text-mi-color-primario text-5xl">{count}</h1>
+        {/* <h1 className="text-center text-mi-color-primario text-5xl">{count}</h1> */}
         {showContent && user && (
           <>
             <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">

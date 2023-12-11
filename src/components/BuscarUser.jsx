@@ -27,16 +27,19 @@ import { ActualizarUser } from "./ActualizarUser";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+    // color: theme.palette.common.white,
+    color: "#004f81",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    color: "#004f81",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
+    // color: "#004f81",
   },
   // hide last border
   "&:last-child td, &:last-child th": {
@@ -49,6 +52,7 @@ const useStyles = makeStyles({
     width: "100%",
   },
   container: {
+    // backgroundColor: "#004f81",
     // maxHeight: 440,
   },
   tableCell: {

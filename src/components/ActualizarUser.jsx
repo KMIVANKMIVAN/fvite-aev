@@ -121,7 +121,7 @@ export function ActualizarUser({ idActualizarUser, urltable }) {
     <>
       {userData.username !== "" && (
         <>
-          <EditIcon onClick={handleClickOpen} />
+          <EditIcon className="text-red-500" onClick={handleClickOpen} />
           <Dialog
             open={open}
             TransitionComponent={Transition}

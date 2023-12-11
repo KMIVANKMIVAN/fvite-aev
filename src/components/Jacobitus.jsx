@@ -14,6 +14,12 @@ require("../libs/prism/prism.min.css");
 require("../libs/FreezeUI/freeze-ui.min.js");
 require("../libs/FreezeUI/freeze-ui.min.css");
 
+import ReplayIcon from "@mui/icons-material/Replay";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+
+import { useDispatch } from "react-redux";
+import { increment } from "../contexts/features/counter/counterSlice";
+
 const styles = {
   card: {
     height: "950px",
@@ -24,6 +30,8 @@ const styles = {
 export function Jacobitus() {
   const [archivo, setArchivo] = useState(undefined);
   const [firmas, setFirmas] = useState(undefined);
+
+  const dispatch = useDispatch();
 
   const obtenerBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -59,7 +67,7 @@ export function Jacobitus() {
       });
       if (pin) {
         FreezeUI({ text: "Firmando documento" });
-        const slot = 1;
+        const slot = -1;
         let respuesta =
           await jacobitusTotal.obtenerCertificadosParaFirmaDigital(slot, pin);
         if (
@@ -114,10 +122,24 @@ export function Jacobitus() {
     }
   };
 
-  const validarPdf = async () => {
+  /* const validarPdf = async () => {
     FreezeUI({ text: "Validando firmas" });
     const respuesta = await jacobitusTotal.validarPdf(archivo);
     setFirmas(JSON.stringify(respuesta.datos?.firmas, null, 4));
+    UnFreezeUI();
+  }; */
+  const validarPdf = async () => {
+    FreezeUI({ text: "Validando firmas" });
+    const respuesta = await jacobitusTotal.validarPdf(archivo);
+    if (
+      respuesta.datos &&
+      respuesta.datos.firmas &&
+      respuesta.datos.firmas.length > 0
+    ) {
+      setFirmas(respuesta.datos.firmas);
+    } else {
+      setFirmas([]);
+    }
     UnFreezeUI();
   };
 
@@ -156,22 +178,44 @@ export function Jacobitus() {
               </h3>
               <br />
               <div className="flex justify-center items-center flex-col">
-                <input
-                  className=" font-bold text-mi-color-primario
+                <Grid container spacing={2}>
+                  <Grid item xs={8}>
+                    <input
+                      className=" font-bold text-mi-color-primario
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-semibold
                   file:bg-mi-color-primario file:text-white
                   hover:file:bg-mi-color-terceario"
-                  type="file"
-                  id="archivo"
-                  accept=".pdf"
-                  onChange={(event) => cargarArchivoBase64(event)}
-                />
+                      type="file"
+                      id="archivo"
+                      accept=".pdf"
+                      onChange={(event) => cargarArchivoBase64(event)}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <ButtonGroup size="large" aria-label="large button group">
+                      <Button
+                        size="large"
+                        onClick={() => firmarPdf()}
+                        value="Firmar"
+                      >
+                        Firmar
+                      </Button>
+                      <Button
+                        size="large"
+                        onClick={() => dispatch(increment())}
+                        endIcon={<RestartAltIcon />}
+                      >
+                        Limpiar
+                      </Button>
+                    </ButtonGroup>
+                  </Grid>
+                </Grid>
               </div>
               <br />
               <div className="grid grid-cols-12">
-                <div className="col-span-12" style={{ height: "700px" }}>
+                <div className="col-span-12" style={{ height: "710px" }}>
                   <embed
                     className="form-control"
                     id="archivoPdf"
@@ -182,20 +226,6 @@ export function Jacobitus() {
               </div>
             </CardContent>
           </Card>
-          <div className="pt-5 flex justify-center items-center flex-col">
-            <ButtonGroup size="large" aria-label="large button group">
-              <Button size="large" onClick={() => firmarPdf()} value="Firmar">
-                Firmar
-              </Button>
-              <Button
-                size="large"
-                onClick={() => firmarPdfModoSeguro()}
-                value="Firmar (Modo seguro)"
-              >
-                Firmar (Modo seguro)
-              </Button>
-            </ButtonGroup>
-          </div>
         </Grid>
         <Grid item xs={12} md={6}>
           <Card>
@@ -206,15 +236,72 @@ export function Jacobitus() {
               <h2 className="text-mi-color-primario py-2">
                 Validación de firmas en el documento
               </h2>
-              <pre
-                className="p-3 language-json"
-                style={{ height: "815px", overflow: "scroll" }}
+              <div
+                className="px-3 bg-mi-color-primario text-white"
+                style={{ height: "825px", overflow: "scroll" }}
               >
-                <code
-                  id="firmas"
-                  dangerouslySetInnerHTML={{ __html: firmas }}
-                ></code>
-              </pre>
+                {firmas &&
+                  firmas.map((firma, index) => (
+                    <div key={index} className="border p-3 my-3">
+                      <h1 className="text-center text-2xl">
+                        <strong>Información del Certificado </strong>
+                      </h1>
+                      <p className="px-3">
+                        <strong>Fecha de firma:</strong> {firma.fechaFirma}
+                      </p>
+                      <h1 className="text-center text-2xl">
+                        <strong>Titular</strong>
+                      </h1>
+                      <ul className="px-3">
+                        <li>
+                          <strong>Nombre del signatario:</strong>{" "}
+                          {firma.certificado.nombreSignatario}
+                        </li>
+                        <li>
+                          <strong>CI:</strong> {firma.certificado.ci}
+                        </li>
+                        <li>
+                          <strong>Organización del signatario:</strong>{" "}
+                          {firma.certificado.organizacionSignatario}
+                        </li>
+                        <li>
+                          <strong>Cargo del signatario:</strong>{" "}
+                          {firma.certificado.cargoSignatario}
+                        </li>
+                        <li>
+                          <strong>Correo del signatario:</strong>{" "}
+                          {firma.certificado.emailSignatario}
+                        </li>
+                      </ul>
+                      <h1 className="text-center ">
+                        <strong>Emisor</strong>
+                      </h1>
+                      <ul className="px-3">
+                        <li>
+                          <strong>Nombre ECA:</strong>{" "}
+                          {firma.certificado.nombreECA}
+                        </li>
+                        <li>
+                          <strong>Descripción ECA:</strong>{" "}
+                          {firma.certificado.descripcionECA}
+                        </li>
+                      </ul>
+                      <h1 className="text-center ">
+                        <strong>Periodo Validez</strong>
+                      </h1>
+                      <ul className="px-3">
+                        <li>
+                          <strong>Inicio de validez:</strong>{" "}
+                          {firma.certificado.inicioValidez}
+                        </li>
+                        <li>
+                          <strong>Fin de validez:</strong>{" "}
+                          {firma.certificado.finValidez}
+                        </li>
+                      </ul>
+                    </div>
+                  ))}
+              </div>
             </CardContent>
           </Card>
         </Grid>
