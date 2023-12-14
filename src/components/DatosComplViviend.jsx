@@ -165,7 +165,12 @@ export function DatosComplViviend({ selectedContCod }) {
                               column.id === "descuento_anti_reten" ||
                               column.id === "monto_fisico" ||
                               column.id === "monto_desembolsado" ? (
-                                formatearNumero(value)
+                                // formatearNumero(value)
+                                formatearNumero(
+                                  value !== null && value !== undefined
+                                    ? value
+                                    : 0
+                                )
                               ) : column.id === "iddesem_aev" ? (
                                 <>
                                   <h2 className="text-center  text-mi-color-primario">

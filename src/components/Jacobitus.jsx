@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 import { jacobitusTotal } from "../libs/adsib/jacobitus-total.es6";
 
@@ -28,10 +29,15 @@ const styles = {
 };
 
 export function Jacobitus() {
+  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
   const [archivo, setArchivo] = useState(undefined);
   const [firmas, setFirmas] = useState(undefined);
 
   const dispatch = useDispatch();
+
+  // console.log("111", archivo);
+  console.log(archivo);
 
   const obtenerBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -179,7 +185,7 @@ export function Jacobitus() {
               <br />
               <div className="flex justify-center items-center flex-col">
                 <Grid container spacing={2}>
-                  <Grid item xs={8}>
+                  <Grid item md={12} xl={8}>
                     <input
                       className=" font-bold text-mi-color-primario
                   file:mr-4 file:py-2 file:px-4
@@ -193,7 +199,7 @@ export function Jacobitus() {
                       onChange={(event) => cargarArchivoBase64(event)}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item md={12} xl={4}>
                     <ButtonGroup size="large" aria-label="large button group">
                       <Button
                         size="large"

@@ -67,10 +67,10 @@ export function BuscarViviend() {
 
   const [expandedPanels, setExpandedPanels] = useState({});
   //
-  const handleChange = (panel) => (event, isExpanded) => {
+  const handleChange = (index) => (event, isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
-      [panel]: isExpanded,
+      [index]: isExpanded,
     });
   };
   //
@@ -150,10 +150,10 @@ export function BuscarViviend() {
         {conjuntosDatos.map((conjunto, conjuntoIndex) => (
           <Grid container spacing={2} key={conjuntoIndex}>
             {conjunto.map((data, index) => (
-              <Grid item xs={12} sm={12} md={6} key={index}>
+              <Grid item xs={12} sm={12} md={6} key={index} className="py-2">
                 <Accordion
-                  expanded={expandedPanels[`panel${index}`]}
-                  onChange={handleChange(`panel${index}`)}
+                  expanded={expandedPanels[index]}
+                  onChange={handleChange(index)}
                   elevation={24}
                 >
                   <AccordionSummary
