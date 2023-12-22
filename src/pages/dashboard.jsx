@@ -29,7 +29,7 @@ function Submenu() {
         <div
           className="flex items-center p-2 space-x-3 rounded-md hover:bg-c4p2 bg-c3p2"
           role="button"
-          onClick={() => navigate("#")}
+          onClick={() => navigate("/dashboardclient/pemar")}
         >
           {<NavigateNextIcon />}
           <span>PMAR</span>

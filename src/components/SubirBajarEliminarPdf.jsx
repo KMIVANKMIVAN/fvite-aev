@@ -50,10 +50,6 @@ export function SubirBajarEliminarPdf({ nombrepdf }) {
   };
 
   const guardarPdf = async () => {
-    if (!selecionarPDF) {
-      console.error("No se ha seleccionado ningún archivo PDF");
-      return;
-    }
     const formData = new FormData();
     formData.append("file", selecionarPDF);
     try {
@@ -157,9 +153,6 @@ export function SubirBajarEliminarPdf({ nombrepdf }) {
     }
   };
 
-  console.log("respuestasErrorEliminar", respuestasErrorEliminar);
-  console.log("respuestasEliminar", respuestasEliminar);
-
   const [abrirGuardar, setAbrirGuardar] = useState(false);
 
   const abrirGuardarPdf = () => {
@@ -239,18 +232,8 @@ export function SubirBajarEliminarPdf({ nombrepdf }) {
           </DialogActions>
         </Dialog>
       )}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          "& > *": {
-            m: 1,
-          },
-        }}
-      >
-        <ButtonGroup variant="text" aria-label="text button group">
-          <Tooltip title="Subir PDF" placement="left-end">
+      <ButtonGroup variant="text" aria-label="text button group">
+        {/* <Tooltip title="Subir PDF" placement="left-end">
             <Button
               color="error"
               size="small"
@@ -258,25 +241,24 @@ export function SubirBajarEliminarPdf({ nombrepdf }) {
               endIcon={<UploadRoundedIcon size="large" />}
               onClick={abrirGuardarPdf}
             ></Button>
-          </Tooltip>
-          <Tooltip title="Descargar PDF" placement="top">
-            <Button
-              size="small"
-              color="error"
-              onClick={descargarPdf}
-              endIcon={<PictureAsPdfRoundedIcon size="large" />}
-            ></Button>
-          </Tooltip>
-          <Tooltip title="Eliminar PDF" placement="right-start">
-            <Button
-              size="small"
-              color="error"
-              onClick={eliminarPdf}
-              endIcon={<DeleteRoundedIcon size="large" />}
-            ></Button>
-          </Tooltip>
-        </ButtonGroup>
-      </Box>
+          </Tooltip> */}
+        <Tooltip title="Descargar PDF" placement="top">
+          <Button
+            size="small"
+            color="error"
+            onClick={descargarPdf}
+            endIcon={<PictureAsPdfRoundedIcon size="large" />}
+          ></Button>
+        </Tooltip>
+        <Tooltip title="Eliminar PDF" placement="right-start">
+          <Button
+            size="small"
+            color="error"
+            onClick={eliminarPdf}
+            endIcon={<DeleteRoundedIcon size="large" />}
+          ></Button>
+        </Tooltip>
+      </ButtonGroup>
       <Dialog
         open={abrirGuardar}
         TransitionComponent={Transition}

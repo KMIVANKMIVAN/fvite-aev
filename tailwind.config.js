@@ -31,6 +31,8 @@ export default {
         c3p2: "#007369",
         c4p2: "#008C72",
         c5p2: "#02A676",
+        rojo1: "#fd1d1d",
+        rojo2: "#fcb045",
       },
       zIndex: {
         500: "500",

@@ -11,6 +11,7 @@ import { ErrorPage } from "./pages/errorpage.jsx";
 import { UpdatePassword } from "./pages/updatepassword.jsx";
 
 import { ViviendaNueva } from "./pages/dashboardclient/viviendanueva.jsx";
+import { Pemar } from "./pages/dashboardclient/pemar.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "viviendanueva",
         element: <ViviendaNueva />,
+      },
+      {
+        path: "pemar",
+        element: <Pemar />,
       },
     ],
   },

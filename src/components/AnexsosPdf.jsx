@@ -90,7 +90,7 @@ export function AnexsosPdf({ nombrepdf }) {
       <Button
         onClick={handleClickOpen}
         endIcon={<ArrowCircleUpIcon size="large" />}
-        color="error"
+        
       >
         Anexos
       </Button>

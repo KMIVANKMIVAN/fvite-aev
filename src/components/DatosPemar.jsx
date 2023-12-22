@@ -30,7 +30,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import Slide from "@mui/material/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -60,12 +59,8 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-import { useSelector } from "react-redux";
-
-export function DatosComplViviend({ selectedContCod }) {
+export function DatosPemar({ selectedCodid, titulo }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
-
-  const count = useSelector((state) => state.counter.value);
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
@@ -76,11 +71,8 @@ export function DatosComplViviend({ selectedContCod }) {
 
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
-  const [verificarenviobanco, setVerificarenviobanco] = useState(null);
-  const [errorVerificarbanco, setErrorverificarbanco] = useState(null);
 
   const [open, setOpen] = useState(false);
-  const [disanble, setDisanble] = useState(true);
 
   const instructivoRef = useRef(null);
 
@@ -93,9 +85,9 @@ export function DatosComplViviend({ selectedContCod }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedContCod) {
+      if (selectedCodid) {
         try {
-          const url = `${apiKey}/datoscontrato/compleja/${selectedContCod}`;
+          const url = `${apiKey}/cuadro/consultasipago/${selectedCodid}`;
 
           const response = await axios.get(url, { headers });
 
@@ -113,9 +105,9 @@ export function DatosComplViviend({ selectedContCod }) {
     };
 
     fetchData();
-  }, [selectedContCod]);
+  }, [selectedCodid]);
 
-  if (contcodComplejaData.length === 0 || selectedContCod === 0) {
+  if (contcodComplejaData.length === 0 || selectedCodid === 0) {
     return null;
   }
 
@@ -126,23 +118,21 @@ export function DatosComplViviend({ selectedContCod }) {
 
   const columns = [
     { id: "id_aevbanco", label: "ENVIAR AL BANCO", minWidth: 200 },
-    { id: "iddesem_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
-    { id: "iddesem_anexo", label: "ANEXOS AEV", minWidth: 300 },
+    { id: "id_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
+    { id: "id_anexo", label: "ANEXOS AEV", minWidth: 300 },
     { id: "id_bancoaev", label: "ENVIAR A LA AEV", minWidth: 200 },
-    { id: "iddesem_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 },
+    { id: "id_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 },
     { id: "multa", label: "MULTA", minWidth: 150 },
-    { id: "descuento_anti_reten", label: "DESCUENTO ANTICIPO", minWidth: 150 },
-    { id: "monto_fisico", label: "MONTO FISICO", minWidth: 150 },
-    { id: "monto_desembolsado", label: "MONTO DESEMBOLSADO", minWidth: 150 },
-    { id: "detalle", label: "TIPO PLANILLA", minWidth: 300 },
-    { id: "fechabanco", label: "FECHA ENVIO AL BANCO", minWidth: 150 },
-    { id: "fecha_generado", label: "FECHA INICIO PLANILLA", minWidth: 150 },
-    { id: "fecha_abono", label: "FECHA DE ABONO", minWidth: 150 },
-    { id: "numero_factura", label: "NUMERO DE FACTURA", minWidth: 150 },
-    { id: "numero_inst", label: "OBSERVACIONES DE PAGO", minWidth: 50 },
-    { id: "cuentatitular", label: "TITULAR", minWidth: 250 },
-    { id: "iddesem", label: "ID", minWidth: 50 },
-    // { id: "", label: "", minWidth: 50 }
+    { id: "monto_desembolsado", label: "DESEMBOLSADO Bs.", minWidth: 150 },
+    { id: "detalle", label: "TIPO", minWidth: 300 },
+    { id: "objeto", label: "OBJETO", minWidth: 650 },
+    { id: "fecha_banco", label: "FECHA EMISION", minWidth: 150 },
+    { id: "numero_factura", label: "Nro FACTURA", minWidth: 150 },
+    { id: "numero_inst", label: "Nro VALORADO", minWidth: 150 },
+    { id: "fechagenerado", label: "FECHA BANCO", minWidth: 150 },
+    { id: "etapa", label: "VoBo", minWidth: 150 },
+    { id: "fecha_abono", label: "ABONO EN CUENTA", minWidth: 150 },
+    { id: "observacion", label: "OBSERVACIONES", minWidth: 200 },
   ];
 
   const rows = contcodComplejaData;
@@ -162,20 +152,10 @@ export function DatosComplViviend({ selectedContCod }) {
       setErrorRespuestas(`RS: ${error.message}`);
     }
   };
-  const verificarEnvioBanco = async (nombrepdf) => {
-    try {
-      const response = await axios.get(
-        `${apiKey}/documentpdf/verificarenviobanco/${nombrepdf}`,
-        { headers }
-      );
 
-      if (response.status === 200) {
-        const responseData = JSON.parse(response.data); // Convierte la respuesta a booleano
-        setVerificarenviobanco(responseData); // Retorna la respuesta booleana obtenida
-      }
-    } catch (error) {
-      setErrorverificarbanco(`RS: ${error.message}`);
-    }
+  const handleClose = () => {
+    setOpen(false);
+    setRespuestas(null); // Puedes restablecer también el estado de respuestas si es necesario.
   };
 
   return (
@@ -184,11 +164,11 @@ export function DatosComplViviend({ selectedContCod }) {
 
       <VerificarInstr />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <p className="text-c1p text-1xl font-bold">
-          PROYECTO: {contcodComplejaData[0]?.objeto}
+        <p className="text-mi-color-primario text-1xl font-bold">
+          PROYECTO: {titulo}
         </p>
         <br />
-        <p className="text-c1p text-1xl font-bold">
+        <p className="text-mi-color-primario text-1xl font-bold">
           CODIGO: {contcodComplejaData[0]?.proy_cod}
         </p>
         <br />
@@ -225,23 +205,21 @@ export function DatosComplViviend({ selectedContCod }) {
                               style={{ textAlign: "center" }}
                               className={classes.tableCell}
                             >
-                              {column.id === "multa" ||
-                              column.id === "descuento_anti_reten" ||
-                              column.id === "monto_fisico" ||
-                              column.id === "monto_desembolsado" ? (
+                              {column.id === "monto_desembolsado" ||
+                              column.id === "multa" ? (
                                 // formatearNumero(value)
                                 formatearNumero(
                                   value !== null && value !== undefined
                                     ? value
                                     : 0
                                 )
-                              ) : column.id === "iddesem_aev" ? (
+                              ) : column.id === "id_aev" ? (
                                 <>
                                   <h1
                                     className="text-center text-mi-color-primario"
                                     style={{ fontSize: "1rem" }}
                                   >
-                                    <strong>{`${row.iddesem}-AEV`}</strong>
+                                    <strong>{`${row.id}-AEV`}</strong>
                                   </h1>
                                   <ButtonGroup
                                     variant="text"
@@ -252,7 +230,6 @@ export function DatosComplViviend({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={verificarenviobanco}
                                         color="error"
                                         size="small"
                                         component="span"
@@ -260,9 +237,9 @@ export function DatosComplViviend({ selectedContCod }) {
                                           <UploadRoundedIcon size="large" />
                                         }
                                         onClick={() => {
-                                          buscar(row.iddesem + "-AEV");
+                                          buscar(row.id + "-AEV");
                                           setNombrePdfSeleccionado(
-                                            row.iddesem + "-AEV"
+                                            row.id + "-AEV"
                                           );
                                           setForceRender(
                                             (prevState) => !prevState
@@ -278,13 +255,17 @@ export function DatosComplViviend({ selectedContCod }) {
                                       ></Button>
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
-                                      nombrepdf={row.iddesem + "-AEV"}
+                                      nombrepdf={row.id + "-AEV"}
                                     />
                                   </ButtonGroup>
                                   <h2 className="text-center text-mi-color-primario"></h2>
                                   <div className="pb-2 flex  justify-center items-center">
-                                    <AnexsosPdf nombrepdf={row.iddesem} />
+                                    <AnexsosPdf nombrepdf={row.id} />
                                   </div>
+                                </>
+                              ) : column.id === "id_anexo" ? (
+                                <>
+                                  <BajarEliminarAnexos nombrepdf={row.id} />
                                 </>
                               ) : column.id === "id_aevbanco" ? (
                                 <>
@@ -294,19 +275,13 @@ export function DatosComplViviend({ selectedContCod }) {
                                 <>
                                   <EnviarBanco nombrepdf={`${row.id}-BUSA`} />
                                 </>
-                              ) : column.id === "iddesem_anexo" ? (
-                                <>
-                                  <BajarEliminarAnexos
-                                    nombrepdf={row.iddesem}
-                                  />
-                                </>
-                              ) : column.id === "iddesem_busa" ? (
+                              ) : column.id === "id_busa" ? (
                                 <>
                                   <h1
                                     className="text-center text-blue-500"
                                     style={{ fontSize: "1rem" }}
                                   >
-                                    <strong>{`${row.iddesem}-BUSA`}</strong>
+                                    <strong>{`${row.id}-BUSA`}</strong>
                                   </h1>
                                   <ButtonGroup
                                     variant="text"
@@ -324,9 +299,9 @@ export function DatosComplViviend({ selectedContCod }) {
                                           <UploadRoundedIcon size="large" />
                                         }
                                         onClick={() => {
-                                          buscar(row.iddesem + "-BUSA");
+                                          buscar(row.id + "-BUSA");
                                           setNombrePdfSeleccionado(
-                                            row.iddesem + "-BUSA"
+                                            row.id + "-BUSA"
                                           );
                                           setForceRender(
                                             (prevState) => !prevState
@@ -342,7 +317,7 @@ export function DatosComplViviend({ selectedContCod }) {
                                       ></Button>
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
-                                      nombrepdf={row.iddesem + "-BUSA"}
+                                      nombrepdf={row.id + "-BUSA"}
                                     />
                                   </ButtonGroup>
                                 </>
@@ -372,22 +347,12 @@ export function DatosComplViviend({ selectedContCod }) {
                     <strong className=" text-mi-color-secundario">= </strong>
                     {contcodComplejaData.map((data) => {
                       totalMulta += data.multa;
-                      totalDescuentoAntiReten += data.descuento_anti_reten;
-                      totalMontoFisico += data.monto_fisico;
                       if (data.monto_desembolsado) {
                         totalMontoDesembolsado += data.monto_desembolsado;
                       }
                       return null;
                     })}
                     {formatearNumero(totalMulta)}
-                  </TableCell>
-                  <TableCell style={{ textAlign: "center" }}>
-                    <strong className="text-mi-color-secundario">= </strong>
-                    {formatearNumero(totalDescuentoAntiReten)}
-                  </TableCell>
-                  <TableCell style={{ textAlign: "center" }}>
-                    <strong className="text-mi-color-secundario">= </strong>
-                    {formatearNumero(totalMontoFisico)}
                   </TableCell>
                   <TableCell style={{ textAlign: "center" }}>
                     <strong className="text-mi-color-secundario">= </strong>
