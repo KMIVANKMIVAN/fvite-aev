@@ -30,6 +30,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import Slide from "@mui/material/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -59,9 +60,12 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-export function DatosPemar({ selectedCodid, titulo }) {
-  console.log("DatosPemar", selectedCodid, titulo);
+import { useSelector } from "react-redux";
+
+export function DatosBusa({ selectedContCod }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const count = useSelector((state) => state.counter.value);
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
@@ -72,8 +76,11 @@ export function DatosPemar({ selectedCodid, titulo }) {
 
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
+  const [verificarenviobanco, setVerificarenviobanco] = useState(null);
+  const [errorVerificarbanco, setErrorverificarbanco] = useState(null);
 
   const [open, setOpen] = useState(false);
+  const [disanble, setDisanble] = useState(true);
 
   const instructivoRef = useRef(null);
 
@@ -86,9 +93,9 @@ export function DatosPemar({ selectedCodid, titulo }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedCodid) {
+      if (selectedContCod) {
         try {
-          const url = `${apiKey}/cuadro/consultasipago/${selectedCodid}`;
+          const url = `${apiKey}/datoscontrato/compleja/${selectedContCod}`;
 
           const response = await axios.get(url, { headers });
 
@@ -106,34 +113,36 @@ export function DatosPemar({ selectedCodid, titulo }) {
     };
 
     fetchData();
-  }, [selectedCodid]);
+  }, [selectedContCod]);
 
-  console.log("contcodComplejaData", contcodComplejaData);
-
-  if (contcodComplejaData.length === 0 || selectedCodid === 0) {
+  if (contcodComplejaData.length === 0 || selectedContCod === 0) {
     return null;
   }
 
   let totalMulta = 0;
+  let totalDescuentoAntiReten = 0;
+  let totalMontoFisico = 0;
   let totalMontoDesembolsado = 0;
 
   const columns = [
     { id: "id_aevbanco", label: "ENVIAR AL BANCO", minWidth: 200 },
-    { id: "id_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
-    { id: "id_anexo", label: "ANEXOS AEV", minWidth: 300 },
+    { id: "iddesem_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
+    { id: "iddesem_anexo", label: "ANEXOS AEV", minWidth: 300 },
     { id: "id_bancoaev", label: "ENVIAR A LA AEV", minWidth: 200 },
-    { id: "id_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 },
+    { id: "iddesem_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 },
     { id: "multa", label: "MULTA", minWidth: 150 },
-    { id: "monto_desembolsado", label: "DESEMBOLSADO Bs.", minWidth: 150 },
-    { id: "detalle", label: "TIPO", minWidth: 300 },
-    { id: "objeto", label: "OBJETO", minWidth: 650 },
-    { id: "fecha_banco", label: "FECHA EMISION", minWidth: 150 },
-    { id: "numero_factura", label: "Nro FACTURA", minWidth: 150 },
-    { id: "numero_inst", label: "Nro VALORADO", minWidth: 150 },
-    { id: "fechagenerado", label: "FECHA BANCO", minWidth: 150 },
-    { id: "etapa", label: "VoBo", minWidth: 150 },
-    { id: "fecha_abono", label: "ABONO EN CUENTA", minWidth: 150 },
-    { id: "observacion", label: "OBSERVACIONES", minWidth: 200 },
+    { id: "descuento_anti_reten", label: "DESCUENTO ANTICIPO", minWidth: 150 },
+    { id: "monto_fisico", label: "MONTO FISICO", minWidth: 150 },
+    { id: "monto_desembolsado", label: "MONTO DESEMBOLSADO", minWidth: 150 },
+    { id: "detalle", label: "TIPO PLANILLA", minWidth: 300 },
+    { id: "fechabanco", label: "FECHA ENVIO AL BANCO", minWidth: 150 },
+    { id: "fecha_generado", label: "FECHA INICIO PLANILLA", minWidth: 150 },
+    { id: "fecha_abono", label: "FECHA DE ABONO", minWidth: 150 },
+    { id: "numero_factura", label: "NUMERO DE FACTURA", minWidth: 150 },
+    { id: "numero_inst", label: "OBSERVACIONES DE PAGO", minWidth: 50 },
+    { id: "cuentatitular", label: "TITULAR", minWidth: 250 },
+    { id: "iddesem", label: "ID", minWidth: 50 },
+    // { id: "", label: "", minWidth: 50 }
   ];
 
   const rows = contcodComplejaData;
@@ -153,23 +162,37 @@ export function DatosPemar({ selectedCodid, titulo }) {
       setErrorRespuestas(`RS: ${error.message}`);
     }
   };
+  const verificarEnvioBanco = async (nombrepdf) => {
+    try {
+      const response = await axios.get(
+        `${apiKey}/documentpdf/verificarenviobanco/${nombrepdf}`,
+        { headers }
+      );
+
+      if (response.status === 200) {
+        const responseData = JSON.parse(response.data); // Convierte la respuesta a booleano
+        setVerificarenviobanco(responseData); // Retorna la respuesta booleana obtenida
+      }
+    } catch (error) {
+      setErrorverificarbanco(`RS: ${error.message}`);
+    }
+  };
 
   const handleClose = () => {
     setOpen(false);
     setRespuestas(null); // Puedes restablecer también el estado de respuestas si es necesario.
   };
-
   return (
     <>
       {errorcontcodComplejaData !== null && <h1>{errorcontcodComplejaData}</h1>}
 
       <VerificarInstr />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <p className="text-mi-color-primario text-1xl font-bold">
-          PROYECTO: {titulo}
+        <p className="text-c1p text-1xl font-bold">
+          PROYECTO: {contcodComplejaData[0]?.objeto}
         </p>
         <br />
-        <p className="text-mi-color-primario text-1xl font-bold">
+        <p className="text-c1p text-1xl font-bold">
           CODIGO: {contcodComplejaData[0]?.proy_cod}
         </p>
         <br />
@@ -206,21 +229,23 @@ export function DatosPemar({ selectedCodid, titulo }) {
                               style={{ textAlign: "center" }}
                               className={classes.tableCell}
                             >
-                              {column.id === "monto_desembolsado" ||
-                              column.id === "multa" ? (
+                              {column.id === "multa" ||
+                              column.id === "descuento_anti_reten" ||
+                              column.id === "monto_fisico" ||
+                              column.id === "monto_desembolsado" ? (
                                 // formatearNumero(value)
                                 formatearNumero(
                                   value !== null && value !== undefined
                                     ? value
                                     : 0
                                 )
-                              ) : column.id === "id_aev" ? (
+                              ) : column.id === "iddesem_aev" ? (
                                 <>
                                   <h1
                                     className="text-center text-mi-color-primario"
                                     style={{ fontSize: "1rem" }}
                                   >
-                                    <strong>{`${row.id}-AEV`}</strong>
+                                    <strong>{`${row.iddesem}-AEV`}</strong>
                                   </h1>
                                   <ButtonGroup
                                     variant="text"
@@ -239,9 +264,9 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                           <UploadRoundedIcon size="large" />
                                         }
                                         onClick={() => {
-                                          buscar(row.id + "-AEV");
+                                          buscar(row.iddesem + "-AEV");
                                           setNombrePdfSeleccionado(
-                                            row.id + "-AEV"
+                                            row.iddesem + "-AEV"
                                           );
                                           setForceRender(
                                             (prevState) => !prevState
@@ -257,24 +282,17 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                       ></Button>
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
-                                      nombrepdf={row.id + "-AEV"}
+                                      nombrepdf={row.iddesem + "-AEV"}
                                       buttonAEVBUSA={row.buttonAEV}
                                     />
                                   </ButtonGroup>
                                   <h2 className="text-center text-mi-color-primario"></h2>
                                   <div className="pb-2 flex  justify-center items-center">
                                     <AnexsosPdf
-                                      nombrepdf={row.id}
+                                      nombrepdf={row.iddesem}
                                       buttonAEV={row.buttonAEV}
                                     />
                                   </div>
-                                </>
-                              ) : column.id === "id_anexo" ? (
-                                <>
-                                  <BajarEliminarAnexos
-                                    nombrepdf={row.id}
-                                    buttonAEV={row.buttonAEV}
-                                  />
                                 </>
                               ) : column.id === "id_aevbanco" ? (
                                 <>
@@ -290,13 +308,20 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                     buttonAEVBUSA={row.buttonBUSA}
                                   />
                                 </>
-                              ) : column.id === "id_busa" ? (
+                              ) : column.id === "iddesem_anexo" ? (
+                                <>
+                                  <BajarEliminarAnexos
+                                    nombrepdf={row.iddesem}
+                                    buttonAEV={row.buttonAEV}
+                                  />
+                                </>
+                              ) : column.id === "iddesem_busa" ? (
                                 <>
                                   <h1
                                     className="text-center text-blue-500"
                                     style={{ fontSize: "1rem" }}
                                   >
-                                    <strong>{`${row.id}-BUSA`}</strong>
+                                    <strong>{`${row.iddesem}-BUSA`}</strong>
                                   </h1>
                                   <ButtonGroup
                                     variant="text"
@@ -315,9 +340,9 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                           <UploadRoundedIcon size="large" />
                                         }
                                         onClick={() => {
-                                          buscar(row.id + "-BUSA");
+                                          buscar(row.iddesem + "-BUSA");
                                           setNombrePdfSeleccionado(
-                                            row.id + "-BUSA"
+                                            row.iddesem + "-BUSA"
                                           );
                                           setForceRender(
                                             (prevState) => !prevState
@@ -333,7 +358,7 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                       ></Button>
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
-                                      nombrepdf={row.id + "-BUSA"}
+                                      nombrepdf={row.iddesem + "-BUSA"}
                                       buttonAEVBUSA={row.buttonBUSA}
                                     />
                                   </ButtonGroup>
@@ -364,12 +389,22 @@ export function DatosPemar({ selectedCodid, titulo }) {
                     <strong className=" text-mi-color-secundario">= </strong>
                     {contcodComplejaData.map((data) => {
                       totalMulta += data.multa;
+                      totalDescuentoAntiReten += data.descuento_anti_reten;
+                      totalMontoFisico += data.monto_fisico;
                       if (data.monto_desembolsado) {
                         totalMontoDesembolsado += data.monto_desembolsado;
                       }
                       return null;
                     })}
                     {formatearNumero(totalMulta)}
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
+                    <strong className="text-mi-color-secundario">= </strong>
+                    {formatearNumero(totalDescuentoAntiReten)}
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
+                    <strong className="text-mi-color-secundario">= </strong>
+                    {formatearNumero(totalMontoFisico)}
                   </TableCell>
                   <TableCell style={{ textAlign: "center" }}>
                     <strong className="text-mi-color-secundario">= </strong>

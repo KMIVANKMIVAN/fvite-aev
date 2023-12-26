@@ -6,9 +6,9 @@ import { obtenerUserId } from "../utils/userdata";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
 
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
+import { useDispatch } from "react-redux";
+import { increment } from "../contexts/features/counter/counterSlice";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -21,8 +21,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export function EnviarBanco({ nombrepdf }) {
+export function EnviarBanco({ nombrepdf, buttonAEVBUSA }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const dispatch = useDispatch();
 
   const [abrirGuardar, setAbrirGuardar] = useState(false);
   const [respuestaMessage, setRespuestaMessage] = useState(null);
@@ -82,6 +84,7 @@ export function EnviarBanco({ nombrepdf }) {
       <ButtonGroup variant="text" aria-label="text button group">
         <Tooltip title="ENVIAR" placement="top">
           <Button
+            disabled={buttonAEVBUSA}
             color="error"
             size="small"
             component="span"
@@ -95,11 +98,13 @@ export function EnviarBanco({ nombrepdf }) {
         </Tooltip>
       </ButtonGroup>
       <Dialog
+        disableEscapeKeyDown
+        keepMounted
         open={abrirGuardar}
         TransitionComponent={Transition}
-        keepMounted
         onClose={cerrarGuardarPdf}
         aria-describedby="alert-dialog-slide-description"
+        onClick={(e) => e.stopPropagation()}
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
@@ -141,7 +146,14 @@ export function EnviarBanco({ nombrepdf }) {
           <Button onClick={enviarBanco} variant="contained" color="error">
             Enviar {nombrepdf}
           </Button>
-          <Button onClick={cerrarGuardarPdf}>Cancelar</Button>
+          <Button
+            onClick={() => {
+              cerrarGuardarPdf();
+              dispatch(increment());
+            }}
+          >
+            Cancelar
+          </Button>
         </DialogActions>
       </Dialog>
     </>

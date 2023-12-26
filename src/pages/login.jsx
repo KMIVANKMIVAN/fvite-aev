@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // import { useRouter } from "next/navigation";
 import { guardarToken } from "../utils/auth";
-import { guardarUserId } from "../utils/userdata";
+import { guardarUserId, guardarUserNivel } from "../utils/userdata";
 
 export function Login() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -33,15 +33,12 @@ export function Login() {
         const { user, access_token } = response.data;
 
         if (user.prioridad === 0) {
-          // router.push("/pages/updatepassword");
           navigate("updatepassword");
         } else if (user.prioridad === 1) {
-          // router.push("/pages/dashboardclient/viviendanueva");
-          // <Link to={`/dashboard/`}>Your Name</Link>;
           navigate("dashboardclient/viviendanueva");
         }
-
         guardarUserId(user.id);
+        guardarUserNivel(user.nivel);
         guardarToken(access_token);
       }
     } catch (error) {

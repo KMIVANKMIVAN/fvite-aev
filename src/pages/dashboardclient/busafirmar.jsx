@@ -1,7 +1,7 @@
-import { BuscarViviend } from "../../components/BuscarViviend";
+import { BuscarFirmar } from "../../components/BuscarFirmar";
 import { useSelector } from "react-redux";
 
-export function ViviendaNueva() {
+export function Busafirmar() {
   const count = useSelector((state) => state.counter.value);
   return (
     <>
@@ -19,9 +19,9 @@ export function ViviendaNueva() {
           e.target.style.textShadow = "4px 4px 8px rgba(0, 0, 0, 0.4)"; // Restauramos la sombra predeterminada
         }}
       >
-        Vivienda Nueva
+        INSTRUCTIVOS DE DESEMBOLSO
       </h1>
-      <BuscarViviend />
+      <BuscarFirmar />
     </>
   );
 }

@@ -24,3 +24,29 @@ export const obtenerUserId = () => {
     return null; // o un valor predeterminado en caso de error
   }
 };
+export const guardarUserNivel = (nivel: number) => {
+  if (typeof nivel !== "number") {
+    console.error("Nivel no válido");
+    return;
+  }
+
+  try {
+    localStorage.setItem("usernivel", nivel.toString());
+  } catch (error) {
+    console.error("Error al guardar el user nivel:", error);
+  }
+};
+export const obtenerUserNivel = () => {
+  try {
+    const userNivel= localStorage.getItem("usernivel");
+    if (userNivel === null) {
+      console.error("No se encontró el Nivel de usuario en el localStorage");
+      return null; // o puedes devolver un valor predeterminado si lo deseas
+    }
+
+    return parseInt(userNivel, 10); // Convierte la cadena de ID a un número
+  } catch (error) {
+    console.error("Error al obtener el Nivel de usuario:", error);
+    return null; // o un valor predeterminado en caso de error
+  }
+};

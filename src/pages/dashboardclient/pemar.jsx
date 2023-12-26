@@ -7,7 +7,7 @@ export function Pemar() {
     <>
       {/* <h1 className="text-center color-mi-color-primario text-5xl">{count}</h1> */}
       <h1
-        className="py-5 text-6xl font-bold text-center relative bg-gradient-to-r from-mi-color-primario to-mi-color-sextario text-transparent bg-clip-text"
+        className="py-5 text-3xl sm:text-5xl font-bold text-center relative bg-gradient-to-r from-mi-color-primario to-mi-color-sextario text-transparent bg-clip-text"
         style={{
           transition: "text-shadow 0.3s ease",
           textShadow: "4px 4px 8px rgba(0, 0, 0, 0.4)", // Agregamos una sombra predeterminada

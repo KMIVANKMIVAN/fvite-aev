@@ -9,6 +9,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 import { useNavigate } from "react-router-dom";
 
@@ -37,7 +38,7 @@ function Submenu() {
           <span>PMAR</span>
         </div>
       </li>
-      <li className="rounded-sm pt-1">
+      {/* <li className="rounded-sm pt-1">
         <div
           className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
           role="button"
@@ -86,7 +87,7 @@ function Submenu() {
           {<NavigateNextIcon />}
           <span>Otros Pagos (Estudios)</span>
         </div>
-      </li>
+      </li> */}
     </ul>
   );
 }
@@ -120,6 +121,16 @@ export function DashboardClient() {
                 >
                   {<SupervisedUserCircleIcon />}
                   <span>Usuarios</span>
+                </div>
+              </li>
+              <li className="rounded-sm pt-1">
+                <div
+                  className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                  role="button"
+                  onClick={() => navigate("/dashboardclient/busafirmar")}
+                >
+                  {<AccountBalanceIcon />}
+                  <span>BUSA</span>
                 </div>
               </li>
               <li className="rounded-sm">

@@ -21,7 +21,7 @@ import { SubirBajarEliminarAnexos } from "./SubirBajarEliminarAnexos";
 import { useDispatch } from "react-redux";
 import { increment } from "../contexts/features/counter/counterSlice";
 
-export function AnexsosPdf({ nombrepdf }) {
+export function AnexsosPdf({ nombrepdf, buttonAEV }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
@@ -88,9 +88,9 @@ export function AnexsosPdf({ nombrepdf }) {
   return (
     <>
       <Button
+        disabled={buttonAEV}
         onClick={handleClickOpen}
         endIcon={<ArrowCircleUpIcon size="large" />}
-        
       >
         Anexos
       </Button>

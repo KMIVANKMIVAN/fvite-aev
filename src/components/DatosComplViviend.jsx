@@ -63,6 +63,7 @@ function formatearNumero(numero) {
 import { useSelector } from "react-redux";
 
 export function DatosComplViviend({ selectedContCod }) {
+  console.log("DatosComplViviend", selectedContCod);
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);
@@ -256,6 +257,7 @@ export function DatosComplViviend({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
+                                        disabled={row.buttonAEV}
                                         color="error"
                                         size="small"
                                         component="span"
@@ -282,25 +284,36 @@ export function DatosComplViviend({ selectedContCod }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-AEV"}
+                                      buttonAEVBUSA={row.buttonAEV}
                                     />
                                   </ButtonGroup>
                                   <h2 className="text-center text-mi-color-primario"></h2>
                                   <div className="pb-2 flex  justify-center items-center">
-                                    <AnexsosPdf nombrepdf={row.iddesem} />
+                                    <AnexsosPdf
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={row.buttonAEV}
+                                    />
                                   </div>
                                 </>
                               ) : column.id === "id_aevbanco" ? (
                                 <>
-                                  <EnviarBanco nombrepdf={`${row.id}-AEV`} />
+                                  <EnviarBanco
+                                    nombrepdf={`${row.id}-AEV`}
+                                    buttonAEVBUSA={row.buttonAEV}
+                                  />
                                 </>
                               ) : column.id === "id_bancoaev" ? (
                                 <>
-                                  <EnviarBanco nombrepdf={`${row.id}-BUSA`} />
+                                  <EnviarBanco
+                                    nombrepdf={`${row.id}-BUSA`}
+                                    buttonAEVBUSA={row.buttonBUSA}
+                                  />
                                 </>
                               ) : column.id === "iddesem_anexo" ? (
                                 <>
                                   <BajarEliminarAnexos
                                     nombrepdf={row.iddesem}
+                                    buttonAEV={row.buttonAEV}
                                   />
                                 </>
                               ) : column.id === "iddesem_busa" ? (
@@ -320,6 +333,7 @@ export function DatosComplViviend({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
+                                        disabled={row.buttonBUSA}
                                         color="error"
                                         size="small"
                                         component="span"
@@ -346,6 +360,7 @@ export function DatosComplViviend({ selectedContCod }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-BUSA"}
+                                      buttonAEVBUSA={row.buttonBUSA}
                                     />
                                   </ButtonGroup>
                                 </>

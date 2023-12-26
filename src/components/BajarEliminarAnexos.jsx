@@ -22,7 +22,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 import { useDispatch, useSelector } from "react-redux";
 import { increment } from "../contexts/features/counter/counterSlice";
 
-export function BajarEliminarAnexos({ nombrepdf }) {
+export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
@@ -215,6 +215,7 @@ export function BajarEliminarAnexos({ nombrepdf }) {
                 </Tooltip>
                 <Tooltip title="Eliminar PDF" placement="right-start">
                   <Button
+                    disabled={buttonAEV}
                     size="small"
                     color="error"
                     onClick={() => {
