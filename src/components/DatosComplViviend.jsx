@@ -178,6 +178,10 @@ export function DatosComplViviend({ selectedContCod }) {
     }
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    setRespuestas(null); // Puedes restablecer también el estado de respuestas si es necesario.
+  };
   return (
     <>
       {errorcontcodComplejaData !== null && <h1>{errorcontcodComplejaData}</h1>}
@@ -252,7 +256,6 @@ export function DatosComplViviend({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={verificarenviobanco}
                                         color="error"
                                         size="small"
                                         component="span"
