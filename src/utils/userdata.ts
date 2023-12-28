@@ -24,12 +24,20 @@ export const obtenerUserId = () => {
     return null; // o un valor predeterminado en caso de error
   }
 };
+export const eliminarUserId = () => {
+  try {
+    console.log("se elimino el userid");
+
+    localStorage.removeItem("userid");
+  } catch (error) {
+    console.error("Error al eliminar el userid:", error);
+  }
+};
 export const guardarUserNivel = (nivel: number) => {
   if (typeof nivel !== "number") {
     console.error("Nivel no válido");
     return;
   }
-
   try {
     localStorage.setItem("usernivel", nivel.toString());
   } catch (error) {
@@ -38,7 +46,7 @@ export const guardarUserNivel = (nivel: number) => {
 };
 export const obtenerUserNivel = () => {
   try {
-    const userNivel= localStorage.getItem("usernivel");
+    const userNivel = localStorage.getItem("usernivel");
     if (userNivel === null) {
       console.error("No se encontró el Nivel de usuario en el localStorage");
       return null; // o puedes devolver un valor predeterminado si lo deseas
@@ -48,5 +56,14 @@ export const obtenerUserNivel = () => {
   } catch (error) {
     console.error("Error al obtener el Nivel de usuario:", error);
     return null; // o un valor predeterminado en caso de error
+  }
+};
+export const eliminarUserNivel = () => {
+  try {
+    console.log("se elimino el usernivel");
+
+    localStorage.removeItem("usernivel");
+  } catch (error) {
+    console.error("Error al eliminar el usernivel:", error);
   }
 };

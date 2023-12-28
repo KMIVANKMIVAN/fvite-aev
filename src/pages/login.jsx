@@ -35,7 +35,13 @@ export function Login() {
         if (user.prioridad === 0) {
           navigate("updatepassword");
         } else if (user.prioridad === 1) {
-          navigate("dashboardclient/viviendanueva");
+          if (user.nivel === 1) {
+            navigate("dashboard/userstablas");
+          } else if (user.nivel === 40) {
+            navigate("dashboardclient/busafirmar");
+          } else if (user.nivel === 9) {
+            navigate("dashboardclient/pemar");
+          }
         }
         guardarUserId(user.id);
         guardarUserNivel(user.nivel);

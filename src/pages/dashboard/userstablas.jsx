@@ -75,7 +75,7 @@ export function UsersTablas() {
         {showContent && user && (
           <>
             <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">
-              Usuario Actualizado
+              Usuario Actualizado y/o Creado
             </h2>
             <Paper className={classes.root}>
               <TableContainer className={classes.container}>

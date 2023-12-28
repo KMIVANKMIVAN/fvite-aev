@@ -2,7 +2,12 @@ import { useState } from "react";
 import { eliminarToken } from "../utils/auth";
 import { Outlet } from "react-router-dom";
 
-import Button from "@mui/material/Button";
+import {
+  obtenerUserNivel,
+  eliminarUserNivel,
+  eliminarUserId,
+} from "../utils/userdata";
+
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -113,42 +118,50 @@ export function DashboardClient() {
           </div>
           <div className="flex-1">
             <ul className="pt-2 pb-4 space-y-1 text-sm">
-              <li className="rounded-sm pt-1">
-                <div
-                  className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
-                  role="button"
-                  onClick={() => navigate("/dashboard/userstablas")}
-                >
-                  {<SupervisedUserCircleIcon />}
-                  <span>Usuarios</span>
-                </div>
-              </li>
-              <li className="rounded-sm pt-1">
-                <div
-                  className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
-                  role="button"
-                  onClick={() => navigate("/dashboardclient/busafirmar")}
-                >
-                  {<AccountBalanceIcon />}
-                  <span>BUSA</span>
-                </div>
-              </li>
-              <li className="rounded-sm">
-                <div
-                  className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
-                  onClick={toggleSubmenu}
-                >
-                  {<AssignmentIcon />}
-                  <button>Generacion Intrucciones</button>
-                  {arrowIcon}
-                </div>
-                {submenuOpen && <Submenu />}
-              </li>
+              {obtenerUserNivel() === 1 && (
+                <li className="rounded-sm pt-1">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                    role="button"
+                    onClick={() => navigate("/dashboard/userstablas")}
+                  >
+                    {<SupervisedUserCircleIcon />}
+                    <span>Usuarios</span>
+                  </div>
+                </li>
+              )}
+              {(obtenerUserNivel() === 40 || obtenerUserNivel() === 1) && (
+                <li className="rounded-sm pt-1">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                    role="button"
+                    onClick={() => navigate("/dashboardclient/busafirmar")}
+                  >
+                    {<AccountBalanceIcon />}
+                    <span>BUSA</span>
+                  </div>
+                </li>
+              )}
+              {(obtenerUserNivel() === 9 || obtenerUserNivel() === 1) && (
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                    onClick={toggleSubmenu}
+                  >
+                    {<AssignmentIcon />}
+                    <button>Generacion Intrucciones</button>
+                    {arrowIcon}
+                  </div>
+                  {submenuOpen && <Submenu />}
+                </li>
+              )}
               <li className="rounded-sm">
                 <div
                   className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
                   onClick={() => {
                     eliminarToken();
+                    eliminarUserNivel();
+                    eliminarUserId();
                     window.location.href = "/";
                   }}
                 >

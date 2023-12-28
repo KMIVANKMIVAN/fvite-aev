@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 export function Pemar() {
   const count = useSelector((state) => state.counter.value);
+
   return (
     <>
       {/* <h1 className="text-center color-mi-color-primario text-5xl">{count}</h1> */}

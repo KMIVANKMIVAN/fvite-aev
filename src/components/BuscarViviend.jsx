@@ -1,35 +1,17 @@
 import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import ButtonGroup from "@mui/material/ButtonGroup";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
+import { obtenerUserNivel } from "../utils/userdata";
 
-import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import SearchIcon from "@mui/icons-material/Search";
 
 import { DatosComplViviend } from "./DatosComplViviend";
-
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
 
 function formatearNumero(numero) {
   const esDecimal = numero % 1 !== 0;
@@ -58,15 +40,18 @@ export function BuscarViviend() {
 
   const [datoscontratoData, setDatoscontratoData] = useState([]);
   const [selectedContCod, setSelectedContCod] = useState(null);
-  const [expandedItems, setExpandedItems] = useState({});
 
   const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
   //
-  const [expanded, setExpanded] = useState(false);
 
   const [expandedPanels, setExpandedPanels] = useState({});
   //
+
+  const [vivienda, setVivienda] = useState(true);
+
+  console.log("111", vivienda);
+
   const handleChange = (index) => (event, isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
@@ -74,12 +59,6 @@ export function BuscarViviend() {
     });
   };
   //
-  const handleExpandClick = (index) => {
-    setExpandedItems({
-      ...expandedItems,
-      [index]: !expandedItems[index],
-    });
-  };
 
   const handleSearch = async () => {
     try {
@@ -262,6 +241,7 @@ export function BuscarViviend() {
       <DatosComplViviend
         key={updateComponent}
         selectedContCod={selectedContCod}
+        vivienda={vivienda}
       />
       <br />
     </>

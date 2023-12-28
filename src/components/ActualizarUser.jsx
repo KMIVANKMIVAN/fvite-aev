@@ -366,22 +366,20 @@ export function ActualizarUser({ idActualizarUser, urltable }) {
                     </div>
                     <div></div>
                   </div>
-                  <Stack spacing={2} direction="row">
-                    <Button
-                      variant="outlined"
-                      type="submit"
-                      onClick={handleButtonClick}
-                      color="success"
-                    >
-                      Guardar
-                      <SaveIcon />
-                    </Button>
-                  </Stack>
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    onClick={handleButtonClick}
+                    color="error"
+                  >
+                    Guardar
+                    <SaveIcon />
+                  </Button>
                 </form>
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} color="primary">
+              <Button onClick={handleClose} color="error">
                 Cerrar
               </Button>
             </DialogActions>

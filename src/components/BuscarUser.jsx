@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
 import { AcordeonUser } from "./AcordeonUser";
+import { ResetearPassword } from "./ResetearPassword";
 
 import Stack from "@mui/material/Stack";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
-import SendIcon from "@mui/icons-material/Send";
 
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@material-ui/core/styles";
@@ -73,8 +74,6 @@ export function BuscarUser({ urltable }) {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const classes = useStyles();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [selectedHabilitado, setSelectedHabilitado] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -134,6 +133,7 @@ export function BuscarUser({ urltable }) {
     { id: "id", label: "ID", minWidth: 50 },
     { id: "actualizar", label: "ACTUALIZAR", minWidth: 100 },
     { id: "habilitardes", label: "HABILITAR DESHABILITAR", minWidth: 100 },
+    { id: "resetear", label: "RESETEAR CONSTRASEñA", minWidth: 100 },
     { id: "habilitado", label: "HABILITADO", minWidth: 50 },
     { id: "username", label: "USUARIO", minWidth: 150 },
     { id: "superior", label: "SUPERIOR", minWidth: 50 },
@@ -273,6 +273,15 @@ export function BuscarUser({ urltable }) {
                               >
                                 <ActualizarUser idActualizarUser={row.id} />
                               </div>
+                            ) : column.id === "resetear" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <ResetearPassword userId={row.id} />
+                              </div>
                             ) : (
                               value
                             )}
@@ -295,6 +304,7 @@ export function BuscarUser({ urltable }) {
         selectedHabilitado={selectedHabilitado}
         onHide={setIsActualizarUserVisible}
       />
+
       <br />
     </>
   );

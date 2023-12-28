@@ -2,6 +2,11 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { eliminarToken } from "../utils/auth";
+import {
+  obtenerUserNivel,
+  eliminarUserNivel,
+  eliminarUserId,
+} from "../utils/userdata";
 
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -148,6 +153,8 @@ export function Dashboard() {
                     className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     onClick={() => {
                       eliminarToken();
+                      eliminarUserNivel();
+                      eliminarUserId();
                       window.location.href = "/";
                     }}
                   >

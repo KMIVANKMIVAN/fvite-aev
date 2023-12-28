@@ -21,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export function EnviarBanco({ nombrepdf, buttonAEVBUSA }) {
+export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
@@ -84,7 +84,8 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA }) {
       <ButtonGroup variant="text" aria-label="text button group">
         <Tooltip title="ENVIAR" placement="top">
           <Button
-            disabled={buttonAEVBUSA}
+            // disabled={buttonAEVBUSA}
+            disabled={vivienda ? vivienda : buttonAEVBUSA}
             color="error"
             size="small"
             component="span"

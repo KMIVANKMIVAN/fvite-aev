@@ -62,8 +62,7 @@ function formatearNumero(numero) {
 
 import { useSelector } from "react-redux";
 
-export function DatosComplViviend({ selectedContCod }) {
-  console.log("DatosComplViviend", selectedContCod);
+export function DatosComplViviend({ selectedContCod, vivienda }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);
@@ -306,6 +305,7 @@ export function DatosComplViviend({ selectedContCod }) {
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
+                                    vivienda={vivienda}
                                     buttonAEVBUSA={row.buttonBUSA}
                                   />
                                 </>
@@ -333,7 +333,12 @@ export function DatosComplViviend({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={row.buttonBUSA}
+                                        // disabled={row.buttonBUSA}
+                                        // disabled={true}
+                                        // disabled={vivienda}
+                                        disabled={
+                                          vivienda ? vivienda : row.buttonBUSA
+                                        }
                                         color="error"
                                         size="small"
                                         component="span"
@@ -361,6 +366,7 @@ export function DatosComplViviend({ selectedContCod }) {
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-BUSA"}
                                       buttonAEVBUSA={row.buttonBUSA}
+                                      vivienda={vivienda}
                                     />
                                   </ButtonGroup>
                                 </>

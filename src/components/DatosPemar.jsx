@@ -59,7 +59,7 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-export function DatosPemar({ selectedCodid, titulo }) {
+export function DatosPemar({ selectedCodid, titulo, vivienda }) {
   console.log("DatosPemar", selectedCodid, titulo);
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -288,6 +288,7 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
                                     buttonAEVBUSA={row.buttonBUSA}
+                                    vivienda={vivienda}
                                   />
                                 </>
                               ) : column.id === "id_busa" ? (
@@ -307,7 +308,10 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={row.buttonBUSA}
+                                        // disabled={row.buttonBUSA}
+                                        disabled={
+                                          vivienda ? vivienda : row.buttonBUSA
+                                        }
                                         color="error"
                                         size="small"
                                         component="span"
@@ -335,6 +339,7 @@ export function DatosPemar({ selectedCodid, titulo }) {
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.id + "-BUSA"}
                                       buttonAEVBUSA={row.buttonBUSA}
+                                      vivienda={vivienda}
                                     />
                                   </ButtonGroup>
                                 </>

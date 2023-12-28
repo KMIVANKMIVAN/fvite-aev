@@ -11,9 +11,15 @@ import Stack from "@mui/material/Stack";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { useNavigate } from "react-router-dom";
 
-export function CrearUser({ urltable }) {
+import { useDispatch } from "react-redux";
+import { setUser } from "../contexts/features/user/userSlice";
+import { increment } from "../contexts/features/user/counterUserSlice";
+
+export function CrearUser() {
   const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const dispatch = useDispatch();
 
   const registerUserUrl = `${apiKey}/users`;
   const token = obtenerToken();
@@ -51,8 +57,8 @@ export function CrearUser({ urltable }) {
       const response = await axios.post(registerUserUrl, formData, { headers });
 
       if (response.data) {
-        console.log("SE REGISTRO CORECTAMENTE");
-        navigate(urltable);
+        dispatch(setUser(response.data));
+        dispatch(increment());
       }
     } catch (error) {
       console.log("HUBO UN ERROR");

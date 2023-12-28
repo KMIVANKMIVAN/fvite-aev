@@ -14,6 +14,9 @@ import { ViviendaNueva } from "./pages/dashboardclient/viviendanueva.jsx";
 import { Pemar } from "./pages/dashboardclient/pemar.jsx";
 import { Busafirmar } from "./pages/dashboardclient/busafirmar.jsx";
 
+import { obtenerToken } from "./utils/auth";
+import RequireAuth from "./utils/requireAuth.jsx"; // Ajusta la ruta del archivo según su ubicación
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,7 +30,11 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <Dashboard />,
+    element: (
+      <RequireAuth>
+        <Dashboard />
+      </RequireAuth>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -42,7 +49,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboardclient",
-    element: <DashboardClient />,
+    element: (
+      <RequireAuth>
+        <DashboardClient />
+      </RequireAuth>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {

@@ -52,10 +52,12 @@ export function BuscarPemar() {
 
   const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
+  const [vivienda, setVivienda] = useState(true);
   //
 
   const [expandedPanels, setExpandedPanels] = useState({});
   //
+
   const handleChange = (index) => (event, isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
@@ -63,7 +65,6 @@ export function BuscarPemar() {
     });
   };
   //
-  console.log("titulo", titulo);
 
   const handleSearch = async () => {
     try {
@@ -292,6 +293,7 @@ export function BuscarPemar() {
         key={updateComponent}
         selectedCodid={selectedCodid}
         titulo={titulo}
+        vivienda={vivienda}
       />
       <br />
     </>

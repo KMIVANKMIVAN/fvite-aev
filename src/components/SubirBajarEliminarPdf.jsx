@@ -22,7 +22,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA }) {
+export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [respuestas, setRespuestas] = useState(null);
@@ -252,7 +252,8 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA }) {
         </Tooltip>
         <Tooltip title="Eliminar PDF" placement="right-start">
           <Button
-            disabled={buttonAEVBUSA}
+            // disabled={buttonAEVBUSA}
+            disabled={vivienda ? vivienda : buttonAEVBUSA}
             size="small"
             color="error"
             onClick={eliminarPdf}
