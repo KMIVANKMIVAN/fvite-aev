@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
-import { useNavigate } from "react-router-dom";
 
 import { ActualizarUser } from "./ActualizarUser";
 import { ResetearPassword } from "./ResetearPassword";
@@ -63,13 +62,13 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../contexts/features/user/userSlice";
 import { increment } from "../contexts/features/user/counterUserSlice";
 
-export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
-  const navigate = useNavigate();
+export function AcordeonUser({ userId, selectedHabilitado }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
 
   const [expanded, setExpanded] = useState("panel1");
+  const [errorDatoscontratoData, setErrorDatoscontratoData] = useState([]);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -105,15 +104,25 @@ export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
       );
 
       if (response.status === 200) {
-        console.log("por que no vas");
+        setErrorDatoscontratoData(null);
         dispatch(setUser(response.data));
         dispatch(increment());
-        // navigate(urltable);
-      } else {
-        console.error("Error al actualizar el estado del usuario");
       }
     } catch (error) {
-      console.error("Error:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorDatoscontratoData(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorDatoscontratoData(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorDatoscontratoData(
+          "RF: No se pudo obtener respuesta del servidor"
+        );
+      } else {
+        setErrorDatoscontratoData("RF: Error al enviar la solicitud");
+      }
     }
   };
   return (
@@ -126,7 +135,6 @@ export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            hola
             <Accordion
               expanded={expanded === "panel1"}
               onChange={handleChange("panel1")}
@@ -178,7 +186,7 @@ export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  <ResetearPassword userId={userId} urltable={urltable} />
+                  <ResetearPassword userId={userId} />
                 </Typography>
               </AccordionDetails>
             </Accordion>
@@ -194,8 +202,13 @@ export function AcordeonUser({ userId, urltable, selectedHabilitado }) {
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
-                  <ActualizarUser userId={userId} urltable={urltable} />
+                  <ActualizarUser userId={userId} />
                 </Typography>
+                {errorDatoscontratoData && (
+                  <p className="text-red-700 text-center">
+                    {errorDatoscontratoData}
+                  </p>
+                )}
               </AccordionDetails>
             </Accordion>
           </DialogContentText>

@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { useRouter } from "next/navigation";
 import { guardarToken } from "../utils/auth";
 import { guardarUserId, guardarUserNivel } from "../utils/userdata";
 
 export function Login() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
-  // const navigate = useHistory();
   const navigate = useNavigate();
 
   const loginUrl = `${apiKey}/auth/login`;
@@ -16,6 +14,8 @@ export function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [loginError, setLoginError] = useState(null);
 
+  const [loginErrorMensaje, setLoginErrorMensaje] = useState(null);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -23,15 +23,12 @@ export function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post(loginUrl, formData);
 
-      if (response.data.message === "Contraseña Incorrecta") {
-        setLoginError("Contraseña Incorrecta");
-      } else if (response.data.user) {
+      if (response.status === 200) {
+        setLoginError(null);
         const { user, access_token } = response.data;
-
         if (user.prioridad === 0) {
           navigate("updatepassword");
         } else if (user.prioridad === 1) {
@@ -48,10 +45,22 @@ export function Login() {
         guardarToken(access_token);
       }
     } catch (error) {
-      setLoginError("El Usuario no Existe");
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setLoginError(`RS: ${data.message}`);
+          setLoginErrorMensaje(`RS: ${data.error}`);
+        } else if (status === 500) {
+          setLoginError(`RS: ${data.message}`);
+          setLoginErrorMensaje(`RS: ${data.error}`);
+        }
+      } else if (error.request) {
+        setLoginError("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setLoginError("RF: Error al enviar la solicitud");
+      }
     }
   };
-
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 ">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -59,7 +68,6 @@ export function Login() {
           Iniciar sesión en su cuenta
         </h2>
       </div>
-
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
@@ -81,6 +89,9 @@ export function Login() {
                 className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            {loginErrorMensaje && (
+              <p className="text-red-700 text-center">{loginErrorMensaje}</p>
+            )}
           </div>
           <div>
             <div className="flex items-center justify-between">
@@ -111,12 +122,6 @@ export function Login() {
               />
             </div>
           </div>
-          <div>
-            {loginError && (
-              <p className="text-red-700 text-center">{loginError}</p>
-            )}
-          </div>
-
           <div className="flex flex-wrap mx-auto py-3 justify-center items-center">
             <button
               type="submit"
@@ -126,6 +131,7 @@ export function Login() {
             </button>
           </div>
         </form>
+        {loginError && <p className="text-red-700 text-center">{loginError}</p>}
       </div>
     </div>
   );

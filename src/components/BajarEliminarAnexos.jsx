@@ -37,6 +37,7 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
 
   const [respuestaDescargar, setRespuestaDescargar] = useState(null);
   const [respuestaEliminar, setRespuestaEliminar] = useState(null);
+  const [ErrorEliminar, setErrorEliminar] = useState(null);
 
   const token = obtenerToken();
   const headers = {
@@ -51,14 +52,24 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
         const response = await axios.get(url, { headers });
 
         if (response.status === 200) {
-          console.log("Datos recibidos:", response.data);
-          setRespuestaFindallone(response.data);
           setErrorRespuestaFindallone(null);
-        } else {
-          setErrorRespuestaFindallone(`RS: ${response.statusText}`);
+          setRespuestaFindallone(response.data);
         }
       } catch (error) {
-        setErrorRespuestaFindallone(`RS: ${error}`);
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400) {
+            setErrorRespuestaFindallone(`RS: ${data.error}`);
+          } else if (status === 500) {
+            setErrorRespuestaFindallone(`RS: ${data.message}`);
+          }
+        } else if (error.request) {
+          setErrorRespuestaFindallone(
+            "RF: No se pudo obtener respuesta del servidor"
+          );
+        } else {
+          setErrorRespuestaFindallone("RF: Error al enviar la solicitud");
+        }
       }
     };
 
@@ -121,24 +132,44 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
   };
 
   const eliminarPdf = async (desembolsosId, archivo) => {
-    const response = await axios.get(
-      `${apiKey}/respaldodesembolsos/eliminardesembidarchiv/${desembolsosId}/${archivo}`,
-      {
-        headers,
+    try {
+      const response = await axios.get(
+        `${apiKey}/respaldodesembolsos/eliminardesembidarchiv/${desembolsosId}/${archivo}`,
+        {
+          headers,
+        }
+      );
+      if (response.status === 200) {
+        setErrorEliminar(null);
+        setRespuestaEliminar(`RS: ${response.data}`);
+        setAbrirEliminar(true);
       }
-    );
-
-    if (response.status === 200 || response.status === 204) {
-      setRespuestaEliminar(`RS: ${response.data}`);
-      setAbrirEliminar(true);
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorEliminar(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorEliminar(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorEliminar("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorEliminar("RF: Error al enviar la solicitud");
+      }
     }
   };
 
   return (
     <>
-      {/* {errorRespuestaFindallone !== null && <h1>{errorRespuestaFindallone}</h1>} */}
-      {/* <h1 className="text-center color-mi-color-primario text-5xl">{count}</h1> */}
-
+      {errorRespuestaFindallone && (
+        <p className="text-red-700 text-center p-5">
+          {errorRespuestaFindallone}
+        </p>
+      )}
+      {ErrorEliminar && (
+        <p className="text-red-700 text-center p-5">{ErrorEliminar}</p>
+      )}
       {respuestaEliminar !== null && (
         <Dialog
           open={abrirEliminar}

@@ -30,7 +30,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import Slide from "@mui/material/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -40,32 +39,28 @@ const useStyles = makeStyles({
   root: {
     width: "100%",
   },
-  container: {
-    // maxHeight: 440,
-  },
   tableCell: {
     fontSize: "0.75rem",
   },
 });
 
 function formatearNumero(numero) {
-  const esDecimal = numero % 1 !== 0;
-
-  if (esDecimal) {
+  if (numero == null || numero == undefined) {
+    return "0";
+  }
+  if (numero.toString().indexOf(",") !== -1) {
+    return numero.toString();
+  }
+  if (numero % 1 !== 0) {
     const partes = numero.toFixed(2).split(".");
     const parteEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return `${parteEntera},${partes[1]}`;
   }
-
-  return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
-
-import { useSelector } from "react-redux";
 
 export function DatosBusa({ selectedContCod }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
-
-  const count = useSelector((state) => state.counter.value);
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
@@ -76,11 +71,8 @@ export function DatosBusa({ selectedContCod }) {
 
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
-  const [verificarenviobanco, setVerificarenviobanco] = useState(null);
-  const [errorVerificarbanco, setErrorverificarbanco] = useState(null);
 
   const [open, setOpen] = useState(false);
-  const [disanble, setDisanble] = useState(true);
 
   const instructivoRef = useRef(null);
 
@@ -100,14 +92,24 @@ export function DatosBusa({ selectedContCod }) {
           const response = await axios.get(url, { headers });
 
           if (response.status === 200) {
+            setErrorContcodComplejaData(null);
             setContcodComplejaData(response.data);
-          } else {
-            setErrorContcodComplejaData(
-              `Error en el estado de respuesta, estado: ${response.statusText}`
-            );
           }
         } catch (error) {
-          setErrorContcodComplejaData(`Error del servidor: ${error}`);
+          if (error.response) {
+            const { status, data } = error.response;
+            if (status === 400) {
+              setErrorContcodComplejaData(`RS: ${data.message}`);
+            } else if (status === 500) {
+              setErrorContcodComplejaData(`RS: ${data.message}`);
+            }
+          } else if (error.request) {
+            setErrorContcodComplejaData(
+              "RF: No se pudo obtener respuesta del servidor"
+            );
+          } else {
+            setErrorContcodComplejaData("RF: Error al enviar la solicitud");
+          }
         }
       }
     };
@@ -142,7 +144,6 @@ export function DatosBusa({ selectedContCod }) {
     { id: "numero_inst", label: "OBSERVACIONES DE PAGO", minWidth: 50 },
     { id: "cuentatitular", label: "TITULAR", minWidth: 250 },
     { id: "iddesem", label: "ID", minWidth: 50 },
-    // { id: "", label: "", minWidth: 50 }
   ];
 
   const rows = contcodComplejaData;
@@ -153,39 +154,40 @@ export function DatosBusa({ selectedContCod }) {
         `${apiKey}/documentpdf/buscarpdf/${nombrePdfSeleccionado}`,
         { headers }
       );
-
       if (response.status === 200) {
-        const responseData = response.data; // Debería ser un booleano
-        setRespuestas(responseData); // Establece la respuesta booleana en el estado
+        setErrorRespuestas(null);
+        setRespuestas(response.data);
       }
     } catch (error) {
-      setErrorRespuestas(`RS: ${error.message}`);
-    }
-  };
-  const verificarEnvioBanco = async (nombrepdf) => {
-    try {
-      const response = await axios.get(
-        `${apiKey}/documentpdf/verificarenviobanco/${nombrepdf}`,
-        { headers }
-      );
-
-      if (response.status === 200) {
-        const responseData = JSON.parse(response.data); // Convierte la respuesta a booleano
-        setVerificarenviobanco(responseData); // Retorna la respuesta booleana obtenida
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
       }
-    } catch (error) {
-      setErrorverificarbanco(`RS: ${error.message}`);
     }
   };
 
   const handleClose = () => {
     setOpen(false);
-    setRespuestas(null); // Puedes restablecer también el estado de respuestas si es necesario.
+    setRespuestas(null);
   };
   return (
     <>
-      {errorcontcodComplejaData !== null && <h1>{errorcontcodComplejaData}</h1>}
-
+      {respuestasError && (
+        <p className="text-red-700 text-center p-5">{respuestasError}</p>
+      )}
+      {errorcontcodComplejaData && (
+        <p className="text-red-700 text-center p-5">
+          {errorcontcodComplejaData}
+        </p>
+      )}
       <VerificarInstr />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         <p className="text-c1p text-1xl font-bold">

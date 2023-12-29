@@ -30,7 +30,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import Slide from "@mui/material/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,9 +38,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const useStyles = makeStyles({
   root: {
     width: "100%",
-  },
-  container: {
-    // maxHeight: 440,
   },
   tableCell: {
     fontSize: "0.75rem",
@@ -60,27 +56,20 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-import { useSelector } from "react-redux";
-
 export function DatosComplViviend({ selectedContCod, vivienda }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-  const count = useSelector((state) => state.counter.value);
-
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
-
-  const [errorcontcodComplejaData, setErrorContcodComplejaData] = useState([]);
 
   const [nombrePdfSeleccionado, setNombrePdfSeleccionado] = useState(null);
   const [forceRender, setForceRender] = useState(false);
 
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
-  const [verificarenviobanco, setVerificarenviobanco] = useState(null);
-  const [errorVerificarbanco, setErrorverificarbanco] = useState(null);
+
+  const [errorData, setErrorData] = useState(null);
 
   const [open, setOpen] = useState(false);
-  const [disanble, setDisanble] = useState(true);
 
   const instructivoRef = useRef(null);
 
@@ -100,14 +89,22 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
           const response = await axios.get(url, { headers });
 
           if (response.status === 200) {
+            setErrorData(null);
             setContcodComplejaData(response.data);
-          } else {
-            setErrorContcodComplejaData(
-              `Error en el estado de respuesta, estado: ${response.statusText}`
-            );
           }
         } catch (error) {
-          setErrorContcodComplejaData(`Error del servidor: ${error}`);
+          if (error.response) {
+            const { status, data } = error.response;
+            if (status === 400) {
+              setErrorData(`RS: ${data.message}`);
+            } else if (status === 500) {
+              setErrorData(`RS: ${data.message}`);
+            }
+          } else if (error.request) {
+            setErrorData("RF: No se pudo obtener respuesta del servidor");
+          } else {
+            setErrorData("RF: Error al enviar la solicitud");
+          }
         }
       }
     };
@@ -153,39 +150,33 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
         `${apiKey}/documentpdf/buscarpdf/${nombrePdfSeleccionado}`,
         { headers }
       );
-
       if (response.status === 200) {
-        const responseData = response.data; // Debería ser un booleano
-        setRespuestas(responseData); // Establece la respuesta booleana en el estado
+        setErrorRespuestas(null);
+        setRespuestas(response.data);
       }
     } catch (error) {
-      setErrorRespuestas(`RS: ${error.message}`);
-    }
-  };
-  const verificarEnvioBanco = async (nombrepdf) => {
-    try {
-      const response = await axios.get(
-        `${apiKey}/documentpdf/verificarenviobanco/${nombrepdf}`,
-        { headers }
-      );
-
-      if (response.status === 200) {
-        const responseData = JSON.parse(response.data); // Convierte la respuesta a booleano
-        setVerificarenviobanco(responseData); // Retorna la respuesta booleana obtenida
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
       }
-    } catch (error) {
-      setErrorverificarbanco(`RS: ${error.message}`);
     }
   };
 
   const handleClose = () => {
     setOpen(false);
-    setRespuestas(null); // Puedes restablecer también el estado de respuestas si es necesario.
+    setRespuestas(null);
   };
   return (
     <>
-      {errorcontcodComplejaData !== null && <h1>{errorcontcodComplejaData}</h1>}
-
+      {errorData && <p className="text-red-700 text-center p-5">{errorData}</p>}
       <VerificarInstr />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         <p className="text-c1p text-1xl font-bold">
@@ -424,7 +415,9 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
         </TableContainer>
       </Paper>
       <br />
-      {respuestasError && <h1>{respuestasError}</h1>}
+      {respuestasError && (
+          <p className="text-red-700 text-center p-5">{respuestasError}</p>
+        )}
       {respuestas === false && nombrePdfSeleccionado && (
         <div ref={instructivoRef}>
           <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />

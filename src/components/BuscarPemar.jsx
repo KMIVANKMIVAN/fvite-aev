@@ -13,34 +13,26 @@ import SearchIcon from "@mui/icons-material/Search";
 import { DatosPemar } from "./DatosPemar";
 
 function formatearNumero(numero) {
-  if (numero == null) {
-    return "0"; // Retorna "0" en caso de ser null o undefined
+  if (numero == null || numero == undefined) {
+    return "0";
   }
-
-  // Si el número ya tiene coma como separador decimal, no hace ningún cambio
   if (numero.toString().indexOf(",") !== -1) {
     return numero.toString();
   }
-
-  // Verifica si es decimal y formatea según el separador coma
   if (numero % 1 !== 0) {
     const partes = numero.toFixed(2).split(".");
     const parteEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return `${parteEntera},${partes[1]}`;
   }
-
-  // Si no es decimal y no tiene coma, simplemente agrega ",00" al final
   return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
 import { useSelector } from "react-redux";
 
-///////////////////////////////
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
-//
 export function BuscarPemar() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -53,19 +45,16 @@ export function BuscarPemar() {
   const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
   const [vivienda, setVivienda] = useState(true);
-  //
 
   const [expandedPanels, setExpandedPanels] = useState({});
-  //
+  const [errorSearch, setErrorSearch] = useState(null);
 
-  const handleChange = (index) => (event, isExpanded) => {
+  const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
       [index]: isExpanded,
     });
   };
-  //
-
   const handleSearch = async () => {
     try {
       const url = `${apiKey}/cuadro/consultacuadro/${inputValue}`;
@@ -77,6 +66,7 @@ export function BuscarPemar() {
       const response = await axios.get(url, { headers });
 
       if (response.status === 200) {
+        setErrorSearch(null);
         setDatoscontratoData(response.data);
         setSelectedCodid(0);
         if (response.data && response.data.length > 0) {
@@ -84,7 +74,18 @@ export function BuscarPemar() {
         }
       }
     } catch (error) {
-      // console.error("Error:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorSearch(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorSearch(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorSearch("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorSearch("RF: Error al enviar la solicitud");
+      }
     }
   };
 
@@ -102,17 +103,16 @@ export function BuscarPemar() {
   }, [count]);
 
   const elementosPorConjunto = 2;
-
-  // Dividir los datos en conjuntos de acuerdo al número de elementos por conjunto
   const conjuntosDatos = [];
   for (let i = 0; i < datoscontratoData.length; i += elementosPorConjunto) {
     conjuntosDatos.push(datoscontratoData.slice(i, i + elementosPorConjunto));
   }
 
-  console.log("datoscontratoData", datoscontratoData);
-
   return (
     <>
+      {errorSearch && (
+        <p className="text-red-700 text-center p-5">{errorSearch}</p>
+      )}
       <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">Buscar</h2>
       <div className="col-span-1 flex justify-center px-10">
         <TextField

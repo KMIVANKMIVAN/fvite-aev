@@ -3,11 +3,10 @@ import { BuscarUser } from "../../components/BuscarUser";
 import { CrearUser } from "../../components/CrearUser";
 import { useSelector } from "react-redux";
 
-import { styled } from "@mui/material/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -18,17 +17,15 @@ const useStyles = makeStyles({
   },
   container: {
     backgroundColor: "#C9FFC2",
-    // maxHeight: 440,
   },
   tableCell: {
-    fontSize: "0.75rem", // Tamaño de letra "xs" (extra small)
+    fontSize: "0.75rem",
   },
 });
 
 export function UsersTablas() {
   const urltable = "/dashboard/usertablas";
   const user = useSelector((state) => state.user.user);
-  const count = useSelector((state) => state.counter.value);
 
   const [showContent, setShowContent] = useState(true);
 
@@ -54,24 +51,21 @@ export function UsersTablas() {
     { id: "cedula_identidad", label: "CEDULA IDENTIDAD", minWidth: 50 },
     { id: "expedido", label: "EXPENDIO", minWidth: 50 },
     { id: "super", label: "SUPER", minWidth: 50 },
-    // { id: "", label: "", minWidth: 50 },
   ];
 
-  // const rows = user;
   const rows = Array.isArray(user) ? user : [user];
 
   useEffect(() => {
-    setShowContent(true); // Mostrar contenido cuando user cambie
+    setShowContent(true);
     const timeout = setTimeout(() => {
       setShowContent(false);
-    }, 5000); // 30 segundos (medio minuto)
+    }, 5000);
 
     return () => clearTimeout(timeout);
-  }, [user]); // Agregar user como dependencia
+  }, [user]);
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        {/* <h1 className="text-center text-mi-color-primario text-5xl">{count}</h1> */}
         {showContent && user && (
           <>
             <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">

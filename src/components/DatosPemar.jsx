@@ -39,28 +39,27 @@ const useStyles = makeStyles({
   root: {
     width: "100%",
   },
-  container: {
-    // maxHeight: 440,
-  },
   tableCell: {
     fontSize: "0.75rem",
   },
 });
 
 function formatearNumero(numero) {
-  const esDecimal = numero % 1 !== 0;
-
-  if (esDecimal) {
+  if (numero == null || numero == undefined) {
+    return "0";
+  }
+  if (numero.toString().indexOf(",") !== -1) {
+    return numero.toString();
+  }
+  if (numero % 1 !== 0) {
     const partes = numero.toFixed(2).split(".");
     const parteEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return `${parteEntera},${partes[1]}`;
   }
-
-  return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
 export function DatosPemar({ selectedCodid, titulo, vivienda }) {
-  console.log("DatosPemar", selectedCodid, titulo);
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
@@ -107,8 +106,6 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
 
     fetchData();
   }, [selectedCodid]);
-
-  console.log("contcodComplejaData", contcodComplejaData);
 
   if (contcodComplejaData.length === 0 || selectedCodid === 0) {
     return null;

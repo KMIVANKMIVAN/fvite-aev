@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,7 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Unstable_Grid2";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 
@@ -46,16 +45,27 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
         const headers = {
           Authorization: `Bearer ${token}`,
         };
-
         const urlTipoRespaldo = `${apiKey}/tiporespaldo`;
-
         const response = await axios.get(urlTipoRespaldo, { headers });
-
         if (response.status === 200) {
+          setErrorTipoRespaldoData(null);
           setTipoRespaldoData(response.data);
         }
       } catch (error) {
-        setErrorTipoRespaldoData(`RS: ${error}`);
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400) {
+            setErrorTipoRespaldoData(`RS: ${data.message}`);
+          } else if (status === 500) {
+            setErrorTipoRespaldoData(`RS: ${data.message}`);
+          }
+        } else if (error.request) {
+          setErrorTipoRespaldoData(
+            "RF: No se pudo obtener respuesta del servidor"
+          );
+        } else {
+          setErrorTipoRespaldoData("RF: Error al enviar la solicitud");
+        }
       }
     };
 
@@ -79,7 +89,7 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
     setOpen(true);
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (reason) => {
     if (reason !== "backdropClick") {
       setOpen(false);
     }
@@ -94,33 +104,48 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
       >
         Anexos
       </Button>
-      <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-        {errorTsipoRespaldoData !== null && <h1>{errorTsipoRespaldoData}</h1>}
-        <DialogTitle>Anexos PDFs AEV</DialogTitle>
+      <Dialog
+        disableEscapeKeyDown
+        open={open}
+        className="p-5"
+        onClose={handleClose}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {errorTsipoRespaldoData && (
+          <p className="text-red-700 text-center p-5">
+            {errorTsipoRespaldoData}
+          </p>
+        )}
+        <DialogTitle className="text-center">Anexos PDFs AEV</DialogTitle>
         <DialogContent>
-          <Box component="form" sx={{ display: "flex", flexWrap: "wrap" }}>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel>
-              <Select
-                native
-                value={selectedValue}
-                onChange={handleChange}
-                input={
-                  <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
-                }
-              >
-                <option aria-label="None" value="" />
-                {tipoRespaldoData.map((option) => (
-                  <option key={option.id} value={option.detalle}>
-                    {option.detalle}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+          <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel>
+          <Select
+            native
+            value={selectedValue}
+            onChange={handleChange}
+            input={
+              <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
+            }
+          >
+            <option aria-label="None" value="" />
+            {tipoRespaldoData.map((option) => (
+              <option key={option.id} value={option.detalle}>
+                {option.detalle}
+              </option>
+            ))}
+          </Select>
           {selectedValue && (
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div>
+            <Grid container spacing={2}>
+              <Grid xs={12} md={5}>
+                <div className="pt-3">
+                  <SubirBajarEliminarAnexos
+                    iddesem={nombrepdf}
+                    tiporesid={nomPDFAnex}
+                    referencias={referencias}
+                  />
+                </div>
+              </Grid>
+              <Grid xs={12} md={7}>
                 <TextField
                   id="standard-basic"
                   label="Referencias"
@@ -128,15 +153,8 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
                   value={referencias}
                   onChange={handleReferenciasChange}
                 />
-              </div>
-              <div className="pt-3">
-                <SubirBajarEliminarAnexos
-                  iddesem={nombrepdf}
-                  tiporesid={nomPDFAnex}
-                  referencias={referencias}
-                />
-              </div>
-            </div>
+              </Grid>
+            </Grid>
           )}
         </DialogContent>
         <DialogActions>

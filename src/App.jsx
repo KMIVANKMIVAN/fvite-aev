@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { UsersTablas } from "./pages/dashboard/userstablas.jsx";
-import { UserTablas } from "./pages/dashboard/usertablas.jsx";
 import { Login } from "./pages/login.jsx";
 
 import { Dashboard } from "./pages/dashboard.jsx";
@@ -40,10 +39,6 @@ const router = createBrowserRouter([
       {
         path: "userstablas",
         element: <UsersTablas />,
-      },
-      {
-        path: "usertablas",
-        element: <UserTablas />,
       },
     ],
   },

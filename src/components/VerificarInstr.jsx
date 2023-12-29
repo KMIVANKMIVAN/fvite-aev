@@ -31,8 +31,6 @@ const styles = {
 };
 
 export function VerificarInstr() {
-  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
-
   const [archivo, setArchivo] = useState(undefined);
   const [firmas, setFirmas] = useState(undefined);
   const [firmasVasia, setFirmasVasia] = useState(undefined);
@@ -53,18 +51,9 @@ export function VerificarInstr() {
       FreezeUI({ text: "Cargando documento" });
       const archivoPdf = await obtenerBase64(event.target.files[0]);
       setArchivo(archivoPdf);
-      setArchivoCargado(true); // Marcar el archivo como cargado
+      setArchivoCargado(true);
     }
-    // UnFreezeUI();
   };
-  /* const cargarArchivoBase64 = async (event) => {
-    if (event.target.files) {
-      FreezeUI({ text: "Cargando documento" });
-      const archivoPdf = await obtenerBase64(event.target.files[0]);
-      setArchivo(archivoPdf);
-    }
-    // UnFreezeUI();
-  }; */
 
   const validarPdf = async () => {
     FreezeUI({ text: "Validando firmas" });
@@ -77,7 +66,6 @@ export function VerificarInstr() {
       setFirmasVasia(null);
       setFirmas(respuesta.datos.firmas);
     } else {
-      // setFirmas([{ Mensaje: "No se encontraron firmas" }]);
       setFirmas([]);
       setFirmasVasia("No se encontraron firmas");
     }

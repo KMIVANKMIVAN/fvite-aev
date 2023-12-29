@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
-import { obtenerUserNivel } from "../utils/userdata";
 
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -14,25 +13,27 @@ import SearchIcon from "@mui/icons-material/Search";
 import { DatosComplViviend } from "./DatosComplViviend";
 
 function formatearNumero(numero) {
-  const esDecimal = numero % 1 !== 0;
-
-  if (esDecimal) {
+  if (numero == null || numero == undefined) {
+    return "0";
+  }
+  if (numero.toString().indexOf(",") !== -1) {
+    return numero.toString();
+  }
+  if (numero % 1 !== 0) {
     const partes = numero.toFixed(2).split(".");
     const parteEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return `${parteEntera},${partes[1]}`;
   }
-
-  return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
 import { useSelector } from "react-redux";
 
-///////////////////////////////
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
-//
+
 export function BuscarViviend() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -41,16 +42,12 @@ export function BuscarViviend() {
   const [datoscontratoData, setDatoscontratoData] = useState([]);
   const [selectedContCod, setSelectedContCod] = useState(null);
 
+  const [searchError, setErrorSearch] = useState(null);
+
   const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
-  //
-
   const [expandedPanels, setExpandedPanels] = useState({});
-  //
-
   const [vivienda, setVivienda] = useState(true);
-
-  console.log("111", vivienda);
 
   const handleChange = (index) => (event, isExpanded) => {
     setExpandedPanels({
@@ -58,8 +55,6 @@ export function BuscarViviend() {
       [index]: isExpanded,
     });
   };
-  //
-
   const handleSearch = async () => {
     try {
       const url = `${apiKey}/documentpdf/buscar/${inputValue}`;
@@ -71,11 +66,23 @@ export function BuscarViviend() {
       const response = await axios.get(url, { headers });
 
       if (response.status === 200) {
+        setErrorSearch(null);
         setDatoscontratoData(response.data);
         setSelectedContCod(0);
       }
     } catch (error) {
-      // console.error("Error:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorSearch(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorSearch(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorSearch("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorSearch("RF: Error al enviar la solicitud");
+      }
     }
   };
 
@@ -93,8 +100,6 @@ export function BuscarViviend() {
   }, [count]);
 
   const elementosPorConjunto = 2;
-
-  // Dividir los datos en conjuntos de acuerdo al número de elementos por conjunto
   const conjuntosDatos = [];
   for (let i = 0; i < datoscontratoData.length; i += elementosPorConjunto) {
     conjuntosDatos.push(datoscontratoData.slice(i, i + elementosPorConjunto));
@@ -124,6 +129,9 @@ export function BuscarViviend() {
           Buscar
         </Button>
       </div>
+      {searchError && (
+        <p className="text-red-700 text-center p-5">{searchError}</p>
+      )}
       <br />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         {conjuntosDatos.map((conjunto, conjuntoIndex) => (

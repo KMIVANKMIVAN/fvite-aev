@@ -1,66 +1,43 @@
 import { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import ButtonGroup from "@mui/material/ButtonGroup";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
-import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import SearchIcon from "@mui/icons-material/Search";
-
-import { DatosBusa } from "./DatosBusa";
 import { DatosComplViviend } from "./DatosComplViviend";
 import { DatosPemar } from "./DatosPemar";
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
 function formatearNumero(numero) {
-  const esDecimal = numero % 1 !== 0;
-
-  if (esDecimal) {
+  if (numero == null || numero == undefined) {
+    return "0";
+  }
+  if (numero.toString().indexOf(",") !== -1) {
+    return numero.toString();
+  }
+  if (numero % 1 !== 0) {
     const partes = numero.toFixed(2).split(".");
     const parteEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return `${parteEntera},${partes[1]}`;
   }
-
-  return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
 import { useSelector } from "react-redux";
 
-///////////////////////////////
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
-//
+
 export function BuscarFirmar() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);
 
-  const [datoscontratoData, setDatoscontratoData] = useState([]);
   const [selectedContCod, setSelectedContCod] = useState(null);
-  const [expandedItems, setExpandedItems] = useState({});
 
   const [titulo, setTitulo] = useState(null);
   const [selectedCodid, setSelectedCodid] = useState(null);
@@ -68,91 +45,64 @@ export function BuscarFirmar() {
   const [tipoPemar, setTipoPemar] = useState(false);
   const [tipoVivien, setTipoVivien] = useState(false);
 
-  const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
-  //
+
   const [datosBusa, setDatosBusa] = useState(false);
+  const [errorDatosBusa, setErrorDatosBusa] = useState(null);
 
   const [expandedPanels, setExpandedPanels] = useState({});
-  //
-  const handleChange = (index) => (event, isExpanded) => {
+
+  const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
       [index]: isExpanded,
     });
   };
-  //
-  const handleExpandClick = (index) => {
-    setExpandedItems({
-      ...expandedItems,
-      [index]: !expandedItems[index],
-    });
-  };
-
   const token = obtenerToken();
   const headers = {
     Authorization: `Bearer ${token}`,
-  };
-  const handleSearch = async () => {
-    try {
-      const url = `${apiKey}/documentpdf/buscar/${inputValue}`;
-      const response = await axios.get(url, { headers });
-
-      if (response.status === 200) {
-        setDatoscontratoData(response.data);
-        setSelectedContCod(0);
-      }
-    } catch (error) {
-      // console.error("Error:", error);
-    }
   };
 
   useEffect(() => {
     const datosparabusa = async () => {
       try {
         const urlTipoRespaldo = `${apiKey}/cuadro/consultabusa`;
-
         const response = await axios.get(urlTipoRespaldo, { headers });
-
         if (response.status === 200) {
+          setErrorDatosBusa(null);
           setDatosBusa(response.data);
         }
       } catch (error) {
-        setDatosBusa(`RS: ${error}`);
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400) {
+            setErrorDatosBusa(`RS: ${data.message}`);
+          } else if (status === 500) {
+            setErrorDatosBusa(`RS: ${data.message}`);
+          }
+        } else if (error.request) {
+          setErrorDatosBusa("RF: No se pudo obtener respuesta del servidor");
+        } else {
+          setErrorDatosBusa("RF: Error al enviar la solicitud");
+        }
       }
     };
 
     datosparabusa();
   }, []);
 
-  // console.log("datosBusa", datosBusa);
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
-  /* const handleUploadPDFs = (dataContCod) => {
-    console.log("selectedContCod", selectedContCod);
-    setSelectedContCod(dataContCod);
-    setUpdateComponent((prev) => prev + 1);
-  }; */
   const handleUploadPDFs = (dataContCod) => {
     setSelectedContCod(dataContCod);
 
-    // Verificar si datosBusa es un array antes de usar find
     if (Array.isArray(datosBusa) && datosBusa.length > 0) {
-      // Encuentra el elemento correspondiente a dataContCod en datosBusa
       const selectedData = datosBusa.find(
         (data) => data.cont_cod === dataContCod
       );
 
-      // Verifica si selectedData contiene "P.M.A.R." en el texto
       const esPemar = selectedData && selectedData.tipo.includes("P.M.A.R.");
-      // Verifica si selectedData contiene "Vivienda Nueva" en el texto
       const esViviendaNueva =
         selectedData && selectedData.tipo.includes("Vivienda Nueva");
 
-      // Actualiza los estados según las condiciones
       if (esPemar) {
         setTipoPemar(true);
         setTipoVivien(false);
@@ -173,7 +123,6 @@ export function BuscarFirmar() {
 
   const elementosPorConjunto = 2;
 
-  // Dividir los datos en conjuntos de acuerdo al número de elementos por conjunto
   const conjuntosDatos = [];
   for (let i = 0; i < datosBusa.length; i += elementosPorConjunto) {
     conjuntosDatos.push(datosBusa.slice(i, i + elementosPorConjunto));
@@ -181,30 +130,10 @@ export function BuscarFirmar() {
 
   return (
     <>
-      {/*  <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">Buscar</h2>
-      <div className="col-span-1 flex justify-center px-10">
-        <TextField
-          name="codigo"
-          helperText="Ejemplo: AEV-LP-0000 o FASE(XIII)..."
-          id="standard-basic"
-          label="Codigo de Proyecto (COMPLETO) o Nombre de Proyecto:"
-          variant="standard"
-          className="w-full"
-          value={inputValue}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex justify-center pt-5">
-        <Button
-          variant="outlined"
-          onClick={handleSearch}
-          endIcon={<SearchIcon />}
-        >
-          Buscar
-        </Button>
-      </div>
-      <br /> */}
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
+        {errorDatosBusa && (
+          <p className="text-red-700 text-center p-5">{errorDatosBusa}</p>
+        )}
         {conjuntosDatos.map((conjunto, conjuntoIndex) => (
           <Grid container spacing={2} key={conjuntoIndex}>
             {conjunto.map((data, index) => (

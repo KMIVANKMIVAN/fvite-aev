@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
@@ -21,6 +20,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Unstable_Grid2";
 
 import { HabilitarDes } from "./HabilitarDes";
 import { ActualizarUser } from "./ActualizarUser";
@@ -28,7 +28,6 @@ import { ActualizarUser } from "./ActualizarUser";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
-    // color: theme.palette.common.white,
     color: "#004f81",
   },
   [`&.${tableCellClasses.body}`]: {
@@ -40,9 +39,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
-    // color: "#004f81",
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -52,12 +49,8 @@ const useStyles = makeStyles({
   root: {
     width: "100%",
   },
-  container: {
-    // backgroundColor: "#004f81",
-    // maxHeight: 440,
-  },
   tableCell: {
-    fontSize: "0.75rem", // Tamaño de letra "xs" (extra small)
+    fontSize: "0.75rem",
   },
 });
 
@@ -70,6 +63,7 @@ export function BuscarUser({ urltable }) {
 
   const [buscar, setBuscar] = useState("");
   const [datoscontratoData, setDatoscontratoData] = useState([]);
+  const [errorDatoscontratoData, setErrorDatoscontratoData] = useState([]);
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
@@ -87,12 +81,8 @@ export function BuscarUser({ urltable }) {
   const prevCount = useRef(count);
 
   useEffect(() => {
-    // Verifica si count cambió
     if (prevCount.current !== count) {
-      // Actualiza el valor de prevCount
       prevCount.current = count;
-
-      // Ejecuta la búsqueda
       handleSearch();
     }
   }, [count]);
@@ -108,28 +98,28 @@ export function BuscarUser({ urltable }) {
       const response = await axios.get(url, { headers });
 
       if (response.status === 200) {
+        setErrorDatoscontratoData(null);
         setDatoscontratoData(response.data);
         setIsDataLoaded(true);
-      } else {
-        console.error("Error fetching user data");
       }
     } catch (error) {
-      console.error("Error:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorDatoscontratoData(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorDatoscontratoData(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorDatoscontratoData(
+          "RF: No se pudo obtener respuesta del servidor"
+        );
+      } else {
+        setErrorDatoscontratoData("RF: Error al enviar la solicitud");
+      }
     }
   };
-
-  const showActualizarUser = (userId) => {
-    setSelectedUserId(userId);
-    setIsActualizarUserVisible(
-      !isActualizarUserVisible || userId !== selectedUserId
-    );
-  };
-
-  console.log("el id del usuario", selectedUserId);
-  console.log("el habilitado del usuario", selectedHabilitado);
-
   const columns = [
-    // { id: "seleccionar", label: "SELECCIONAR", minWidth: 100 },
     { id: "id", label: "ID", minWidth: 50 },
     { id: "actualizar", label: "ACTUALIZAR", minWidth: 100 },
     { id: "habilitardes", label: "HABILITAR DESHABILITAR", minWidth: 100 },
@@ -153,7 +143,6 @@ export function BuscarUser({ urltable }) {
     { id: "cedula_identidad", label: "CEDULA IDENTIDAD", minWidth: 50 },
     { id: "expedido", label: "EXPENDIO", minWidth: 50 },
     { id: "super", label: "SUPER", minWidth: 50 },
-    // { id: "", label: "", minWidth: 50 },
   ];
 
   const rows = datoscontratoData;
@@ -167,7 +156,6 @@ export function BuscarUser({ urltable }) {
   }) => {
     useEffect(() => {
       if (isVisible) {
-        // Realiza aquí cualquier lógica de carga de datos o actualización necesaria
       }
     }, [isVisible, userId, urltable]);
 
@@ -189,20 +177,20 @@ export function BuscarUser({ urltable }) {
         <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">
           Buscar
         </h2>
-        <div className="col-span-1 flex justify-center md:px-16">
-          <TextField
-            name="codigo"
-            helperText="Ejemplo: nombre.apellido o 123456789"
-            id="standard-basic"
-            label="Nombre de Usuario o Carnet de Identidad:"
-            variant="standard"
-            className="w-full "
-            value={buscar}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="flex justify-center pt-5">
-          <Stack className="pl-7" spacing={2} direction="row">
+        <Grid container spacing={2}>
+          <Grid xs={1}></Grid>
+          <Grid xs={10}>
+            <TextField
+              name="codigo"
+              helperText="Ejemplo: nombre.apellido o 123456789"
+              id="standard-basic"
+              label="Nombre de Usuario o Carnet de Identidad:"
+              variant="standard"
+              className="w-full "
+              value={buscar}
+              onChange={handleInputChange}
+            />
+            <br />{" "}
             <Button
               onClick={handleSearch}
               variant="outlined"
@@ -210,9 +198,13 @@ export function BuscarUser({ urltable }) {
             >
               Buscar
             </Button>
-          </Stack>
-        </div>
+          </Grid>
+          <Grid xs={1}></Grid>
+        </Grid>
       </div>
+      {errorDatoscontratoData && (
+        <p className="text-red-700 text-center">{errorDatoscontratoData}</p>
+      )}
       {isDataLoaded && (
         <div className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4">
           <Paper className={classes.root}>
@@ -285,7 +277,6 @@ export function BuscarUser({ urltable }) {
                             ) : (
                               value
                             )}
-                            {/* {value} */}
                           </StyledTableCell>
                         );
                       })}
@@ -304,7 +295,6 @@ export function BuscarUser({ urltable }) {
         selectedHabilitado={selectedHabilitado}
         onHide={setIsActualizarUserVisible}
       />
-
       <br />
     </>
   );

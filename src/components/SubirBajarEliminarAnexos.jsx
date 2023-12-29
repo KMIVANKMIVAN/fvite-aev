@@ -29,8 +29,6 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
   const [selecionarPDF, setSelecionarPDF] = useState(null);
 
   const [respuestaMessage, setRespuestaMessage] = useState(null);
-  const [respuestaArchivo, setRespuestaArchivo] = useState(null);
-  const [respuestaRespaldo, setRespuestaRespaldo] = useState(null);
 
   const [abrirGuardar, setAbrirGuardar] = useState(false);
 
@@ -63,20 +61,24 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
           },
         }
       );
-
-      const { message, archivo, respaldo } = response.data;
-
-      setRespuestaMessage(`RS: ${message}`);
-      setRespuestaArchivo(archivo);
-      setRespuestaRespaldo(respaldo);
-    } catch (error) {
-      let errorMessage = "Error al subir el archivo";
-      if (error.response && error.response.data) {
-        errorMessage = error.response.data;
-      } else if (error.message) {
-        errorMessage = error.message;
+      if (response.status === 200) {
+        const { message } = response.data;
+        setErrorRespuestas(null);
+        setRespuestaMessage(`RS: ${message}`);
       }
-      setErrorRespuestas(`RS: ${errorMessage}`);
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
+      }
     }
   };
 
@@ -92,57 +94,41 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          "& > *": {
-            m: 1,
-          },
-        }}
-      >
-        <ButtonGroup variant="text" aria-label="text button group">
-          <Tooltip title="Subir PDF" placement="left-end">
-            <Button
-              color="error"
-              size="small"
-              component="span"
-              variant="outlined"
-              endIcon={<UploadRoundedIcon size="large" />}
-              onClick={abrirGuardarPdf}
-            >
-              Subir
-            </Button>
-          </Tooltip>
-        </ButtonGroup>
-      </Box>
+      <Tooltip title="Subir PDF" placement="top">
+        <Button
+          color="error"
+          size="small"
+          component="span"
+          variant="outlined"
+          // endIcon={<UploadRoundedIcon size="large" />}
+          onClick={abrirGuardarPdf}
+        >
+          Seleccionar PDF
+        </Button>
+      </Tooltip>
       <Dialog
         open={abrirGuardar}
         TransitionComponent={Transition}
         keepMounted
         onClose={cerrarGuardarPdf}
-        aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle className="text-center">
           {"Subir Instructivo PDF"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <div className="flex justify-center items-center flex-col">
-              <input
-                className="block w-full text-sm bold text-mi-color-primario
+          <div className="flex justify-center items-center flex-col">
+            <input
+              className="block w-full text-sm bold text-mi-color-primario
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-md file:border-0
                 file:text-sm file:font-semibold
               file:bg-mi-color-primario file:text-white
               hover:file:bg-mi-color-terceario"
-                type="file"
-                accept=".pdf"
-                onChange={cargarElPDF}
-              />
-            </div>
-          </DialogContentText>
+              type="file"
+              accept=".pdf"
+              onChange={cargarElPDF}
+            />
+          </div>
         </DialogContent>
         {respuestasError && (
           <p className="text-center m-2 text-red-500">{respuestasError}</p>

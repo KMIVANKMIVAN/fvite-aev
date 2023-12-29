@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
@@ -16,7 +16,6 @@ require("../libs/prism/prism.min.css");
 require("../libs/FreezeUI/freeze-ui.min.js");
 require("../libs/FreezeUI/freeze-ui.min.css");
 
-import ReplayIcon from "@mui/icons-material/Replay";
 import SaveIcon from "@mui/icons-material/Save";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
@@ -42,13 +41,9 @@ export function Instructivo({ nombrepdf }) {
   const [respuestasError, setErrorRespuestas] = useState(null);
 
   const [firmasVasia, setFirmasVasia] = useState(undefined);
-  const [archivoCargado, setArchivoCargado] = useState(false); // Nuevo estado
+  const [archivoCargado, setArchivoCargado] = useState(false);
 
   const dispatch = useDispatch();
-
-  // console.log("111", archivo);
-  // console.log(archivo);
-  console.log("nombrepdf", nombrepdf);
 
   const obtenerBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -59,22 +54,13 @@ export function Instructivo({ nombrepdf }) {
     });
   };
 
-  /* const cargarArchivoBase64 = async (event) => {
-    if (event.target.files) {
-      FreezeUI({ text: "Cargando documento" });
-      const archivoPdf = await obtenerBase64(event.target.files[0]);
-      setArchivo(archivoPdf);
-    }
-    // UnFreezeUI();
-  }; */
   const cargarArchivoBase64 = async (event) => {
     if (event.target.files) {
       FreezeUI({ text: "Cargando documento" });
       const archivoPdf = await obtenerBase64(event.target.files[0]);
       setArchivo(archivoPdf);
-      setArchivoCargado(true); // Marcar el archivo como cargado
+      setArchivoCargado(true);
     }
-    // UnFreezeUI();
   };
 
   const firmarPdf = async () => {
@@ -104,14 +90,13 @@ export function Instructivo({ nombrepdf }) {
           respuesta = await jacobitusTotal.firmarPdf(slot, pin, alias, archivo);
           if (respuesta.datos?.docFirmado) {
             setArchivoMandar(respuesta.datos?.docFirmado);
-            setFirmado(true); // Indicar que se ha firmado el PDF y hay datos en archivo
+            setFirmado(true);
           }
           setArchivo(
             `data:application/pdf;base64,${respuesta.datos?.docFirmado}`
           );
-          // UnFreezeUI();
         } else {
-          UnFreezeUI(); // Define UnFreezeUI somewhere to handle it
+          UnFreezeUI();
           Swal.fire({
             title: "Jacobitus Total",
             text: respuesta.mensaje,
@@ -160,19 +145,15 @@ export function Instructivo({ nombrepdf }) {
   const base64ToPdf = async () => {
     if (archivoMandar) {
       try {
-        const token = obtenerToken(); // Supongamos que tienes una función para obtener el token
+        const token = obtenerToken();
         const headers = {
           Authorization: `Bearer ${token}`,
         };
-
         const formData = {
-          base64String: archivoMandar, // Suponiendo que archivo contiene el string en base64 del PDF
-          fileName: nombrepdf, // Nombre que desees para el archivo PDF
+          base64String: archivoMandar,
+          fileName: nombrepdf,
         };
-
-        const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
         const url = `${apiKey}/documentpdf/base64apdf`;
-
         const response = await axios.post(url, formData, {
           headers: {
             ...headers,
@@ -183,7 +164,6 @@ export function Instructivo({ nombrepdf }) {
       } catch (error) {
         if (error.response && error.response.data) {
           setRespuestas(null);
-
           setErrorRespuestas(`RS: ${error.response.data}`);
         } else {
           setRespuestas(null);
@@ -224,7 +204,7 @@ export function Instructivo({ nombrepdf }) {
                   spacing={2}
                   justifyContent="center"
                   alignItems="center"
-                  style={{ flexWrap: "wrap" }} // Agregar flexWrap: 'wrap' para permitir saltos de línea
+                  style={{ flexWrap: "wrap" }}
                 >
                   <Grid item xs={12} style={{ textAlign: "center" }}>
                     <input
@@ -232,7 +212,6 @@ export function Instructivo({ nombrepdf }) {
                       type="file"
                       id="archivo"
                       accept=".pdf"
-                      // style={{ fontSize: "0.5rem" }}
                       onChange={(event) => cargarArchivoBase64(event)}
                     />
                   </Grid>
@@ -250,8 +229,8 @@ export function Instructivo({ nombrepdf }) {
                         variant="contained"
                         color="error"
                         endIcon={<SaveIcon />}
-                        style={{ display: firmado ? "inline-block" : "none" }} // Mostrar solo si se ha firmado el PDF
-                        onClick={base64ToPdf} // Llamar a base64ToPdf al hacer clic
+                        style={{ display: firmado ? "inline-block" : "none" }}
+                        onClick={base64ToPdf}
                       >
                         Subir al Servidor
                       </Button>
@@ -269,7 +248,7 @@ export function Instructivo({ nombrepdf }) {
               <br />
               <div className="grid grid-cols-12">
                 <div className="col-span-12" style={{ height: "710px" }}>
-                  {archivoCargado && ( // Mostrar el embed solo si el archivo está cargado
+                  {archivoCargado && (
                     <embed
                       className="form-control"
                       id="archivoPdf"

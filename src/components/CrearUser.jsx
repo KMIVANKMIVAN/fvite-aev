@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 import Button from "@mui/material/Button";
@@ -9,19 +9,21 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Stack from "@mui/material/Stack";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import { useNavigate } from "react-router-dom";
+
+import { obtenerUserNivel } from "../utils/userdata";
 
 import { useDispatch } from "react-redux";
 import { setUser } from "../contexts/features/user/userSlice";
 import { increment } from "../contexts/features/user/counterUserSlice";
 
 export function CrearUser() {
-  const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
+  const [errorSubmit, setErrorSubmit] = useState(null);
+  const [submit, setSubmit] = useState(false);
 
-  const registerUserUrl = `${apiKey}/users`;
+  const registerUserUrl = `${apiKey}/users/create/${obtenerUserNivel()}`;
   const token = obtenerToken();
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -57,15 +59,31 @@ export function CrearUser() {
       const response = await axios.post(registerUserUrl, formData, { headers });
 
       if (response.data) {
+        setSubmit(true);
+        setErrorSubmit(null);
         dispatch(setUser(response.data));
         dispatch(increment());
       }
     } catch (error) {
-      console.log("HUBO UN ERROR");
+      if (error.response) {
+        setSubmit(false);
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorSubmit(`RS: ${data.message}`);
+        } else if (status === 401) {
+          setErrorSubmit(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorSubmit(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorSubmit("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorSubmit("RF: Error al enviar la solicitud");
+      }
     }
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,7 +106,15 @@ export function CrearUser() {
       </Stack>
       <Dialog
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
+        onClose={() => {
+          if (submit) {
+            handleClose();
+          }
+          if (!errorSubmit) {
+            handleClose();
+          }
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -363,6 +389,11 @@ export function CrearUser() {
           <DialogActions>
             <Button
               onClick={handleClose}
+              /* onClick={() => {
+                if (errorSubmit) {
+                  handleClose();
+                }
+              }} */
               style={{
                 color: "red",
                 fontWeight: "bold",
@@ -375,7 +406,15 @@ export function CrearUser() {
             </Button>
             <Button
               type="submit"
-              onClick={handleClose}
+              // onClick={handleClose}
+              onClick={() => {
+                if (!errorSubmit) {
+                  handleClose();
+                }
+                if (submit) {
+                  handleClose();
+                }
+              }}
               style={{
                 color: "green",
                 fontWeight: "bold",
@@ -388,6 +427,9 @@ export function CrearUser() {
             </Button>
           </DialogActions>
         </form>
+        {errorSubmit && (
+          <p className="text-red-700 text-center p-5">{errorSubmit}</p>
+        )}
       </Dialog>
     </>
   );

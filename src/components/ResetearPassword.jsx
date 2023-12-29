@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import { obtenerToken } from "../utils/auth";
@@ -20,6 +20,7 @@ import { increment } from "../contexts/features/user/counterUserSlice";
 export function ResetearPassword({ userId }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
   const [open, setOpen] = useState(false);
+  const [errorresetearPassword, setErrorresetearPassword] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -27,7 +28,6 @@ export function ResetearPassword({ userId }) {
   const resetearPassword = async () => {
     try {
       const url = `${apiKey}/users/resetearpassworddefecto/${userId}`;
-
       const response = await axios.patch(
         url,
         {},
@@ -37,14 +37,26 @@ export function ResetearPassword({ userId }) {
           },
         }
       );
-
       if (response.status === 200) {
-        console.log("SE ACTUALIZÓ CORRECTAMENTE");
+        setErrorresetearPassword(null);
         dispatch(setUser(response.data));
         dispatch(increment());
       }
     } catch (error) {
-      console.error("Error:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorresetearPassword(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorresetearPassword(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorresetearPassword(
+          "RF: No se pudo obtener respuesta del servidor"
+        );
+      } else {
+        setErrorresetearPassword("RF: Error al enviar la solicitud");
+      }
     }
   };
 
@@ -87,6 +99,11 @@ export function ResetearPassword({ userId }) {
                   No
                 </Button>
               </ButtonGroup>
+              {errorresetearPassword && (
+                <p className="text-red-700 text-center">
+                  {errorresetearPassword}
+                </p>
+              )}
             </div>
           </DialogContentText>
         </DialogContent>
