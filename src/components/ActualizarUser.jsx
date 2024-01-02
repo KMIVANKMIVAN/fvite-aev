@@ -78,13 +78,6 @@ export function ActualizarUser({ idActualizarUser }) {
 
   fetchUserData();
 
-  /* const handleInputUpdate = (e) => {
-    const { name, value } = e.target;
-    setUserData((prevUserData) => ({
-      ...prevUserData,
-      [name]: value,
-    }));
-  }; */
   const handleInputUpdate = (e) => {
     const { name, value } = e.target;
     let uppercaseValue = value;

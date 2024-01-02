@@ -12,9 +12,9 @@ import { UpdatePassword } from "./pages/updatepassword.jsx";
 import { ViviendaNueva } from "./pages/dashboardclient/viviendanueva.jsx";
 import { Pemar } from "./pages/dashboardclient/pemar.jsx";
 import { Busafirmar } from "./pages/dashboardclient/busafirmar.jsx";
+import { BusaAevFirmados } from "./pages/dashboardclient/busaaevfirmados.jsx";
 
-import { obtenerToken } from "./utils/auth";
-import RequireAuth from "./utils/requireAuth.jsx"; // Ajusta la ruta del archivo según su ubicación
+import RequireAuth from "./utils/requireAuth.jsx";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: "pemar",
         element: <Pemar />,
+      },
+      {
+        path: "busaaevfirmados",
+        element: <BusaAevFirmados />,
       },
     ],
   },

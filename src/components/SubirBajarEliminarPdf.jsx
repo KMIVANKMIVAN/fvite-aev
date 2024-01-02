@@ -45,8 +45,8 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
 
   const cargarElPDF = (event) => {
     setSelecionarPDF(event.target.files[0]);
-    setErrorRespuestas(null); // Reiniciar el estado de respuestasError
-    setRespuestas(null); // Reiniciar el estado de respuestasError
+    setErrorRespuestas(null);
+    setRespuestas(null);
   };
 
   const guardarPdf = async () => {
@@ -65,13 +65,12 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
         }
       );
 
-      if (response.status === 200 || response.status === 204) {
-        // Aquí capturas la respuesta del servidor
+      if (response.status === 200) {
         const responseData = await response.data.text();
         setRespuestas(`RS: ${responseData}`);
       }
     } catch (error) {
-      if (error.response && error.response.data instanceof Blob) {
+      /* if (error.response && error.response.data instanceof Blob) {
         const blob = await error.response.data;
         const reader = new FileReader();
         reader.onload = () => {
@@ -81,6 +80,18 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
         reader.readAsText(blob);
       } else {
         setErrorRespuestas(`RS: ${error.message}`);
+      } */
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
       }
     }
   };
@@ -155,10 +166,6 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
 
   const [abrirGuardar, setAbrirGuardar] = useState(false);
 
-  const abrirGuardarPdf = () => {
-    setAbrirGuardar(true); // Cambiar a true para abrir el diálogo
-  };
-
   const cerrarGuardarPdf = () => {
     setAbrirGuardar(false);
     setRespuestas(null);
@@ -172,7 +179,7 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
           open={abrirErrorEliminar}
           TransitionComponent={Transition}
           keepMounted
-          onClose={() => setAbrirErrorEliminar(false)} // Cierra el diálogo al hacer clic en "Cerrar"
+          onClose={() => setAbrirErrorEliminar(false)}
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogContent>
@@ -194,7 +201,7 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
           open={abrirEliminar}
           TransitionComponent={Transition}
           keepMounted
-          onClose={() => setAbrirEliminar(false)} // Cierra el diálogo al hacer clic en "Cerrar"
+          onClose={() => setAbrirEliminar(false)}
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogContent>
@@ -214,10 +221,10 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
 
       {respuestasErrorDescargar && (
         <Dialog
-          open={abrirErrorDescarga} // Controla la apertura automática del diálogo
+          open={abrirErrorDescarga}
           TransitionComponent={Transition}
           keepMounted
-          onClose={() => setAbrirErrorDescarga(false)} // Cierra el diálogo al hacer clic en "Cerrar"
+          onClose={() => setAbrirErrorDescarga(false)}
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogContent>
@@ -233,15 +240,6 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
         </Dialog>
       )}
       <ButtonGroup variant="text" aria-label="text button group">
-        {/* <Tooltip title="Subir PDF" placement="left-end">
-            <Button
-              color="error"
-              size="small"
-              component="span"
-              endIcon={<UploadRoundedIcon size="large" />}
-              onClick={abrirGuardarPdf}
-            ></Button>
-          </Tooltip> */}
         <Tooltip title="Descargar PDF" placement="top">
           <Button
             size="small"
@@ -252,7 +250,6 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
         </Tooltip>
         <Tooltip title="Eliminar PDF" placement="right-start">
           <Button
-            // disabled={buttonAEVBUSA}
             disabled={vivienda ? vivienda : buttonAEVBUSA}
             size="small"
             color="error"

@@ -139,7 +139,6 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
     { id: "numero_inst", label: "OBSERVACIONES DE PAGO", minWidth: 50 },
     { id: "cuentatitular", label: "TITULAR", minWidth: 250 },
     { id: "iddesem", label: "ID", minWidth: 50 },
-    // { id: "", label: "", minWidth: 50 }
   ];
 
   const rows = contcodComplejaData;

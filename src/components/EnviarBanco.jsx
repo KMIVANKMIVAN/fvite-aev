@@ -93,7 +93,6 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
       <ButtonGroup variant="text" aria-label="text button group">
         <Tooltip title="ENVIAR" placement="top">
           <Button
-            // disabled={buttonAEVBUSA}
             disabled={vivienda ? vivienda : buttonAEVBUSA}
             color="error"
             size="small"
@@ -121,7 +120,7 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
             <div className="flex justify-center items-center flex-col px-5">
               <h1
                 className="py-5 text-2xl font-bold text-center relative bg-gradient-to-r from-rojo1 to-rojo2 text-transparent bg-clip-text"
-                style={styles.pulseAnimation} // Aplicar los estilos de animación al h1
+                style={styles.pulseAnimation} 
               >
                 ¡IMPORTANTE! <br /> Si usted envía el PDF firmado <br /> (
                 {nombrepdf})

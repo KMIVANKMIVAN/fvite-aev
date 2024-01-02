@@ -36,9 +36,6 @@ export function Jacobitus() {
 
   const dispatch = useDispatch();
 
-  // console.log("111", archivo);
-  console.log(archivo);
-
   const obtenerBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

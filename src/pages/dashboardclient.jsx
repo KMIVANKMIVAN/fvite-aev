@@ -43,6 +43,16 @@ function Submenu() {
           <span>PMAR</span>
         </div>
       </li>
+      <li className="rounded-sm pt-1">
+        <div
+          className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"
+          role="button"
+          onClick={() => navigate("/dashboardclient/busaaevfirmados")}
+        >
+          {<NavigateNextIcon />}
+          <span>Firmados AEV Y BUSA</span>
+        </div>
+      </li>
       {/* <li className="rounded-sm pt-1">
         <div
           className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-cuartario"

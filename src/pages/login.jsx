@@ -50,6 +50,9 @@ export function Login() {
         if (status === 400) {
           setLoginError(`RS: ${data.message}`);
           setLoginErrorMensaje(`RS: ${data.error}`);
+        } else if (status === 401) {
+          setLoginError(`RS: ${data.message}`);
+          setLoginErrorMensaje(`RS: ${data.error}`);
         } else if (status === 500) {
           setLoginError(`RS: ${data.message}`);
           setLoginErrorMensaje(`RS: ${data.error}`);

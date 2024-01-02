@@ -100,7 +100,6 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
           size="small"
           component="span"
           variant="outlined"
-          // endIcon={<UploadRoundedIcon size="large" />}
           onClick={abrirGuardarPdf}
         >
           Seleccionar PDF

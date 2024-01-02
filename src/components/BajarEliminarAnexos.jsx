@@ -109,7 +109,6 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
       document.body.removeChild(link);
     } catch (error) {
       let errorMessage = "Error desconocido al descargar el PDF";
-
       if (error.response && error.response.data instanceof Blob) {
         const blob = await error.response.data;
         const reader = new FileReader();

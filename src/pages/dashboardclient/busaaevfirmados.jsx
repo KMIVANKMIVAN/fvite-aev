@@ -1,7 +1,7 @@
-import { BuscarFirmar } from "../../components/BuscarFirmar";
+import { BuscarFirmados } from "../../components/BuscarFirmados";
 import { useSelector } from "react-redux";
 
-export function Busafirmar() {
+export function BusaAevFirmados() {
   const count = useSelector((state) => state.counter.value);
 
   return (
@@ -19,9 +19,9 @@ export function Busafirmar() {
           e.target.style.textShadow = "4px 4px 8px rgba(0, 0, 0, 0.4)";
         }}
       >
-        INSTRUCTIVOS DE DESEMBOLSO
+        INSTRUCTIVOS DE DESEMBOLSO FIRMADOS POR AEV Y BUSA
       </h1>
-      <BuscarFirmar />
+      <BuscarFirmados />
     </>
   );
 }
