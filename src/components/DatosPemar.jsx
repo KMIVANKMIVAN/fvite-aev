@@ -92,14 +92,24 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
           const response = await axios.get(url, { headers });
 
           if (response.status === 200) {
+            setErrorContcodComplejaData(null);
             setContcodComplejaData(response.data);
-          } else {
-            setErrorContcodComplejaData(
-              `Error en el estado de respuesta, estado: ${response.statusText}`
-            );
           }
         } catch (error) {
-          setErrorContcodComplejaData(`Error del servidor: ${error}`);
+          if (error.response) {
+            const { status, data } = error.response;
+            if (status === 400) {
+              setErrorContcodComplejaData(`RS: ${data.message}`);
+            } else if (status === 500) {
+              setErrorContcodComplejaData(`RS: ${data.message}`);
+            }
+          } else if (error.request) {
+            setErrorContcodComplejaData(
+              "RF: No se pudo obtener respuesta del servidor"
+            );
+          } else {
+            setErrorContcodComplejaData("RF: Error al enviar la solicitud");
+          }
         }
       }
     };
@@ -143,23 +153,37 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
       );
 
       if (response.status === 200) {
-        const responseData = response.data; // Debería ser un booleano
-        setRespuestas(responseData); // Establece la respuesta booleana en el estado
+        setErrorRespuestas(null);
+        setRespuestas(response.data);
       }
     } catch (error) {
-      setErrorRespuestas(`RS: ${error.message}`);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
+      }
     }
   };
 
   const handleClose = () => {
     setOpen(false);
-    setRespuestas(null); // Puedes restablecer también el estado de respuestas si es necesario.
+    setRespuestas(null);
   };
 
   return (
     <>
-      {errorcontcodComplejaData !== null && <h1>{errorcontcodComplejaData}</h1>}
-
+      {errorcontcodComplejaData && (
+        <p className="text-red-700 text-center p-5">
+          {errorcontcodComplejaData}
+        </p>
+      )}
       <VerificarInstr />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         <p className="text-mi-color-primario text-1xl font-bold">
@@ -384,7 +408,9 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
         </TableContainer>
       </Paper>
       <br />
-      {respuestasError && <h1>{respuestasError}</h1>}
+      {respuestasError && (
+        <p className="text-red-700 text-center p-5">{respuestasError}</p>
+      )}
       {respuestas === false && nombrePdfSeleccionado && (
         <div ref={instructivoRef}>
           <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />

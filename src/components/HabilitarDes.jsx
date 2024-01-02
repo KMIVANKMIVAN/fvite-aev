@@ -14,8 +14,7 @@ export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
-
-  console.log("111 selectedHabilitado", selectedHabilitado);
+  const [respuestasError, setErrorRespuestas] = useState(null);
 
   const [checked, setChecked] = useState(selectedHabilitado === 1);
 
@@ -26,8 +25,6 @@ export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
   const handleChange = async (event) => {
     const nuevoEstado = event.target.checked ? 1 : 0;
     setChecked(event.target.checked);
-
-    // Lógica para actualizar el estado
     actualizarEstado(idActualizarUser, nuevoEstado);
   };
 
@@ -47,20 +44,31 @@ export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
       );
 
       if (response.status === 200) {
-        console.log("por que no vas");
+        setErrorRespuestas(null);
         dispatch(setUser(response.data));
         dispatch(increment());
-        // navigate(urltable);
-      } else {
-        console.error("Error al actualizar el estado del usuario");
       }
     } catch (error) {
-      console.error("Error:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
+      }
     }
   };
 
   return (
     <>
+      {respuestasError && (
+        <p className="text-red-700 text-center p-5">{respuestasError}</p>
+      )}
       <Switch
         checked={checked}
         onChange={handleChange}

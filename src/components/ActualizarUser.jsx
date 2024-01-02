@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
@@ -78,11 +78,28 @@ export function ActualizarUser({ idActualizarUser }) {
 
   fetchUserData();
 
-  const handleInputUpdate = (e) => {
+  /* const handleInputUpdate = (e) => {
     const { name, value } = e.target;
     setUserData((prevUserData) => ({
       ...prevUserData,
       [name]: value,
+    }));
+  }; */
+  const handleInputUpdate = (e) => {
+    const { name, value } = e.target;
+    let uppercaseValue = value;
+    if (
+      name === "nombre" ||
+      name === "genero" ||
+      name === "expedido" ||
+      name === "cargo"
+    ) {
+      uppercaseValue = value.toUpperCase();
+    }
+
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      [name]: uppercaseValue,
     }));
   };
 
@@ -294,8 +311,8 @@ export function ActualizarUser({ idActualizarUser }) {
                         })
                       }
                     >
-                      <option value="hombre">Masculino</option>
-                      <option value="mujer">Femenino</option>
+                      <option value="HOMBRE">Masculino</option>
+                      <option value="MUJER">Femenino</option>
                     </select>
                   </div>
                   <div className="">

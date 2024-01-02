@@ -47,9 +47,23 @@ export function CrearUser() {
     cedulaIdentidad: "",
     expedido: "",
   });
-  const handleInputChange = (e) => {
+  /* const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  }; */
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let uppercaseValue = value;
+    if (
+      name === "nombre" ||
+      name === "genero" ||
+      name === "expedido" ||
+      name === "cargo"
+    ) {
+      uppercaseValue = value.toUpperCase();
+    }
+
+    setFormData({ ...formData, [name]: uppercaseValue });
   };
 
   const handleSubmit = async (e) => {
@@ -280,14 +294,14 @@ export function CrearUser() {
                     value={formData.genero}
                     onChange={(e) =>
                       setFormData({
-                        ...formData, // Copiar el estado actual
+                        ...formData,
                         genero: e.target.value,
                       })
                     }
                   >
                     <option value="Seleccionar">Seleccionar</option>
-                    <option value="hombre">Masculino</option>
-                    <option value="mujer">Femenino</option>
+                    <option value="HOMBRE">Masculino</option>
+                    <option value="MUJER">Femenino</option>
                   </select>
                 </div>
                 <div className="">

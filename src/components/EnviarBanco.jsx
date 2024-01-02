@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
-import { obtenerUserId } from "../utils/userdata";
 
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -14,7 +13,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -57,7 +55,18 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
       }
     } catch (error) {
       setRespuestaMessage(null);
-      setErrorRespuestas(`RS: ${error}`);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorRespuestas(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorRespuestas("RF: Error al enviar la solicitud");
+      }
     }
   };
 
