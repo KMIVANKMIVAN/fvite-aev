@@ -59,9 +59,14 @@ function formatearNumero(numero) {
   return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
-export function DatosPemar({ selectedCodid, titulo, vivienda }) {
+export function DatosPemar({
+  selectedCodid,
+  titulo,
+  desabilitarAEV,
+  desabilitarBUSA,
+  desabilitarAEVBUSA,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
-
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
   const [errorcontcodComplejaData, setErrorContcodComplejaData] = useState([]);
@@ -229,7 +234,6 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
                             >
                               {column.id === "monto_desembolsado" ||
                               column.id === "multa" ? (
-                                // formatearNumero(value)
                                 formatearNumero(
                                   value !== null && value !== undefined
                                     ? value
@@ -252,7 +256,26 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={row.buttonAEV}
+                                        // disabled={row.buttonAEV}
+                                        /* disabled={
+                                          row.buttonAEV === 1 ? true : false
+                                        } */
+                                        /* disabled={
+                                          desabilitarBUSA
+                                            ? true
+                                            : row.buttonAEV === 1
+                                            ? true
+                                            : false
+                                        } */
+                                        disabled={
+                                          desabilitarAEVBUSA
+                                            ? true
+                                            : desabilitarBUSA
+                                            ? true
+                                            : row.buttonAEV === 1
+                                            ? true
+                                            : false
+                                        }
                                         color="error"
                                         size="small"
                                         component="span"
@@ -279,14 +302,44 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.id + "-AEV"}
-                                      buttonAEVBUSA={row.buttonAEV}
+                                      // buttonAEVBUSA={row.buttonAEV}
+                                      buttonAEVBUSA={
+                                        // row.buttonAEV === 1 ? true : false
+                                        /* desabilitarBUSA
+                                          ? true
+                                          : row.buttonAEV === 1
+                                          ? true
+                                          : false */
+                                        desabilitarAEVBUSA
+                                          ? true
+                                          : desabilitarBUSA
+                                          ? true
+                                          : row.buttonAEV === 1
+                                          ? true
+                                          : false
+                                      }
                                     />
                                   </ButtonGroup>
                                   <h2 className="text-center text-mi-color-primario"></h2>
                                   <div className="pb-2 flex  justify-center items-center">
                                     <AnexsosPdf
                                       nombrepdf={row.id}
-                                      buttonAEV={row.buttonAEV}
+                                      // buttonAEV={row.buttonAEV}
+                                      buttonAEV={
+                                        // row.buttonAEV === 1 ? true : false
+                                        /* desabilitarBUSA
+                                          ? true
+                                          : row.buttonAEV === 1
+                                          ? true
+                                          : false */
+                                        desabilitarAEVBUSA
+                                          ? true
+                                          : desabilitarBUSA
+                                          ? true
+                                          : row.buttonAEV === 1
+                                          ? true
+                                          : false
+                                      }
                                     />
                                   </div>
                                 </>
@@ -294,22 +347,66 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
                                 <>
                                   <BajarEliminarAnexos
                                     nombrepdf={row.id}
-                                    buttonAEV={row.buttonAEV}
+                                    // buttonAEV={row.buttonAEV}
+                                    buttonAEV={
+                                      // row.buttonAEV === 1 ? true : false
+                                      /* desabilitarBUSA
+                                        ? true
+                                        : row.buttonAEV === 1
+                                        ? true
+                                        : false */
+                                      desabilitarAEVBUSA
+                                        ? true
+                                        : desabilitarBUSA
+                                        ? true
+                                        : row.buttonAEV === 1
+                                        ? true
+                                        : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "id_aevbanco" ? (
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-AEV`}
-                                    buttonAEVBUSA={row.buttonAEV}
+                                    // buttonAEVBUSA={row.buttonAEV}
+                                    buttonAEVBUSA={
+                                      // row.buttonAEV === 1 ? true : false
+                                      /* desabilitarBUSA
+                                        ? true
+                                        : row.buttonAEV === 1
+                                        ? true
+                                        : false */
+                                      desabilitarAEVBUSA
+                                        ? true
+                                        : desabilitarBUSA
+                                        ? true
+                                        : row.buttonAEV === 1
+                                        ? true
+                                        : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "id_bancoaev" ? (
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
-                                    buttonAEVBUSA={row.buttonBUSA}
-                                    vivienda={vivienda}
+                                    // buttonAEVBUSA={row.buttonBUSA}
+                                    buttonAEVBUSA={
+                                      // row.buttonBUSA === 1 ? true : false
+                                      /* desabilitarAEV
+                                        ? true
+                                        : row.buttonBUSA === 1
+                                        ? true
+                                        : false */
+                                      desabilitarAEVBUSA
+                                        ? true
+                                        : desabilitarAEV
+                                        ? true
+                                        : row.buttonBUSA === 1
+                                        ? true
+                                        : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "id_busa" ? (
@@ -329,9 +426,20 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        // disabled={row.buttonBUSA}
                                         disabled={
-                                          vivienda ? vivienda : row.buttonBUSA
+                                          // row.buttonBUSA === 1 ? true : false
+                                          /* desabilitarAEV
+                                            ? true
+                                            : row.buttonBUSA === 1
+                                            ? true
+                                            : false */
+                                          desabilitarAEVBUSA
+                                            ? true
+                                            : desabilitarAEV
+                                            ? true
+                                            : row.buttonBUSA === 1
+                                            ? true
+                                            : false
                                         }
                                         color="error"
                                         size="small"
@@ -359,8 +467,22 @@ export function DatosPemar({ selectedCodid, titulo, vivienda }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.id + "-BUSA"}
-                                      buttonAEVBUSA={row.buttonBUSA}
-                                      vivienda={vivienda}
+                                      // buttonAEVBUSA={row.buttonBUSA}
+                                      buttonAEVBUSA={
+                                        // row.buttonBUSA === 1 ? true : false
+                                        /* desabilitarAEV
+                                          ? true
+                                          : row.buttonBUSA === 1
+                                          ? true
+                                          : false */
+                                        desabilitarAEVBUSA
+                                          ? true
+                                          : desabilitarAEV
+                                          ? true
+                                          : row.buttonBUSA === 1
+                                          ? true
+                                          : false
+                                      }
                                     />
                                   </ButtonGroup>
                                 </>

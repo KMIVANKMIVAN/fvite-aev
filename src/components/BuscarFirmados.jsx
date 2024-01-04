@@ -51,6 +51,7 @@ export function BuscarFirmados() {
   const [errorDatosBusa, setErrorDatosBusa] = useState(null);
 
   const [expandedPanels, setExpandedPanels] = useState({});
+  const [desabilitarAEVBUSA, setDesabilitarAEVBUSA] = useState(true);
 
   const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
@@ -387,12 +388,14 @@ export function BuscarFirmados() {
           key={updateComponent}
           selectedCodid={selectedCodid}
           titulo={titulo}
+          desabilitarAEVBUSA={desabilitarAEVBUSA}
         />
       )}
       {tipoVivien && (
         <DatosComplViviend
           key={updateComponent}
           selectedContCod={selectedContCod}
+          desabilitarAEVBUSA={desabilitarAEVBUSA}
         />
       )}
       <br />

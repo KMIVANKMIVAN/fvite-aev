@@ -56,7 +56,12 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-export function DatosComplViviend({ selectedContCod, vivienda }) {
+export function DatosComplViviend({
+  selectedContCod,
+  desabilitarAEV,
+  desabilitarBUSA,
+  desabilitarAEVBUSA,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
@@ -246,7 +251,9 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={row.buttonAEV}
+                                        disabled={
+                                          row.buttonBUSA === 1 ? true : false
+                                        }
                                         color="error"
                                         size="small"
                                         component="span"
@@ -273,14 +280,20 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-AEV"}
-                                      buttonAEVBUSA={row.buttonAEV}
+                                      // buttonAEVBUSA={row.buttonAEV}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === 1 ? true : false
+                                      }
                                     />
                                   </ButtonGroup>
                                   <h2 className="text-center text-mi-color-primario"></h2>
                                   <div className="pb-2 flex  justify-center items-center">
                                     <AnexsosPdf
                                       nombrepdf={row.iddesem}
-                                      buttonAEV={row.buttonAEV}
+                                      // buttonAEV={row.buttonAEV}
+                                      buttonAEV={
+                                        row.buttonAEV === 1 ? true : false
+                                      }
                                     />
                                   </div>
                                 </>
@@ -288,22 +301,30 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-AEV`}
-                                    buttonAEVBUSA={row.buttonAEV}
+                                    // buttonAEVBUSA={row.buttonAEV}
+                                    buttonAEVBUSA={
+                                      row.buttonAEV === 1 ? true : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "id_bancoaev" ? (
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
-                                    vivienda={vivienda}
-                                    buttonAEVBUSA={row.buttonBUSA}
+                                    // buttonAEVBUSA={row.buttonBUSA}
+                                    buttonAEVBUSA={
+                                      row.buttonBUSA === 1 ? true : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "iddesem_anexo" ? (
                                 <>
                                   <BajarEliminarAnexos
                                     nombrepdf={row.iddesem}
-                                    buttonAEV={row.buttonAEV}
+                                    // buttonAEV={row.buttonAEV}
+                                    buttonAEV={
+                                      row.buttonAEV === 1 ? true : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "iddesem_busa" ? (
@@ -324,10 +345,8 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
                                     >
                                       <Button
                                         // disabled={row.buttonBUSA}
-                                        // disabled={true}
-                                        // disabled={vivienda}
                                         disabled={
-                                          vivienda ? vivienda : row.buttonBUSA
+                                          row.buttonBUSA === 1 ? true : false
                                         }
                                         color="error"
                                         size="small"
@@ -355,8 +374,10 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-BUSA"}
-                                      buttonAEVBUSA={row.buttonBUSA}
-                                      vivienda={vivienda}
+                                      // buttonAEVBUSA={row.buttonBUSA}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === 1 ? true : false
+                                      }
                                     />
                                   </ButtonGroup>
                                 </>
@@ -415,8 +436,8 @@ export function DatosComplViviend({ selectedContCod, vivienda }) {
       </Paper>
       <br />
       {respuestasError && (
-          <p className="text-red-700 text-center p-5">{respuestasError}</p>
-        )}
+        <p className="text-red-700 text-center p-5">{respuestasError}</p>
+      )}
       {respuestas === false && nombrePdfSeleccionado && (
         <div ref={instructivoRef}>
           <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />

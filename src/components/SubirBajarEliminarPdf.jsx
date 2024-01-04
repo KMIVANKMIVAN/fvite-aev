@@ -250,7 +250,8 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
         </Tooltip>
         <Tooltip title="Eliminar PDF" placement="right-start">
           <Button
-            disabled={vivienda ? vivienda : buttonAEVBUSA}
+            // disabled={vivienda ? vivienda : buttonAEVBUSA}
+            disabled={buttonAEVBUSA}
             size="small"
             color="error"
             onClick={eliminarPdf}

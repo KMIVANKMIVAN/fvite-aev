@@ -50,7 +50,7 @@ function Submenu() {
           onClick={() => navigate("/dashboardclient/busaaevfirmados")}
         >
           {<NavigateNextIcon />}
-          <span>Firmados AEV Y BUSA</span>
+          <span>Firmados AEV y BUSA</span>
         </div>
       </li>
       {/* <li className="rounded-sm pt-1">

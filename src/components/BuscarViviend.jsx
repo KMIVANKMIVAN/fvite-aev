@@ -47,7 +47,7 @@ export function BuscarViviend() {
   const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
   const [expandedPanels, setExpandedPanels] = useState({});
-  const [vivienda, setVivienda] = useState(true);
+  const [desabilitarAEV, setDesabilitarAEV] = useState(true);
 
   const handleChange = (index) => (event, isExpanded) => {
     setExpandedPanels({
@@ -249,7 +249,7 @@ export function BuscarViviend() {
       <DatosComplViviend
         key={updateComponent}
         selectedContCod={selectedContCod}
-        vivienda={vivienda}
+        desabilitarAEV={desabilitarAEV}
       />
       <br />
     </>

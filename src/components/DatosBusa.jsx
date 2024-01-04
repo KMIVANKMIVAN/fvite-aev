@@ -258,7 +258,10 @@ export function DatosBusa({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={row.buttonAEV}
+                                        // disabled={row.buttonAEV}
+                                        disabled={
+                                          row.buttonAEV === 1 ? true : false
+                                        }
                                         color="error"
                                         size="small"
                                         component="span"
@@ -285,14 +288,20 @@ export function DatosBusa({ selectedContCod }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-AEV"}
-                                      buttonAEVBUSA={row.buttonAEV}
+                                      // buttonAEVBUSA={row.buttonAEV}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === 1 ? true : false
+                                      }
                                     />
                                   </ButtonGroup>
                                   <h2 className="text-center text-mi-color-primario"></h2>
                                   <div className="pb-2 flex  justify-center items-center">
                                     <AnexsosPdf
                                       nombrepdf={row.iddesem}
-                                      buttonAEV={row.buttonAEV}
+                                      // buttonAEV={row.buttonAEV}
+                                      buttonAEV={
+                                        row.buttonAEV === 1 ? true : false
+                                      }
                                     />
                                   </div>
                                 </>
@@ -300,21 +309,30 @@ export function DatosBusa({ selectedContCod }) {
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-AEV`}
-                                    buttonAEVBUSA={row.buttonAEV}
+                                    // buttonAEVBUSA={row.buttonAEV}
+                                    buttonAEVBUSA={
+                                      row.buttonAEV === 1 ? true : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "id_bancoaev" ? (
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
-                                    buttonAEVBUSA={row.buttonBUSA}
+                                    // buttonAEVBUSA={row.buttonBUSA}
+                                    buttonAEVBUSA={
+                                      row.buttonBUSA === 1 ? true : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "iddesem_anexo" ? (
                                 <>
                                   <BajarEliminarAnexos
                                     nombrepdf={row.iddesem}
-                                    buttonAEV={row.buttonAEV}
+                                    // buttonAEV={row.buttonAEV}
+                                    buttonAEV={
+                                      row.buttonAEV === 1 ? true : false
+                                    }
                                   />
                                 </>
                               ) : column.id === "iddesem_busa" ? (
@@ -334,7 +352,10 @@ export function DatosBusa({ selectedContCod }) {
                                       placement="left-end"
                                     >
                                       <Button
-                                        disabled={row.buttonBUSA}
+                                        // disabled={row.buttonBUSA}
+                                        disabled={
+                                          row.buttonBUSA === 1 ? true : false
+                                        }
                                         color="error"
                                         size="small"
                                         component="span"
@@ -361,7 +382,10 @@ export function DatosBusa({ selectedContCod }) {
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-BUSA"}
-                                      buttonAEVBUSA={row.buttonBUSA}
+                                      // buttonAEVBUSA={row.buttonBUSA}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === 1 ? true : false
+                                      }
                                     />
                                   </ButtonGroup>
                                 </>

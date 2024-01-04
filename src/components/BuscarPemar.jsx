@@ -44,7 +44,7 @@ export function BuscarPemar() {
 
   const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
-  const [vivienda, setVivienda] = useState(true);
+  const [desabilitarAEV, setDesabilitarAEV] = useState(true);
 
   const [expandedPanels, setExpandedPanels] = useState({});
   const [errorSearch, setErrorSearch] = useState(null);
@@ -293,7 +293,7 @@ export function BuscarPemar() {
         key={updateComponent}
         selectedCodid={selectedCodid}
         titulo={titulo}
-        vivienda={vivienda}
+        desabilitarAEV={desabilitarAEV}
       />
       <br />
     </>

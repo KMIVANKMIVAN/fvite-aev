@@ -51,6 +51,7 @@ export function BuscarFirmar() {
   const [errorDatosBusa, setErrorDatosBusa] = useState(null);
 
   const [expandedPanels, setExpandedPanels] = useState({});
+  const [desabilitarBUSA, setDesabilitarBUSA] = useState(true);
 
   const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
@@ -90,7 +91,6 @@ export function BuscarFirmar() {
 
     datosparabusa();
   }, []);
-
   const handleUploadPDFs = (dataContCod) => {
     setSelectedContCod(dataContCod);
 
@@ -102,8 +102,8 @@ export function BuscarFirmar() {
       const esPemar = selectedData && selectedData.tipo.includes("P.M.A.R.");
       const esViviendaNueva =
         selectedData && selectedData.tipo.includes("Vivienda Nueva");
-
       if (esPemar) {
+        console.log("entro a qui pemar");
         setTipoPemar(true);
         setTipoVivien(false);
         setTitulo(selectedData.nombre_proyecto);
@@ -387,12 +387,14 @@ export function BuscarFirmar() {
           key={updateComponent}
           selectedCodid={selectedCodid}
           titulo={titulo}
+          desabilitarBUSA={desabilitarBUSA}
         />
       )}
       {tipoVivien && (
         <DatosComplViviend
           key={updateComponent}
           selectedContCod={selectedContCod}
+          desabilitarBUSA={desabilitarBUSA}
         />
       )}
       <br />
