@@ -256,17 +256,6 @@ export function DatosPemar({
                                       placement="left-end"
                                     >
                                       <Button
-                                        // disabled={row.buttonAEV}
-                                        /* disabled={
-                                          row.buttonAEV === 1 ? true : false
-                                        } */
-                                        /* disabled={
-                                          desabilitarBUSA
-                                            ? true
-                                            : row.buttonAEV === 1
-                                            ? true
-                                            : false
-                                        } */
                                         disabled={
                                           desabilitarAEVBUSA
                                             ? true
@@ -302,14 +291,7 @@ export function DatosPemar({
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.id + "-AEV"}
-                                      // buttonAEVBUSA={row.buttonAEV}
                                       buttonAEVBUSA={
-                                        // row.buttonAEV === 1 ? true : false
-                                        /* desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false */
                                         desabilitarAEVBUSA
                                           ? true
                                           : desabilitarBUSA
@@ -324,14 +306,7 @@ export function DatosPemar({
                                   <div className="pb-2 flex  justify-center items-center">
                                     <AnexsosPdf
                                       nombrepdf={row.id}
-                                      // buttonAEV={row.buttonAEV}
                                       buttonAEV={
-                                        // row.buttonAEV === 1 ? true : false
-                                        /* desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false */
                                         desabilitarAEVBUSA
                                           ? true
                                           : desabilitarBUSA
@@ -347,14 +322,7 @@ export function DatosPemar({
                                 <>
                                   <BajarEliminarAnexos
                                     nombrepdf={row.id}
-                                    // buttonAEV={row.buttonAEV}
                                     buttonAEV={
-                                      // row.buttonAEV === 1 ? true : false
-                                      /* desabilitarBUSA
-                                        ? true
-                                        : row.buttonAEV === 1
-                                        ? true
-                                        : false */
                                       desabilitarAEVBUSA
                                         ? true
                                         : desabilitarBUSA
@@ -369,14 +337,7 @@ export function DatosPemar({
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-AEV`}
-                                    // buttonAEVBUSA={row.buttonAEV}
                                     buttonAEVBUSA={
-                                      // row.buttonAEV === 1 ? true : false
-                                      /* desabilitarBUSA
-                                        ? true
-                                        : row.buttonAEV === 1
-                                        ? true
-                                        : false */
                                       desabilitarAEVBUSA
                                         ? true
                                         : desabilitarBUSA
@@ -391,14 +352,7 @@ export function DatosPemar({
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
-                                    // buttonAEVBUSA={row.buttonBUSA}
                                     buttonAEVBUSA={
-                                      // row.buttonBUSA === 1 ? true : false
-                                      /* desabilitarAEV
-                                        ? true
-                                        : row.buttonBUSA === 1
-                                        ? true
-                                        : false */
                                       desabilitarAEVBUSA
                                         ? true
                                         : desabilitarAEV
@@ -427,12 +381,6 @@ export function DatosPemar({
                                     >
                                       <Button
                                         disabled={
-                                          // row.buttonBUSA === 1 ? true : false
-                                          /* desabilitarAEV
-                                            ? true
-                                            : row.buttonBUSA === 1
-                                            ? true
-                                            : false */
                                           desabilitarAEVBUSA
                                             ? true
                                             : desabilitarAEV
@@ -467,14 +415,7 @@ export function DatosPemar({
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.id + "-BUSA"}
-                                      // buttonAEVBUSA={row.buttonBUSA}
                                       buttonAEVBUSA={
-                                        // row.buttonBUSA === 1 ? true : false
-                                        /* desabilitarAEV
-                                          ? true
-                                          : row.buttonBUSA === 1
-                                          ? true
-                                          : false */
                                         desabilitarAEVBUSA
                                           ? true
                                           : desabilitarAEV

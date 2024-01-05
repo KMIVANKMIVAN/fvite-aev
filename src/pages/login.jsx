@@ -4,6 +4,13 @@ import axios from "axios";
 import { guardarToken } from "../utils/auth";
 import { guardarUserId, guardarUserNivel } from "../utils/userdata";
 
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+
 export function Login() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
   const navigate = useNavigate();
@@ -65,76 +72,110 @@ export function Login() {
     }
   };
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 ">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 ">
-          Iniciar sesión en su cuenta
-        </h2>
-      </div>
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium leading-6 text-gray-900 "
-            >
-              Nombre de Usuario
-            </label>
-            <div className="mt-2">
-              <input
-                id="username"
-                name="username"
-                type="text"
-                autoComplete="text"
-                required
-                value={formData.username}
-                onChange={handleInputChange}
-                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-            {loginErrorMensaje && (
-              <p className="text-red-700 text-center">{loginErrorMensaje}</p>
+    <div
+      className="flex justify-center items-center h-full"
+      /* style={{
+        backgroundImage: `url(../public/portadalogin.jpg)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.9)", // Cambia el último valor (0.5) para ajustar la transparencia
+      }} */
+    >
+      <div className="">
+        {/* <Card
+          elevation={24}
+          sx={{
+            minWidth: { xs: 345, md: 500 }, // Establecer el ancho mínimo para xs (extra pequeño) y md (mediano)
+          }}
+        > */}
+        <Card
+          elevation={24}
+          sx={{
+            minWidth: { xs: 345, md: 500 }, // Establecer el ancho mínimo para xs (extra pequeño) y md (mediano)
+            transition: "transform 0.3s ease-in-out",
+            "&:hover": {
+              transform: "scale(1.05) rotateX(3deg) rotateY(3deg)",
+            },
+          }}
+        >
+          <CardMedia sx={{ height: 130 }} image="../public/portadalogin.jpg" />
+          <CardContent>
+            <p className="text-center my-5 text-2xl text-mi-color-primario font-bold">
+              Iniciar Sesión
+            </p>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium leading-6 text-gray-900 "
+                >
+                  Nombre de Usuario
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="text"
+                    required
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                {loginErrorMensaje && (
+                  <p className="text-red-700 text-center">
+                    {loginErrorMensaje}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium leading-6 text-gray-900 "
+                  >
+                    Contraseña
+                  </label>
+                  <button
+                    type="button"
+                    className="text-sm font-medium leading-6 text-gray-900 hover:text-indigo-600 "
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+                  </button>
+                </div>
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap mx-auto py-3 justify-center items-center">
+                <button
+                  type="submit"
+                  className=" rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Iniciar sesión
+                </button>
+              </div>
+            </form>
+            {loginError && (
+              <p className="text-red-700 text-center">{loginError}</p>
             )}
-          </div>
-          <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900 "
-              >
-                Contraseña
-              </label>
-              <button
-                type="button"
-                className="text-sm font-medium leading-6 text-gray-900 hover:text-indigo-600 "
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "Ocultar contraseña" : "Ver contraseña"}
-              </button>
-            </div>
-            <div className="mt-2">
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-          <div className="flex flex-wrap mx-auto py-3 justify-center items-center">
-            <button
-              type="submit"
-              className=" rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Iniciar sesión
-            </button>
-          </div>
-        </form>
-        {loginError && <p className="text-red-700 text-center">{loginError}</p>}
+          </CardContent>
+          <CardMedia
+            sx={{ height: 250 }}
+            image="../public/portal abajo 2.jpg"
+          />
+        </Card>
       </div>
     </div>
   );

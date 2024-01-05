@@ -228,7 +228,6 @@ export function DatosComplViviend({
                               column.id === "descuento_anti_reten" ||
                               column.id === "monto_fisico" ||
                               column.id === "monto_desembolsado" ? (
-                                // formatearNumero(value)
                                 formatearNumero(
                                   value !== null && value !== undefined
                                     ? value
@@ -252,7 +251,13 @@ export function DatosComplViviend({
                                     >
                                       <Button
                                         disabled={
-                                          row.buttonBUSA === 1 ? true : false
+                                          desabilitarAEVBUSA
+                                            ? true
+                                            : desabilitarBUSA
+                                            ? true
+                                            : row.buttonAEV === 1
+                                            ? true
+                                            : false
                                         }
                                         color="error"
                                         size="small"
@@ -280,7 +285,6 @@ export function DatosComplViviend({
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-AEV"}
-                                      // buttonAEVBUSA={row.buttonAEV}
                                       buttonAEVBUSA={
                                         row.buttonAEV === 1 ? true : false
                                       }
@@ -290,9 +294,14 @@ export function DatosComplViviend({
                                   <div className="pb-2 flex  justify-center items-center">
                                     <AnexsosPdf
                                       nombrepdf={row.iddesem}
-                                      // buttonAEV={row.buttonAEV}
                                       buttonAEV={
-                                        row.buttonAEV === 1 ? true : false
+                                        desabilitarAEVBUSA
+                                          ? true
+                                          : desabilitarBUSA
+                                          ? true
+                                          : row.buttonAEV === 1
+                                          ? true
+                                          : false
                                       }
                                     />
                                   </div>
@@ -301,9 +310,14 @@ export function DatosComplViviend({
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-AEV`}
-                                    // buttonAEVBUSA={row.buttonAEV}
                                     buttonAEVBUSA={
-                                      row.buttonAEV === 1 ? true : false
+                                      desabilitarAEVBUSA
+                                        ? true
+                                        : desabilitarBUSA
+                                        ? true
+                                        : row.buttonAEV === 1
+                                        ? true
+                                        : false
                                     }
                                   />
                                 </>
@@ -311,9 +325,14 @@ export function DatosComplViviend({
                                 <>
                                   <EnviarBanco
                                     nombrepdf={`${row.id}-BUSA`}
-                                    // buttonAEVBUSA={row.buttonBUSA}
                                     buttonAEVBUSA={
-                                      row.buttonBUSA === 1 ? true : false
+                                      desabilitarAEVBUSA
+                                        ? true
+                                        : desabilitarAEV
+                                        ? true
+                                        : row.buttonBUSA === 1
+                                        ? true
+                                        : false
                                     }
                                   />
                                 </>
@@ -321,9 +340,14 @@ export function DatosComplViviend({
                                 <>
                                   <BajarEliminarAnexos
                                     nombrepdf={row.iddesem}
-                                    // buttonAEV={row.buttonAEV}
                                     buttonAEV={
-                                      row.buttonAEV === 1 ? true : false
+                                      desabilitarAEVBUSA
+                                        ? true
+                                        : desabilitarBUSA
+                                        ? true
+                                        : row.buttonAEV === 1
+                                        ? true
+                                        : false
                                     }
                                   />
                                 </>
@@ -344,9 +368,14 @@ export function DatosComplViviend({
                                       placement="left-end"
                                     >
                                       <Button
-                                        // disabled={row.buttonBUSA}
                                         disabled={
-                                          row.buttonBUSA === 1 ? true : false
+                                          desabilitarAEVBUSA
+                                            ? true
+                                            : desabilitarAEV
+                                            ? true
+                                            : row.buttonBUSA === 1
+                                            ? true
+                                            : false
                                         }
                                         color="error"
                                         size="small"
@@ -374,9 +403,14 @@ export function DatosComplViviend({
                                     </Tooltip>
                                     <SubirBajarEliminarPdf
                                       nombrepdf={row.iddesem + "-BUSA"}
-                                      // buttonAEVBUSA={row.buttonBUSA}
                                       buttonAEVBUSA={
-                                        row.buttonBUSA === 1 ? true : false
+                                        desabilitarAEVBUSA
+                                          ? true
+                                          : desabilitarAEV
+                                          ? true
+                                          : row.buttonBUSA === 1
+                                          ? true
+                                          : false
                                       }
                                     />
                                   </ButtonGroup>
