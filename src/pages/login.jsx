@@ -5,11 +5,12 @@ import { guardarToken } from "../utils/auth";
 import { guardarUserId, guardarUserNivel } from "../utils/userdata";
 
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+
+import portadalogin from "../assets/portadalogin.jpg";
+import portalabajo2 from "../assets/portalabajo2.jpg";
 
 export function Login() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -72,33 +73,19 @@ export function Login() {
     }
   };
   return (
-    <div
-      className="flex justify-center items-center h-full"
-      /* style={{
-        backgroundImage: `url(../public/portadalogin.jpg)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundColor: "rgba(255, 255, 255, 0.9)", // Cambia el último valor (0.5) para ajustar la transparencia
-      }} */
-    >
+    <div className="flex justify-center items-center h-full">
       <div className="">
-        {/* <Card
-          elevation={24}
-          sx={{
-            minWidth: { xs: 345, md: 500 }, // Establecer el ancho mínimo para xs (extra pequeño) y md (mediano)
-          }}
-        > */}
         <Card
           elevation={24}
           sx={{
-            minWidth: { xs: 345, md: 500 }, // Establecer el ancho mínimo para xs (extra pequeño) y md (mediano)
+            minWidth: { xs: 345, md: 500 },
             transition: "transform 0.3s ease-in-out",
             "&:hover": {
               transform: "scale(1.05) rotateX(3deg) rotateY(3deg)",
             },
           }}
         >
-          <CardMedia sx={{ height: 130 }} image="../public/portadalogin.jpg" />
+          <CardMedia sx={{ height: 130 }} image={portadalogin} />
           <CardContent>
             <p className="text-center my-5 text-2xl text-mi-color-primario font-bold">
               Iniciar Sesión
@@ -171,10 +158,7 @@ export function Login() {
               <p className="text-red-700 text-center">{loginError}</p>
             )}
           </CardContent>
-          <CardMedia
-            sx={{ height: 250 }}
-            image="../public/portal abajo 2.jpg"
-          />
+          <CardMedia sx={{ height: 250 }} image={portalabajo2} />
         </Card>
       </div>
     </div>

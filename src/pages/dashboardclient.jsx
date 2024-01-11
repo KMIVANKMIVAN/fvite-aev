@@ -16,6 +16,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
+import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useNavigate } from "react-router-dom";
 
 function Submenu() {
@@ -119,6 +120,10 @@ export function DashboardClient() {
       submenuOpen ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />
     );
   };
+
+  const handleRedirect = (url) => {
+    window.open(url, "_blank");
+  };
   return (
     <div className="flex-row lg:flex">
       <div className="flex flex-col w-full p-3 bg-mi-color-secundario text-white shadow lg:h-screen lg:w-72">
@@ -128,8 +133,20 @@ export function DashboardClient() {
           </div>
           <div className="flex-1">
             <ul className="pt-2 pb-4 space-y-1 text-sm">
+              <li className="rounded-sm">
+                <div
+                  className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                  role="button"
+                  onClick={() =>
+                    handleRedirect("https://firmadigital.bo/jacobitus4/")
+                  }
+                >
+                  <TouchAppIcon />
+                  <span>JACOBITUS TOTAL</span>
+                </div>
+              </li>
               {obtenerUserNivel() === 1 && (
-                <li className="rounded-sm pt-1">
+                <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
                     role="button"
@@ -141,7 +158,7 @@ export function DashboardClient() {
                 </li>
               )}
               {(obtenerUserNivel() === 40 || obtenerUserNivel() === 1) && (
-                <li className="rounded-sm pt-1">
+                <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
                     role="button"

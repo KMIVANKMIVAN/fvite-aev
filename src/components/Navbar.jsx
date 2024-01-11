@@ -1,21 +1,16 @@
-/* import LogotipoAEV from "../assets/LogotipoAEV.png";
-export function Navbar() {
-  return (
-    <div className="bg-contain bg-center  ">
-      <img src={LogotipoAEV} alt="icon" className="w-100 mx-auto" />
-    </div>
-  );
-}
- */
 import React from "react";
 import Paper from "@mui/material/Paper";
-import LogotipoAEV from "../assets/LogotipoAEV.png";
+import navbar from "../assets/navbar.png";
 
 export function Navbar() {
   return (
-    <Paper elevation={24} style={{ padding: "20px", marginBottom: "50px" }}>
-      <div className="bg-contain bg-center">
-        <img src={LogotipoAEV} alt="icon" className="w-100 mx-auto" />
+    <Paper elevation={24} style={{ marginBottom: "50px" }}>
+      <div className="bg-contain bg-center" style={{ textAlign: "center" }}>
+        <img
+          src={navbar}
+          style={{ height: "80px", display: "inline-block" }}
+          alt="Navbar"
+        />
       </div>
     </Paper>
   );

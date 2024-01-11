@@ -15,6 +15,8 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+
+import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { useNavigate } from "react-router-dom";
 
 function Submenu() {
@@ -116,7 +118,9 @@ export function Dashboard() {
       submenuOpen ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />
     );
   };
-
+  const handleRedirect = (url) => {
+    window.open(url, "_blank");
+  };
   return (
     <>
       <div className="flex-row lg:flex">
@@ -127,7 +131,19 @@ export function Dashboard() {
             </div>
             <div className="flex-1">
               <ul className="pt-2 pb-4 space-y-1 text-sm">
-                <li className="rounded-sm pt-1">
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
+                    role="button"
+                    onClick={() =>
+                      handleRedirect("https://firmadigital.bo/jacobitus4/")
+                    }
+                  >
+                    <TouchAppIcon />
+                    <span>JACOBITUS TOTAL</span>
+                  </div>
+                </li>
+                <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     role="button"
@@ -137,7 +153,7 @@ export function Dashboard() {
                     <span>Usuarios</span>
                   </div>
                 </li>
-                <li className="rounded-sm pt-1">
+                <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     role="button"
