@@ -33,7 +33,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
-export function BuscarPemar() {
+export function BuscarPemar({ codigoProyecto }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);

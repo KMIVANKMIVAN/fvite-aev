@@ -13,6 +13,9 @@ import { ViviendaNueva } from "./pages/dashboardclient/viviendanueva.jsx";
 import { Pemar } from "./pages/dashboardclient/pemar.jsx";
 import { Busafirmar } from "./pages/dashboardclient/busafirmar.jsx";
 import { BusaAevFirmados } from "./pages/dashboardclient/busaaevfirmados.jsx";
+import { Proyectos } from "./pages/dashboardclient/proyectos.jsx";
+import { GastosExtra } from "./pages/dashboardclient/gastosextra.jsx";
+import { PagosCut } from "./pages/dashboardclient/pagoscut.jsx";
 
 import RequireAuth from "./utils/requireAuth.jsx";
 
@@ -66,6 +69,18 @@ const router = createBrowserRouter([
       {
         path: "busaaevfirmados",
         element: <BusaAevFirmados />,
+      },
+      {
+        path: "proyectos",
+        element: <Proyectos />,
+      },
+      {
+        path: "gastosExtra",
+        element: <GastosExtra />,
+      },
+      {
+        path: "pagosCut",
+        element: <PagosCut />,
       },
     ],
   },

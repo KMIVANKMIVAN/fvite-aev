@@ -34,7 +34,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
 
-export function BuscarViviend() {
+export function BuscarViviend({ codigoProyecto }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);

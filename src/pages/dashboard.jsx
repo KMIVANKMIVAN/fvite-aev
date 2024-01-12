@@ -8,6 +8,8 @@ import {
   eliminarUserId,
 } from "../utils/userdata";
 
+import ArticleIcon from '@mui/icons-material/Article';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -15,7 +17,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-
+import GiteIcon from '@mui/icons-material/Gite';
 import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { useNavigate } from "react-router-dom";
 
@@ -157,13 +159,43 @@ export function Dashboard() {
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     role="button"
+                    onClick={() => navigate("/dashboardclient/proyectos")}
+                  >
+                    {<GiteIcon />}
+                    <span>Proyectos</span>
+                  </div>
+                </li>
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
+                    role="button"
+                    onClick={() => navigate("/dashboardclient/gastosextra")}
+                  >
+                    {<AssessmentIcon />}
+                    <span>Gastos Extraudinarios</span>
+                  </div>
+                </li>
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
+                    role="button"
+                    onClick={() => navigate("/dashboardclient/pagoscut")}
+                  >
+                    {<ArticleIcon />}
+                    <span>Pagos C.U.T.</span>
+                  </div>
+                </li>
+                <li className="rounded-sm">
+                  <div
+                    className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
+                    role="button"
                     onClick={() => navigate("/dashboardclient/busafirmar")}
                   >
                     {<AccountBalanceIcon />}
                     <span>BUSA</span>
                   </div>
                 </li>
-                <li className="rounded-sm">
+                {/* <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"
                     onClick={toggleSubmenu}
@@ -173,7 +205,7 @@ export function Dashboard() {
                     {arrowIcon}
                   </div>
                   {submenuOpen && <Submenu />}
-                </li>
+                </li> */}
                 <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md text-white hover:bg-c4p2 bg-c2p2"

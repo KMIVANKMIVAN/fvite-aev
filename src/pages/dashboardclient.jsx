@@ -8,6 +8,9 @@ import {
   eliminarUserId,
 } from "../utils/userdata";
 
+import GiteIcon from "@mui/icons-material/Gite";
+import ArticleIcon from "@mui/icons-material/Article";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,7 +19,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
-import TouchAppIcon from '@mui/icons-material/TouchApp';
+import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { useNavigate } from "react-router-dom";
 
 function Submenu() {
@@ -157,19 +160,53 @@ export function DashboardClient() {
                   </div>
                 </li>
               )}
-              {(obtenerUserNivel() === 40 || obtenerUserNivel() === 1) && (
-                <li className="rounded-sm">
-                  <div
-                    className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
-                    role="button"
-                    onClick={() => navigate("/dashboardclient/busafirmar")}
-                  >
-                    {<AccountBalanceIcon />}
-                    <span>BUSA</span>
-                  </div>
-                </li>
+              {(obtenerUserNivel() === 40 ||
+                obtenerUserNivel() === 1 ||
+                obtenerUserNivel() === 9) && (
+                <>
+                  <li className="rounded-sm">
+                    <div
+                      className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                      role="button"
+                      onClick={() => navigate("/dashboardclient/proyectos")}
+                    >
+                      {<GiteIcon />}
+                      <span>Proyectos</span>
+                    </div>
+                  </li>
+                  <li className="rounded-sm">
+                    <div
+                      className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                      role="button"
+                      onClick={() => navigate("/dashboardclient/gastosextra")}
+                    >
+                      {<AssessmentIcon />}
+                      <span>Gastos Extraudinarios</span>
+                    </div>
+                  </li>
+                  <li className="rounded-sm">
+                    <div
+                      className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                      role="button"
+                      onClick={() => navigate("/dashboardclient/pagoscut")}
+                    >
+                      {<ArticleIcon />}
+                      <span>Pagos C.U.T.</span>
+                    </div>
+                  </li>
+                  <li className="rounded-sm">
+                    <div
+                      className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
+                      role="button"
+                      onClick={() => navigate("/dashboardclient/busafirmar")}
+                    >
+                      {<AccountBalanceIcon />}
+                      <span>BUSA</span>
+                    </div>
+                  </li>
+                </>
               )}
-              {(obtenerUserNivel() === 9 || obtenerUserNivel() === 1) && (
+              {/* {(obtenerUserNivel() === 9 || obtenerUserNivel() === 1) && (
                 <li className="rounded-sm">
                   <div
                     className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
@@ -181,7 +218,7 @@ export function DashboardClient() {
                   </div>
                   {submenuOpen && <Submenu />}
                 </li>
-              )}
+              )} */}
               <li className="rounded-sm">
                 <div
                   className="flex items-center p-2 space-x-3 rounded-md hover:bg-mi-color-primario bg-mi-color-terceario"
