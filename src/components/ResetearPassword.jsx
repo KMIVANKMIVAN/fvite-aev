@@ -6,8 +6,8 @@ import { obtenerToken } from "../utils/auth";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
+import Typography from "@mui/material/Typography";
 import KeyIcon from "@mui/icons-material/Key";
 
 import Button from "@mui/material/Button";
@@ -69,24 +69,35 @@ export function ResetearPassword({ userId }) {
   };
   return (
     <>
-      <Button onClick={handleClickOpen} endIcon={<KeyIcon />}></Button>
+      <KeyIcon
+        size="large"
+        className="text-red-500"
+        onClick={handleClickOpen}
+      />
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"¿Está seguro de resetear la contraseña a 708090?"}
-        </DialogTitle>
+        <Typography
+          className="text-center text-mi-color-terceario px-5 pt-5"
+          variant="h5"
+          gutterBottom
+        >
+          ¿Está seguro de resetear la contraseña a 708090?
+        </Typography>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             <div style={{ display: "flex", justifyContent: "center" }}>
               <ButtonGroup
-                variant="contained"
+                variant="outlined"
                 aria-label="outlined primary button group"
               >
                 <Button
+                  variant="outlined"
+                  size="large"
+                  aria-label="large button group"
                   onClick={() => {
                     resetearPassword();
                     handleClose();
@@ -95,7 +106,13 @@ export function ResetearPassword({ userId }) {
                 >
                   Sí
                 </Button>
-                <Button onClick={handleClose} autoFocus>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  aria-label="large button group"
+                  onClick={handleClose}
+                  color="success"
+                >
                   No
                 </Button>
               </ButtonGroup>

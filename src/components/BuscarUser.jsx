@@ -8,51 +8,20 @@ import { obtenerToken } from "../utils/auth";
 import { AcordeonUser } from "./AcordeonUser";
 import { ResetearPassword } from "./ResetearPassword";
 
-import Stack from "@mui/material/Stack";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 
-import { styled } from "@mui/material/styles";
-import { makeStyles } from "@material-ui/core/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
+import Typography from "@mui/material/Typography";
 
 import { HabilitarDes } from "./HabilitarDes";
 import { ActualizarUser } from "./ActualizarUser";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: "#004f81",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    color: "#004f81",
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-const useStyles = makeStyles({
-  root: {
-    width: "100%",
-  },
-  tableCell: {
-    fontSize: "0.75rem",
-  },
-});
 
 import { useSelector } from "react-redux";
 
@@ -67,11 +36,11 @@ export function BuscarUser({ urltable }) {
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  const classes = useStyles();
-
   const [selectedHabilitado, setSelectedHabilitado] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isActualizarUserVisible, setIsActualizarUserVisible] = useState(false);
+
+  const [reloadComponents, setReloadComponents] = useState(false);
 
   const handleInputChange = (event) => {
     const { value } = event.target;
@@ -98,6 +67,7 @@ export function BuscarUser({ urltable }) {
       const response = await axios.get(url, { headers });
 
       if (response.status === 200) {
+        setReloadComponents(!reloadComponents);
         setErrorDatoscontratoData(null);
         setDatoscontratoData(response.data);
         setIsDataLoaded(true);
@@ -120,29 +90,54 @@ export function BuscarUser({ urltable }) {
     }
   };
   const columns = [
-    { id: "id", label: "ID", minWidth: 50 },
-    { id: "actualizar", label: "ACTUALIZAR", minWidth: 100 },
-    { id: "habilitardes", label: "HABILITAR DESHABILITAR", minWidth: 100 },
-    { id: "resetear", label: "RESETEAR CONSTRASEñA", minWidth: 100 },
-    { id: "habilitado", label: "HABILITADO", minWidth: 50 },
-    { id: "username", label: "USUARIO", minWidth: 150 },
-    { id: "superior", label: "SUPERIOR", minWidth: 50 },
-    { id: "nombre", label: "NOMBRES", minWidth: 250 },
-    { id: "nivel", label: "NIVEL", minWidth: 50 },
-    { id: "prioridad", label: "PRIORIDAD/GENERICA", minWidth: 50 },
-    { id: "id_oficina", label: "ID DE OFICINA", minWidth: 50 },
-    { id: "dependencia", label: "DEPENDENCIA", minWidth: 50 },
-    { id: "last_login", label: "LAST LOGIN", minWidth: 50 },
-    { id: "mosca", label: "MOSCA", minWidth: 50 },
-    { id: "cargo", label: "CARGO", minWidth: 350 },
-    { id: "email", label: "CORREO", minWidth: 50 },
-    { id: "logins", label: "LOGIN", minWidth: 50 },
-    { id: "fecha_creacion", label: "FECHA DE CREACION", minWidth: 50 },
-    { id: "genero", label: "GENERO", minWidth: 50 },
-    { id: "id_entidad", label: "ID ENTIDAD", minWidth: 50 },
-    { id: "cedula_identidad", label: "CEDULA IDENTIDAD", minWidth: 50 },
-    { id: "expedido", label: "EXPENDIO", minWidth: 50 },
-    { id: "super", label: "SUPER", minWidth: 50 },
+    { id: "id", label: "ID", minWidth: 50, align: "center" },
+    { id: "actualizar", label: "ACTUALIZAR", minWidth: 100, align: "center" },
+    {
+      id: "habilitardes",
+      label: "DESHABILITADO / HABILITADO",
+      minWidth: 100,
+      align: "center",
+    },
+    {
+      id: "resetear",
+      label: "RESETEAR CONSTRASEñA",
+      minWidth: 100,
+      align: "center",
+    },
+    { id: "habilitado", label: "HABILITADO", minWidth: 50, align: "center" },
+    { id: "username", label: "USUARIO", minWidth: 150, align: "center" },
+    { id: "superior", label: "SUPERIOR", minWidth: 50, align: "center" },
+    { id: "nombre", label: "NOMBRES", minWidth: 250, align: "center" },
+    { id: "nivel", label: "NIVEL", minWidth: 50, align: "center" },
+    {
+      id: "prioridad",
+      label: "PRIORIDAD/GENERICA",
+      minWidth: 50,
+      align: "center",
+    },
+    { id: "id_oficina", label: "ID DE OFICINA", minWidth: 50, align: "center" },
+    { id: "dependencia", label: "DEPENDENCIA", minWidth: 50, align: "center" },
+    { id: "last_login", label: "LAST LOGIN", minWidth: 50, align: "center" },
+    { id: "mosca", label: "MOSCA", minWidth: 50, align: "center" },
+    { id: "cargo", label: "CARGO", minWidth: 350, align: "center" },
+    { id: "email", label: "CORREO", minWidth: 50, align: "center" },
+    { id: "logins", label: "LOGIN", minWidth: 50, align: "center" },
+    {
+      id: "fecha_creacion",
+      label: "FECHA DE CREACION",
+      minWidth: 50,
+      align: "center",
+    },
+    { id: "genero", label: "GENERO", minWidth: 50, align: "center" },
+    { id: "id_entidad", label: "ID ENTIDAD", minWidth: 50, align: "center" },
+    {
+      id: "cedula_identidad",
+      label: "CEDULA IDENTIDAD",
+      minWidth: 50,
+      align: "center",
+    },
+    { id: "expedido", label: "EXPENDIO", minWidth: 50, align: "center" },
+    { id: "super", label: "SUPER", minWidth: 50, align: "center" },
   ];
 
   const rows = datoscontratoData;
@@ -174,9 +169,13 @@ export function BuscarUser({ urltable }) {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">
+        <Typography
+          className="p-3 text-mi-color-terceario text-2xl"
+          variant="h4"
+          gutterBottom
+        >
           Buscar
-        </h2>
+        </Typography>
         <Grid container spacing={2}>
           <Grid xs={1}></Grid>
           <Grid xs={10}>
@@ -206,21 +205,20 @@ export function BuscarUser({ urltable }) {
         <p className="text-red-700 text-center">{errorDatoscontratoData}</p>
       )}
       {isDataLoaded && (
-        <div className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4">
-          <Paper className={classes.root}>
-            <TableContainer className={classes.container}>
+        <div
+          key={reloadComponents}
+          className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4"
+        >
+          <Paper sx={{ width: "100%", overflow: "hidden" }}>
+            <TableContainer sx={{ maxHeight: 500 }}>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   <TableRow>
                     {columns.map((column) => (
                       <TableCell
                         key={column.id}
-                        align="center"
-                        style={{
-                          minWidth: column.minWidth,
-                          textAlign: "center",
-                        }}
-                        className={classes.tableCell}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
                       >
                         {column.label}
                       </TableCell>
@@ -229,20 +227,14 @@ export function BuscarUser({ urltable }) {
                 </TableHead>
                 <TableBody>
                   {rows.map((row, index) => (
-                    <StyledTableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={index}
-                    >
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
-                          <StyledTableCell
+                          <TableCell
                             key={column.id}
                             align="center"
                             style={{ textAlign: "center" }}
-                            className={classes.tableCell}
                           >
                             {column.id === "habilitardes" ? (
                               <div
@@ -277,10 +269,10 @@ export function BuscarUser({ urltable }) {
                             ) : (
                               value
                             )}
-                          </StyledTableCell>
+                          </TableCell>
                         );
                       })}
-                    </StyledTableRow>
+                    </TableRow>
                   ))}
                 </TableBody>
               </Table>

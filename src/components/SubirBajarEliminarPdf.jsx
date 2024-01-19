@@ -5,9 +5,7 @@ import { obtenerToken } from "../utils/auth";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
 
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 

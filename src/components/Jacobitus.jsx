@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import axios from "axios";
 
 import { jacobitusTotal } from "../libs/adsib/jacobitus-total.es6";
 
@@ -15,7 +14,6 @@ require("../libs/prism/prism.min.css");
 require("../libs/FreezeUI/freeze-ui.min.js");
 require("../libs/FreezeUI/freeze-ui.min.css");
 
-import ReplayIcon from "@mui/icons-material/Replay";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 import { useDispatch } from "react-redux";
@@ -29,7 +27,6 @@ const styles = {
 };
 
 export function Jacobitus() {
-  const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [archivo, setArchivo] = useState(undefined);
   const [firmas, setFirmas] = useState(undefined);

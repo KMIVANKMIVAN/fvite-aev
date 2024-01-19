@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
@@ -6,9 +6,53 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../contexts/features/user/userSlice";
 import { increment } from "../contexts/features/user/counterUserSlice";
 
-import Switch from "@material-ui/core/Switch";
-
-const label = { inputProps: { "aria-label": "Color switch demo" } };
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+const AntSwitch = styled(Switch)(({ theme }) => ({
+  width: 28,
+  height: 16,
+  padding: 0,
+  display: "flex",
+  "&:active": {
+    "& .MuiSwitch-thumb": {
+      width: 15,
+    },
+    "& .MuiSwitch-switchBase.Mui-checked": {
+      transform: "translateX(9px)",
+    },
+  },
+  "& .MuiSwitch-switchBase": {
+    padding: 2,
+    "&.Mui-checked": {
+      transform: "translateX(12px)",
+      color: "#fff",
+      "& + .MuiSwitch-track": {
+        opacity: 1,
+        backgroundColor: theme.palette.mode === "dark" ? "#EF4444" : "#EF4444",
+      },
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    transition: theme.transitions.create(["width"], {
+      duration: 200,
+    }),
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 16 / 2,
+    opacity: 1,
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? "rgba(255,255,255,.35)"
+        : "rgba(0,0,0,.25)",
+    boxSizing: "border-box",
+  },
+}));
 
 export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -69,17 +113,31 @@ export function HabilitarDes({ idActualizarUser, selectedHabilitado }) {
       {respuestasError && (
         <p className="text-red-700 text-center p-5">{respuestasError}</p>
       )}
-      <Switch
+      {/* <Switch
+        defaultChecked
+        size="small"
         checked={checked}
         onChange={handleChange}
-        {...label}
-        defaultChecked
-        color="secondary"
         onClick={() => {
           const nuevoEstado = selectedHabilitado === 1 ? 0 : 1;
           actualizarEstado(idActualizarUser, nuevoEstado);
         }}
-      />
+      /> */}
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Typography>Des.</Typography>
+        <AntSwitch
+          defaultChecked
+          inputProps={{ "aria-label": "ant design" }}
+          size="small"
+          checked={checked}
+          onChange={handleChange}
+          onClick={() => {
+            const nuevoEstado = selectedHabilitado === 1 ? 0 : 1;
+            actualizarEstado(idActualizarUser, nuevoEstado);
+          }}
+        />
+        <Typography>Hab.</Typography>
+      </Stack>
     </>
   );
 }

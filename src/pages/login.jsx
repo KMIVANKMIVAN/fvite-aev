@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { guardarToken } from "../utils/auth";
@@ -9,8 +9,34 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+
 import portadalogin from "../assets/portadalogin.jpg";
 import portalabajo2 from "../assets/portalabajo2.jpg";
+
+import IconButton from "@mui/material/IconButton";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { CardActionArea } from "@mui/material";
+
+import InputAdornment from "@mui/material/InputAdornment";
+import Grid from "@mui/material/Unstable_Grid2";
+
+import {
+  c50,
+  c100,
+  c200,
+  c300,
+  c400,
+  c500,
+  c600,
+  c700,
+  c800,
+  c900,
+  c950,
+} from "../components/Temas";
+import { g1, g2, g3, g4, g5, g6, g7 } from "../components/TemasGradiantes";
 
 export function Login() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -23,6 +49,7 @@ export function Login() {
   const [loginError, setLoginError] = useState(null);
 
   const [loginErrorMensaje, setLoginErrorMensaje] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +72,7 @@ export function Login() {
           } else if (user.nivel === 40) {
             navigate("dashboardclient/busafirmar");
           } else if (user.nivel === 9) {
-            navigate("dashboardclient/pemar");
+            navigate("dashboardclient/proyectos");
           }
         }
         guardarUserId(user.id);
@@ -72,93 +99,101 @@ export function Login() {
       }
     }
   };
+
+  useEffect(() => {
+    setIsButtonDisabled(formData.username === "" || formData.password === "");
+  }, [formData.username, formData.password]);
   return (
-    <div className="flex justify-center items-center h-full">
-      <div className="">
+    <div className="flex justify-center items-center h-full px-10">
+      <div className="py-10">
         <Card
           elevation={24}
           sx={{
-            minWidth: { xs: 345, md: 500 },
-            transition: "transform 0.3s ease-in-out",
-            "&:hover": {
-              transform: "scale(1.05) rotateX(3deg) rotateY(3deg)",
-            },
+            maxWidth: { xs: 350, md: 500 },
           }}
         >
-          <CardMedia sx={{ height: 130 }} image={portadalogin} />
-          <CardContent>
-            <p className="text-center my-5 text-2xl text-mi-color-primario font-bold">
-              Iniciar Sesión
-            </p>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium leading-6 text-gray-900 "
-                >
-                  Nombre de Usuario
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="text"
-                    required
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-                {loginErrorMensaje && (
-                  <p className="text-red-700 text-center">
-                    {loginErrorMensaje}
-                  </p>
-                )}
-              </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium leading-6 text-gray-900 "
+          <CardActionArea>
+            <CardMedia sx={{ height: 130 }} image={portadalogin} />
+            <CardContent
+            /* style={{
+                background:
+                  g4.overrides.MuiCssBaseline["@global"].body.background,
+              }} */
+            >
+              <Typography
+                // style={{ color: c500.palette.primary.main }}
+                className="text-center text-c600"
+                variant="h4"
+                gutterBottom
+              >
+                Iniciar Sesión
+              </Typography>
+              <form onSubmit={handleSubmit}>
+                <Grid container spacing={{ xs: 2 }}>
+                  <Grid xs={12}>
+                    <TextField
+                      id="username"
+                      label="Nombre de Usuario"
+                      variant="outlined"
+                      name="username"
+                      required
+                      fullWidth
+                      value={formData.username}
+                      onChange={handleInputChange}
+                    />
+                    {loginErrorMensaje && (
+                      <p className="text-red-700 text-center">
+                        {loginErrorMensaje}
+                      </p>
+                    )}
+                  </Grid>
+                  <Grid xs={12}>
+                    <TextField
+                      id="password"
+                      label="Contraseña"
+                      variant="outlined"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      fullWidth
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              edge="end"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? (
+                                <VisibilityOffIcon />
+                              ) : (
+                                <VisibilityIcon />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <br />
+                <Grid className="flex flex-wrap mx-auto justify-center items-center">
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    disabled={isButtonDisabled}
                   >
-                    Contraseña
-                  </label>
-                  <button
-                    type="button"
-                    className="text-sm font-medium leading-6 text-gray-900 hover:text-indigo-600 "
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Ocultar contraseña" : "Ver contraseña"}
-                  </button>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    required
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-wrap mx-auto py-3 justify-center items-center">
-                <button
-                  type="submit"
-                  className=" rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Iniciar sesión
-                </button>
-              </div>
-            </form>
-            {loginError && (
-              <p className="text-red-700 text-center">{loginError}</p>
-            )}
-          </CardContent>
-          <CardMedia sx={{ height: 250 }} image={portalabajo2} />
+                    Iniciar sesión
+                  </Button>
+                </Grid>
+              </form>
+              {loginError && (
+                <p className="text-red-700 text-center">{loginError}</p>
+              )}
+            </CardContent>
+            <CardMedia sx={{ height: 300 }} image={portalabajo2} />
+          </CardActionArea>
         </Card>
       </div>
     </div>

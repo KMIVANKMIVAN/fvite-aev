@@ -9,8 +9,6 @@ import { ErrorPage } from "./pages/errorpage.jsx";
 
 import { UpdatePassword } from "./pages/updatepassword.jsx";
 
-import { ViviendaNueva } from "./pages/dashboardclient/viviendanueva.jsx";
-import { Pemar } from "./pages/dashboardclient/pemar.jsx";
 import { Busafirmar } from "./pages/dashboardclient/busafirmar.jsx";
 import { BusaAevFirmados } from "./pages/dashboardclient/busaaevfirmados.jsx";
 import { Proyectos } from "./pages/dashboardclient/proyectos.jsx";
@@ -18,6 +16,8 @@ import { GastosExtra } from "./pages/dashboardclient/gastosextra.jsx";
 import { PagosCut } from "./pages/dashboardclient/pagoscut.jsx";
 
 import RequireAuth from "./utils/requireAuth.jsx";
+
+import fondo from "./assets/fondo.png";
 
 const router = createBrowserRouter([
   {
@@ -57,14 +57,6 @@ const router = createBrowserRouter([
       {
         path: "busafirmar",
         element: <Busafirmar />,
-      },
-      {
-        path: "viviendanueva",
-        element: <ViviendaNueva />,
-      },
-      {
-        path: "pemar",
-        element: <Pemar />,
       },
       {
         path: "busaaevfirmados",

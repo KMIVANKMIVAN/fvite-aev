@@ -33,19 +33,22 @@ const RequireAuth = ({ children }) => {
       "/dashboard",
       "/dashboardclient",
       "/dashboard/userstablas",
-      "/dashboard/usertablas",
       "/dashboardclient/busafirmar",
-      "/dashboardclient/viviendanueva",
-      "/dashboardclient/pemar",
       "/dashboardclient/busaaevfirmados",
+      "/dashboardclient/gastosextra",
+      "/dashboardclient/pagoscut",
+      "/dashboardclient/proyectos",
     ],
     9: [
+      "/",
+
       "/updatepassword",
-      "/dashboardclient/viviendanueva",
-      "/dashboardclient/pemar",
       "/dashboardclient/busaaevfirmados",
+      "/dashboardclient/gastosextra",
+      "/dashboardclient/pagoscut",
+      "/dashboardclient/proyectos",
     ],
-    40: ["/updatepassword", "/dashboardclient/busafirmar"],
+    40: ["/", "/updatepassword", "/dashboardclient/busafirmar"],
   };
 
   if (!rutaPermitida(userNivel, nivelAcceso[userNivel])) {

@@ -42,7 +42,6 @@ export function BuscarPemar({ codigoProyecto }) {
   const [selectedCodid, setSelectedCodid] = useState(null);
   const [titulo, setTitulo] = useState(null);
 
-  const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
   const [desabilitarAEV, setDesabilitarAEV] = useState(true);
 
@@ -55,43 +54,42 @@ export function BuscarPemar({ codigoProyecto }) {
       [index]: isExpanded,
     });
   };
-  const handleSearch = async () => {
-    try {
-      const url = `${apiKey}/cuadro/consultacuadro/${inputValue}`;
-      const token = obtenerToken();
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+  useEffect(() => {
+    const handleSearch = async () => {
+      try {
+        const url = `${apiKey}/cuadro/consultacuadro/${codigoProyecto}`;
+        const token = obtenerToken();
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
 
-      const response = await axios.get(url, { headers });
+        const response = await axios.get(url, { headers });
 
-      if (response.status === 200) {
-        setErrorSearch(null);
-        setDatoscontratoData(response.data);
-        setSelectedCodid(0);
-        if (response.data && response.data.length > 0) {
-          setTitulo(response.data[0].proyecto_nombre);
+        if (response.status === 200) {
+          setErrorSearch(null);
+          setDatoscontratoData(response.data);
+          setSelectedCodid(0);
+          if (response.data && response.data.length > 0) {
+            setTitulo(response.data[0].proyecto_nombre);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400) {
+            setErrorSearch(`RS: ${data.message}`);
+          } else if (status === 500) {
+            setErrorSearch(`RS: ${data.message}`);
+          }
+        } else if (error.request) {
+          setErrorSearch("RF: No se pudo obtener respuesta del servidor");
+        } else {
+          setErrorSearch("RF: Error al enviar la solicitud");
         }
       }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          setErrorSearch(`RS: ${data.message}`);
-        } else if (status === 500) {
-          setErrorSearch(`RS: ${data.message}`);
-        }
-      } else if (error.request) {
-        setErrorSearch("RF: No se pudo obtener respuesta del servidor");
-      } else {
-        setErrorSearch("RF: Error al enviar la solicitud");
-      }
-    }
-  };
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
+    };
+    handleSearch();
+  }, []);
 
   const handleUploadPDFs = (dataContCod) => {
     setSelectedCodid(dataContCod);
@@ -113,28 +111,7 @@ export function BuscarPemar({ codigoProyecto }) {
       {errorSearch && (
         <p className="text-red-700 text-center p-5">{errorSearch}</p>
       )}
-      <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">Buscar</h2>
-      <div className="col-span-1 flex justify-center px-10">
-        <TextField
-          name="codigo"
-          helperText="Ejemplo: AEV-LP-0000 o FASE(XIII)..."
-          id="standard-basic"
-          label="Codigo de Proyecto (COMPLETO) o Nombre de Proyecto:"
-          variant="standard"
-          className="w-full"
-          value={inputValue}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex justify-center pt-5">
-        <Button
-          variant="outlined"
-          onClick={handleSearch}
-          endIcon={<SearchIcon />}
-        >
-          Buscar
-        </Button>
-      </div>
+
       <br />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         {conjuntosDatos.map((conjunto, conjuntoIndex) => (

@@ -1,14 +1,14 @@
 import React from "react";
 import Paper from "@mui/material/Paper";
-import navbar from "../assets/navbar.png";
+import navbar from "../assets/LogotipoAEV.png";
 
 export function Navbar() {
   return (
-    <Paper elevation={24} style={{ marginBottom: "50px" }}>
+    <Paper elevation={24} >
       <div className="bg-contain bg-center" style={{ textAlign: "center" }}>
         <img
           src={navbar}
-          style={{ height: "80px", display: "inline-block" }}
+          style={{ height: "110px", display: "inline-block" }}
           alt="Navbar"
         />
       </div>

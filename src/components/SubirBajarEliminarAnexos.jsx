@@ -4,16 +4,11 @@ import { obtenerToken } from "../utils/auth";
 import { obtenerUserId } from "../utils/userdata";
 
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
-
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 

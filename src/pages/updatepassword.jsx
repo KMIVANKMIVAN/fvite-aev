@@ -4,16 +4,18 @@ import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 import { obtenerUserId } from "../utils/userdata";
 
-import { useTheme } from "@mui/material/styles";
-
 import Bicentenario from "../assets/Bicentenario.png";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Unstable_Grid2";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import validator from "validator";
 import { Button } from "@mui/material";
 
@@ -97,90 +99,95 @@ export function UpdatePassword() {
   return (
     <>
       <div className="flex justify-center items-center h-full">
-        <Card sx={{ maxWidth: 345 }} elevation={24}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              image={Bicentenario}
-              alt="green iguana"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Actualiza tu Contraseña
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <form className="space-y-6" onSubmit={handleSubmit}>
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="antiguop"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Contraseña Anterior
-                    </label>
-                  </div>
-                  <div className="mt-2">
-                    <input
-                      id="antiguop"
-                      name="antiguop"
-                      autoComplete="current-password"
-                      required
-                      value={formData.antiguop}
-                      onChange={handleInputChange}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Contraseña
-                    </label>
+        <div className="py-10">
+          <Card sx={{ maxWidth: { xs: 350, md: 500 } }} elevation={24}>
+            <CardActionArea>
+              <CardMedia sx={{ height: 250 }} image={Bicentenario} />
+              <CardContent>
+                <Typography
+                  className="text-center text-mi-color-terceario  "
+                  variant="h4"
+                  gutterBottom
+                >
+                  Actualiza tu Contraseña
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                  <Grid container spacing={{ xs: 2 }}>
+                    <Grid xs={12}>
+                      <TextField
+                        id="antiguop"
+                        name="antiguop"
+                        label="Contraseña Anterior"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        value={formData.antiguop}
+                        onChange={handleInputChange}
+                      />
+                    </Grid>
+                    <Grid xs={12}>
+                      <TextField
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        label="Contraseña"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                edge="end"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? (
+                                  <VisibilityOffIcon />
+                                ) : (
+                                  <VisibilityIcon />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid xs={12}>
+                      <TextField
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showPassword ? "text" : "password"}
+                        label="Actualizar contraseña"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                edge="end"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? (
+                                  <VisibilityOffIcon />
+                                ) : (
+                                  <VisibilityIcon />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Grid className="flex flex-wrap mx-auto justify-center items-center">
                     <Button
-                      variant="contained"
-                      type="button"
-                      size="small"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? "Ocultar contraseña" : "Ver contraseña"}
-                    </Button>
-                  </div>
-                  <div className="mt-2">
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                      required
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="confirmPassword"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Confirmar Contraseña
-                    </label>
-                  </div>
-                  <div className="mt-2">
-                    <input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                      required
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <p className="mt-1 text-center font-bold">{errorMessage}</p>
-                  <div className="flex flex-wrap mx-auto py-3 justify-center items-center">
-                    <Button
-                      variant="contained"
+                      variant="outlined"
                       type="submit"
                       className={`rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
                         errorMessage.includes("No se cambiará") ||
@@ -195,16 +202,16 @@ export function UpdatePassword() {
                     >
                       Actualizar contraseña
                     </Button>
-                  </div>
+                  </Grid>
                 </form>
                 {error2 && (
                   <p className="text-red-500 text-lg text-center">{error2}</p>
                 )}
                 <p className="text-red-500 text-lg text-center">{error}</p>
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </div>
       </div>
     </>
   );

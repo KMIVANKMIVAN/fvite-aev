@@ -2,17 +2,26 @@ import React, { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
-import SaveIcon from "@mui/icons-material/Save";
-import EditIcon from "@mui/icons-material/Edit";
-
 import Button from "@mui/material/Button";
+import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
-
+import Grid from "@mui/material/Unstable_Grid2";
+import Box from "@mui/material/Box";
 import { useDispatch } from "react-redux";
 import { setUser } from "../contexts/features/user/userSlice";
 import { increment } from "../contexts/features/user/counterUserSlice";
+
+import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -42,9 +51,9 @@ export function ActualizarUser({ idActualizarUser }) {
     nivel: "",
     genero: "",
     prioridad: "",
-    idEntidad: "",
+    id_entidad: "",
     super: "",
-    cedulaIdentidad: "",
+    cedula_identidad: "",
     expedido: "",
   });
   const [erroruserData, setErroruserData] = useState(null);
@@ -140,7 +149,7 @@ export function ActualizarUser({ idActualizarUser }) {
     <>
       {userData.username !== "" && (
         <>
-          <EditIcon className="text-red-500" onClick={handleClickOpen} />
+          <BorderColorIcon className="text-red-500" onClick={handleClickOpen} />
           <Dialog
             open={open}
             TransitionComponent={Transition}
@@ -148,244 +157,231 @@ export function ActualizarUser({ idActualizarUser }) {
             onClose={handleClose}
           >
             <DialogContent>
-              {erroruserData && (
-                <p className="text-red-700 text-center">{erroruserData}</p>
-              )}
-              <h1 className="text-center pb-5">ACTUALIZAR USUARIO</h1>
               <form className="space-y-1" onSubmit={handleSubmitUpdate}>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div className="">
-                    <label htmlFor="username" className="  leading-6">
-                      Nombre de Usuario
-                    </label>
-                    <input
-                      id="username"
-                      name="username"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.username}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div className="">
-                    <label htmlFor="nombre" className="  leading-6">
-                      Nombre
-                    </label>
-                    <input
-                      id="nombre"
-                      name="nombre"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.nombre}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div className="">
-                    <label htmlFor="superior" className="  leading-6 ">
-                      Superior
-                    </label>
-                    <input
-                      id="superior"
-                      name="superior"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.superior}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div className="">
-                    <label htmlFor="nivel" className="  leading-6 ">
-                      Nivel
-                    </label>
-                    <input
-                      id="nivel"
-                      name="nivel"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.nivel}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div className="">
-                    <label htmlFor="idOficina" className="  leading-6">
-                      ID de Oficina
-                    </label>
-                    <input
-                      id="idOficina"
-                      name="idOficina"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.idOficina}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div className="">
-                    <label htmlFor="dependencia" className="  leading-6 ">
-                      Dependencia
-                    </label>
-                    <input
-                      id="dependencia"
-                      name="dependencia"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.dependencia}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="pb-2">
-                  <label htmlFor="cargo" className="  leading-6 ">
-                    Cargo
-                  </label>
-                  <input
-                    id="cargo"
-                    name="cargo"
-                    type="text"
-                    autoComplete="text"
-                    value={userData.cargo}
-                    onChange={handleInputUpdate}
-                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div className="">
-                    <label htmlFor="email" className="  leading-6 ">
-                      Correo
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.email}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div className="">
-                    <label htmlFor="habilitado" className="  leading-6 ">
-                      Habilitado
-                    </label>
-                    <input
-                      id="habilitado"
-                      name="habilitado"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.habilitado}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div>
-                    <label htmlFor="genero" className="  leading-6 ">
-                      Género
-                    </label>
-                    <select
-                      id="genero"
-                      name="genero"
-                      className="text-white border border-gray-300 text-sm rounded-lg block w-full p-2.5 dark:bg-indigo-600"
-                      value={userData.genero}
-                      onChange={(e) =>
-                        setUserData({
-                          ...userData,
-                          genero: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="HOMBRE">Masculino</option>
-                      <option value="MUJER">Femenino</option>
-                    </select>
-                  </div>
-                  <div className="">
-                    <label htmlFor="idEntidad" className="  leading-6 ">
-                      ID Entidad
-                    </label>
-                    <input
-                      id="idEntidad"
-                      name="idEntidad"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.idEntidad}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div className="">
-                    <label htmlFor="cedulaIdentidad" className="  leading-6 ">
-                      Cedula de Identidad
-                    </label>
-                    <input
-                      id="cedulaIdentidad"
-                      name="cedulaIdentidad"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.cedulaIdentidad}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="expedido" className="leading-6 ">
-                      Expendio
-                    </label>
-                    <select
-                      id="expedido"
-                      name="expedido"
-                      className="text-white border border-gray-300 text-sm rounded-lg block w-full p-2.5 dark:bg-indigo-600"
-                      value={userData.expedido}
-                      onChange={(e) =>
-                        setUserData({
-                          ...userData,
-                          expedido: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="LPZ">LPZ</option>
-                      <option value="OR">OR</option>
-                      <option value="CB">CB</option>
-                      <option value="CH">CH</option>
-                      <option value="SC">SC</option>
-                      <option value="BE">BE</option>
-                      <option value="PD">PD</option>
-                      <option value="PT">PT</option>
-                      <option value="TJ">TJ</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 pb-2 gap-4">
-                  <div className="">
-                    <label htmlFor="super" className="  leading-6 ">
-                      Super
-                    </label>
-                    <input
-                      id="super"
-                      name="super"
-                      type="text"
-                      autoComplete="text"
-                      value={userData.super}
-                      onChange={handleInputUpdate}
-                      className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                  <div></div>
-                </div>
-                <div className="flex justify-between">
+                <Typography
+                  className="text-center text-mi-color-terceario  "
+                  variant="h4"
+                  gutterBottom
+                >
+                  Actualizar Usuario
+                </Typography>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Grid container spacing={{ xs: 2 }}>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="username"
+                            label="Nombre de Usuario"
+                            variant="outlined"
+                            name="username"
+                            required
+                            fullWidth
+                            value={userData.username}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="nombre"
+                            label="Nombres AP. Paterno AP. Materno"
+                            variant="outlined"
+                            name="nombre"
+                            required
+                            fullWidth
+                            value={userData.nombre}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="superior"
+                            label="Superior"
+                            variant="outlined"
+                            name="superior"
+                            required
+                            fullWidth
+                            value={userData.superior}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="nivel"
+                            label="Nivel"
+                            variant="outlined"
+                            name="nivel"
+                            required
+                            fullWidth
+                            value={userData.nivel}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="idOficina"
+                            label="Oficina"
+                            variant="outlined"
+                            name="idOficina"
+                            required
+                            fullWidth
+                            value={userData.idOficina}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="dependencia"
+                            label="Dependencia"
+                            variant="outlined"
+                            name="dependencia"
+                            required
+                            fullWidth
+                            value={userData.dependencia}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12}>
+                          <TextField
+                            id="cargo"
+                            label="Cargo"
+                            variant="outlined"
+                            name="cargo"
+                            required
+                            fullWidth
+                            value={userData.cargo}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="email"
+                            label="Correo"
+                            variant="outlined"
+                            name="email"
+                            required
+                            fullWidth
+                            value={userData.email}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="cedulaIdentidad"
+                            label="Cedula de Identidad"
+                            variant="outlined"
+                            name="cedulaIdentidad"
+                            required
+                            fullWidth
+                            value={userData.cedulaIdentidad}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Género
+                            </InputLabel>
+                            <Select
+                              label="Género"
+                              id="genero"
+                              name="genero"
+                              required
+                              value={userData.genero}
+                              onChange={(e) =>
+                                setUserData({
+                                  ...userData,
+                                  genero: e.target.value,
+                                })
+                              }
+                            >
+                              <MenuItem value="Seleccionar">
+                                Seleccionar
+                              </MenuItem>
+                              <MenuItem value="HOMBRE">Masculino</MenuItem>
+                              <MenuItem value="MUJER">Femenino</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Expendio
+                            </InputLabel>
+                            <Select
+                              label="Expendio"
+                              id="expedido"
+                              name="expedido"
+                              required
+                              value={userData.expedido}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...userData,
+                                  expedido: e.target.value,
+                                })
+                              }
+                            >
+                              <MenuItem value="Seleccionar">
+                                Seleccionar
+                              </MenuItem>
+                              <MenuItem value="LPZ">LPZ</MenuItem>
+                              <MenuItem value="OR">OR</MenuItem>
+                              <MenuItem value="CB">CB</MenuItem>
+                              <MenuItem value="CH">CH</MenuItem>
+                              <MenuItem value="SC">SC</MenuItem>
+                              <MenuItem value="BE">BE</MenuItem>
+                              <MenuItem value="PD">PD</MenuItem>
+                              <MenuItem value="PT">PT</MenuItem>
+                              <MenuItem value="TJ">TJ</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="idEntidad"
+                            label="Entidad"
+                            variant="outlined"
+                            name="idEntidad"
+                            required
+                            fullWidth
+                            value={userData.idEntidad}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="habilitado"
+                            label="Habilitado"
+                            variant="outlined"
+                            name="habilitado"
+                            required
+                            fullWidth
+                            value={userData.habilitado}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                          <TextField
+                            id="super"
+                            label="Super"
+                            variant="outlined"
+                            name="super"
+                            required
+                            fullWidth
+                            value={userData.super}
+                            onChange={handleInputUpdate}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} variant="outlined">
+                    Cerrar
+                  </Button>
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     color="success"
                     type="submit"
                     onClick={() => {
@@ -394,22 +390,16 @@ export function ActualizarUser({ idActualizarUser }) {
                     }}
                   >
                     Guardar
-                    <SaveIcon />
                   </Button>
-                  <Button
-                    onClick={handleClose}
-                    variant="contained"
-                    color="error"
-                  >
-                    Cerrar
-                  </Button>
-                </div>
-
-                {errorUpdate && (
-                  <p className="text-red-700 text-center">{errorUpdate}</p>
-                )}
+                </DialogActions>
               </form>
             </DialogContent>
+            {errorUpdate && (
+              <p className="text-red-700 text-center">{errorUpdate}</p>
+            )}
+            {erroruserData && (
+              <p className="text-red-700 text-center">{erroruserData}</p>
+            )}
           </Dialog>
         </>
       )}

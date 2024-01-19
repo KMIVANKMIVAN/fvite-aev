@@ -9,12 +9,23 @@ import { Footer } from "./components/Footer.jsx";
 import { Provider } from "react-redux";
 import { store } from "./contexts/store.js";
 
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#028ac7",
+    },
+  },
+});
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <Navbar />
-      <App />
-      <Footer />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+      {/* <Footer /> */}
     </Provider>
   </React.StrictMode>
 );

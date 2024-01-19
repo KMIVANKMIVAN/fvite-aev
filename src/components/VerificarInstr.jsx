@@ -34,7 +34,7 @@ export function VerificarInstr() {
   const [archivo, setArchivo] = useState(undefined);
   const [firmas, setFirmas] = useState(undefined);
   const [firmasVasia, setFirmasVasia] = useState(undefined);
-  const [archivoCargado, setArchivoCargado] = useState(false); // Nuevo estado
+  const [archivoCargado, setArchivoCargado] = useState(false);
 
   const dispatch = useDispatch();
 

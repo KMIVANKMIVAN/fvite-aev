@@ -11,6 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -68,9 +69,13 @@ export function UsersTablas() {
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         {showContent && user && (
           <>
-            <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">
+            <Typography
+              className="p-3 pl-7 text-c600 text-2xl "
+              variant="h4"
+              gutterBottom
+            >
               Usuario Actualizado y/o Creado
-            </h2>
+            </Typography>
             <Paper className={classes.root}>
               <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
@@ -112,12 +117,16 @@ export function UsersTablas() {
             </Paper>
           </>
         )}
-        <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">
-          Usuarios
-        </h2>
-        <CrearUser urltable={urltable} />
       </div>
       <br />
+      <Typography
+        className="p-3 pl-7 text-c600 text-2xl "
+        variant="h4"
+        gutterBottom
+      >
+        Usuarios
+      </Typography>
+      <CrearUser urltable={urltable} />
       <BuscarUser urltable={urltable} />
     </>
   );

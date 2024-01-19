@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import axios from "axios";
@@ -7,8 +6,6 @@ import { obtenerToken } from "../utils/auth";
 
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-import SearchIcon from "@mui/icons-material/Search";
 
 import { DatosComplViviend } from "./DatosComplViviend";
 
@@ -44,7 +41,6 @@ export function BuscarViviend({ codigoProyecto }) {
 
   const [searchError, setErrorSearch] = useState(null);
 
-  const [inputValue, setInputValue] = useState("");
   const [updateComponent, setUpdateComponent] = useState(0);
   const [expandedPanels, setExpandedPanels] = useState({});
   const [desabilitarAEV, setDesabilitarAEV] = useState(true);
@@ -55,40 +51,39 @@ export function BuscarViviend({ codigoProyecto }) {
       [index]: isExpanded,
     });
   };
-  const handleSearch = async () => {
-    try {
-      const url = `${apiKey}/documentpdf/buscar/${inputValue}`;
-      const token = obtenerToken();
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+  useEffect(() => {
+    const handleSearch = async () => {
+      try {
+        const url = `${apiKey}/documentpdf/buscar/${codigoProyecto}`;
+        const token = obtenerToken();
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
 
-      const response = await axios.get(url, { headers });
+        const response = await axios.get(url, { headers });
 
-      if (response.status === 200) {
-        setErrorSearch(null);
-        setDatoscontratoData(response.data);
-        setSelectedContCod(0);
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          setErrorSearch(`RS: ${data.message}`);
-        } else if (status === 500) {
-          setErrorSearch(`RS: ${data.message}`);
+        if (response.status === 200) {
+          setErrorSearch(null);
+          setDatoscontratoData(response.data);
+          setSelectedContCod(0);
         }
-      } else if (error.request) {
-        setErrorSearch("RF: No se pudo obtener respuesta del servidor");
-      } else {
-        setErrorSearch("RF: Error al enviar la solicitud");
+      } catch (error) {
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400) {
+            setErrorSearch(`RS: ${data.message}`);
+          } else if (status === 500) {
+            setErrorSearch(`RS: ${data.message}`);
+          }
+        } else if (error.request) {
+          setErrorSearch("RF: No se pudo obtener respuesta del servidor");
+        } else {
+          setErrorSearch("RF: Error al enviar la solicitud");
+        }
       }
-    }
-  };
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
+    };
+    handleSearch();
+  }, []);
 
   const handleUploadPDFs = (dataContCod) => {
     setSelectedContCod(dataContCod);
@@ -107,28 +102,6 @@ export function BuscarViviend({ codigoProyecto }) {
 
   return (
     <>
-      <h2 className="p-3 text-mi-color-terceario text-2xl font-bold">Buscar</h2>
-      <div className="col-span-1 flex justify-center px-10">
-        <TextField
-          name="codigo"
-          helperText="Ejemplo: AEV-LP-0000 o FASE(XIII)..."
-          id="standard-basic"
-          label="Codigo de Proyecto (COMPLETO) o Nombre de Proyecto:"
-          variant="standard"
-          className="w-full"
-          value={inputValue}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="flex justify-center pt-5">
-        <Button
-          variant="outlined"
-          onClick={handleSearch}
-          endIcon={<SearchIcon />}
-        >
-          Buscar
-        </Button>
-      </div>
       {searchError && (
         <p className="text-red-700 text-center p-5">{searchError}</p>
       )}
