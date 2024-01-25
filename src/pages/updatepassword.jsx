@@ -102,10 +102,10 @@ export function UpdatePassword() {
         <div className="py-10">
           <Card sx={{ maxWidth: { xs: 350, md: 500 } }} elevation={24}>
             <CardActionArea>
-              <CardMedia sx={{ height: 250 }} image={Bicentenario} />
+              <CardMedia sx={{ height: 270 }} image={Bicentenario} />
               <CardContent>
                 <Typography
-                  className="text-center text-mi-color-terceario  "
+                  className="text-center text-c600"
                   variant="h4"
                   gutterBottom
                 >

@@ -159,7 +159,7 @@ export function ActualizarUser({ idActualizarUser }) {
             <DialogContent>
               <form className="space-y-1" onSubmit={handleSubmitUpdate}>
                 <Typography
-                  className="text-center text-mi-color-terceario  "
+                  className="text-center text-c600"
                   variant="h4"
                   gutterBottom
                 >

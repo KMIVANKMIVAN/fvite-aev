@@ -92,11 +92,7 @@ export function BuscarProyectos() {
   };
   return (
     <>
-      <Typography
-        className="p-3 text-mi-color-terceario text-2xl"
-        variant="h4"
-        gutterBottom
-      >
+      <Typography className="p-3 text-c600 text-2xl" variant="h4" gutterBottom>
         Buscar
       </Typography>
       <Grid container spacing={2}>

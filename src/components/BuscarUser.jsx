@@ -170,7 +170,7 @@ export function BuscarUser({ urltable }) {
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         <Typography
-          className="p-3 text-mi-color-terceario text-2xl"
+          className="p-3 text-c600 text-2xl"
           variant="h4"
           gutterBottom
         >

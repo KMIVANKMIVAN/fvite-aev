@@ -138,7 +138,7 @@ export function CrearUser() {
       >
         <form className="space-y-1" onSubmit={handleSubmit}>
           <Typography
-            className="text-center text-mi-color-terceario  pt-5"
+            className="text-center text-c600  pt-5"
             variant="h4"
             gutterBottom
           >

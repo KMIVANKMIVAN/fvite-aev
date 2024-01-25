@@ -81,7 +81,7 @@ export function ResetearPassword({ userId }) {
         aria-describedby="alert-dialog-description"
       >
         <Typography
-          className="text-center text-mi-color-terceario px-5 pt-5"
+          className="text-center text-c600 px-5 pt-5"
           variant="h5"
           gutterBottom
         >
