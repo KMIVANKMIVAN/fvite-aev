@@ -10,6 +10,43 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import SearchIcon from "@mui/icons-material/Search";
 
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material/styles";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+function a11yProps(index) {
+  return {
+    id: `vertical-tab-${index}`,
+    "aria-controls": `vertical-tabpanel-${index}`,
+  };
+}
+
 import { DatosPemar } from "./DatosPemar";
 
 function formatearNumero(numero) {
@@ -29,9 +66,6 @@ function formatearNumero(numero) {
 
 import { useSelector } from "react-redux";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
 export function BuscarPemar({ codigoProyecto }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -47,6 +81,8 @@ export function BuscarPemar({ codigoProyecto }) {
 
   const [expandedPanels, setExpandedPanels] = useState({});
   const [errorSearch, setErrorSearch] = useState(null);
+
+  const [value, setValue] = useState(0);
 
   const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
@@ -106,14 +142,119 @@ export function BuscarPemar({ codigoProyecto }) {
     conjuntosDatos.push(datoscontratoData.slice(i, i + elementosPorConjunto));
   }
 
+  const handleChange2 = (event, newValue) => {
+    
+    setValue(newValue);
+  };
+
   return (
     <>
       {errorSearch && (
         <p className="text-red-700 text-center p-5">{errorSearch}</p>
       )}
-
+      <Box
+        component={"div"}
+        sx={{
+          flexGrow: 1,
+          bgcolor: "background.paper",
+          display: { md: "flex" },
+        }}
+      >
+        <Tabs
+          sx={{
+            borderRight: 1,
+            borderColor: "divider",
+            minWidth: 200,
+            height: { md: 160 },
+          }}
+          orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
+          variant="scrollable"
+          value={value}
+          onChange={handleChange2}
+          aria-label="Vertical tabs example"
+        >
+          {datoscontratoData.map((item, index) => (
+            <Tab key={index} label={item.num} {...a11yProps(index)} />
+          ))}
+        </Tabs>
+        {datoscontratoData.map((item, index) => (
+          <TabPanel key={index} value={value} index={index}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid container spacing={2}>
+                <Grid xs={12} md={2}>
+                  <Button
+                    size="small"
+                    color="success"
+                    variant="outlined"
+                    onClick={() => handleUploadPDFs(item.id)}
+                  >
+                    Seleccionar
+                  </Button>
+                </Grid>
+                <Grid xs={12} md={10}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    PROYECTO: {item.proyecto_nombre}
+                  </Typography>
+                  <br />
+                </Grid>
+                <Grid xs={12} md={6}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    {item.uh_proy ? (
+                      <>
+                        UH: {item.uh_proy} <br />
+                      </>
+                    ) : null}
+                    {item.gestion ? (
+                      <>
+                        GESTION: {item.gestion} <br />
+                      </>
+                    ) : null}
+                    {item.departamento ? (
+                      <>
+                        DEPARTAMENTO: {item.departamento} <br />
+                      </>
+                    ) : null}
+                    {item.municipio ? (
+                      <>
+                        MUNICIPIO: {item.municipio} <br />
+                      </>
+                    ) : null}
+                  </Typography>
+                </Grid>
+                <Grid xs={12} md={6}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    {item.monto_contrato_aevivienda ? (
+                      <>
+                        CONTRATO INICIAL Bs:{" "}
+                        {formatearNumero(item.monto_contrato_aevivienda)} <br />
+                      </>
+                    ) : null}
+                    {item.monto_cont_modificatorio ? (
+                      <>
+                        MODIFICATORIO Bs:{" "}
+                        {formatearNumero(item.monto_cont_modificatorio)} <br />
+                      </>
+                    ) : null}
+                    {item.estado ? (
+                      <>
+                        ESTADO: {item.estado} <br />
+                      </>
+                    ) : null}
+                    {item.id ? (
+                      <>
+                        ID: {item.id} <br />
+                      </>
+                    ) : null}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+            <br />
+          </TabPanel>
+        ))}
+      </Box>
       <br />
-      <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
+      {/*  <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         {conjuntosDatos.map((conjunto, conjuntoIndex) => (
           <Grid container spacing={2} key={conjuntoIndex}>
             {conjunto.map((data, index) => (
@@ -265,7 +406,7 @@ export function BuscarPemar({ codigoProyecto }) {
         ))}
       </div>
       <br />
-      <br />
+      <br /> */}
       <DatosPemar
         key={updateComponent}
         selectedCodid={selectedCodid}

@@ -3,7 +3,9 @@ import { BuscarUser } from "../../components/BuscarUser";
 import { CrearUser } from "../../components/CrearUser";
 import { useSelector } from "react-redux";
 
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";

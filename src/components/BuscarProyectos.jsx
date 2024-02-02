@@ -92,38 +92,42 @@ export function BuscarProyectos() {
   };
   return (
     <>
-      <Typography className="p-3 text-c600 text-2xl" variant="h4" gutterBottom>
-        Buscar
-      </Typography>
-      <Grid container spacing={2}>
-        <Grid xs={1}></Grid>
-        <Grid xs={10}>
-          <TextField
-            name="codigo"
-            helperText="Ejemplo: AEV-LP-0000"
-            id="standard-basic"
-            label="Codigo de Proyecto (COMPLETO)"
-            variant="standard"
-            className="w-full"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-          />
-          <br />{" "}
-          <Button
-            variant="outlined"
-            onClick={handleSearch}
-            endIcon={<SearchIcon />}
-          >
-            Buscar
-          </Button>
-        </Grid>
-        <Grid xs={1}></Grid>
-      </Grid>
-      {errorSearch && (
-        <p className="text-red-700 text-center p-5">{errorSearch}</p>
-      )}
-      <br />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
+        <Typography
+          className=" text-c600 text-2xl"
+          variant="h4"
+          gutterBottom
+        >
+          Buscar
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid xs={1}></Grid>
+          <Grid xs={10}>
+            <TextField
+              name="codigo"
+              helperText="Ejemplo: AEV-LP-0000"
+              id="standard-basic"
+              label="Codigo de Proyecto (COMPLETO)"
+              variant="standard"
+              className="w-full"
+              value={codigo}
+              onChange={(e) => setCodigo(e.target.value)}
+            />
+            <br />{" "}
+            <Button
+              variant="outlined"
+              onClick={handleSearch}
+              endIcon={<SearchIcon />}
+            >
+              Buscar
+            </Button>
+          </Grid>
+          <Grid xs={1}></Grid>
+        </Grid>
+        {errorSearch && (
+          <p className="text-red-700 text-center p-5">{errorSearch}</p>
+        )}
+        <br />
         {search && (
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: 272 }}>

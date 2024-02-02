@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+
+
+
 import Button from "@mui/material/Button";
 
 import axios from "axios";
@@ -132,6 +135,7 @@ export function BuscarFirmados() {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
+        
         {errorDatosBusa && (
           <p className="text-red-700 text-center p-5">{errorDatosBusa}</p>
         )}

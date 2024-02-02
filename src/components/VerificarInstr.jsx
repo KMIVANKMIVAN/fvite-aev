@@ -13,6 +13,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import TextField from "@mui/material/TextField";
 require("../libs/prism/prism.min.js");
 require("../libs/prism/prism.min.css");
 require("../libs/FreezeUI/freeze-ui.min.js");
@@ -30,6 +31,34 @@ const styles = {
   },
 };
 
+import { styled } from "@mui/material/styles";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
+const formatearFecha = (fecha) => {
+  const fechaObj = new Date(fecha);
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  };
+
+  return fechaObj.toLocaleDateString("es-ES", options);
+};
 export function VerificarInstr() {
   const [archivo, setArchivo] = useState(undefined);
   const [firmas, setFirmas] = useState(undefined);
@@ -93,48 +122,61 @@ export function VerificarInstr() {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <Accordion elevation={24}>
+        <Accordion elevation={3}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography className="text-center py-2 text-3xl  text-mi-color-primario">
+            <Typography className="text-c500" variant="subtitle2" gutterBottom>
               Verificar Documento PDF Firmados
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <Card>
+                <Card elevation={3}>
                   <CardContent style={styles.card}>
-                    <h3 className="text-mi-color-primario py-2">
+                    <Typography
+                      className="text-c500 text-center"
+                      variant="h6"
+                      gutterBottom
+                    >
                       Seleccione el documento PDF que desea Verificar
-                    </h3>
-                    <br />
+                    </Typography>
                     <div className="flex justify-center items-center flex-col">
                       <Grid container spacing={2}>
-                        <Grid item md={12} xl={8}>
-                          <input
-                            className=" font-bold text-mi-color-primario
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-mi-color-primario file:text-white
-                  hover:file:bg-mi-color-terceario"
+                        <Grid item md={12} lg={9}>
+                          <Button
+                            size="small"
+                            component="label"
+                            variant="contained"
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            Seleccionar PDF
+                            <VisuallyHiddenInput
+                              type="file"
+                              accept=".pdf" // Limita la selección solo a archivos PDF
+                              onChange={(event) => cargarArchivoBase64(event)}
+                            />
+                          </Button>
+                          {/* <TextField
+                            variant="standard"
+                            size="small"
                             type="file"
-                            id="archivo"
-                            accept=".pdf"
+                            inputProps={{
+                              accept: ".pdf",
+                            }}
                             onChange={(event) => cargarArchivoBase64(event)}
-                          />
+                          /> */}
                         </Grid>
-                        <Grid item md={12} xl={4}>
+                        <Grid item md={12} lg={3}>
                           <ButtonGroup
                             size="large"
                             aria-label="large button group"
                           >
                             <Button
-                              size="large"
+                              size="small"
                               onClick={() => dispatch(increment())}
                               endIcon={<RestartAltIcon />}
                             >
@@ -161,16 +203,24 @@ export function VerificarInstr() {
                 </Card>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Card>
+                <Card elevation={3}>
                   <CardContent style={styles.card}>
-                    <h1 className="text-center py-2 text-3xl  text-mi-color-primario">
+                    <Typography
+                      className="text-c500 text-center"
+                      variant="h6"
+                      gutterBottom
+                    >
                       Firmas
-                    </h1>
-                    <h2 className="text-mi-color-primario py-2">
+                    </Typography>
+                    <Typography
+                      className="text-c500"
+                      variant="subtitle2"
+                      gutterBottom
+                    >
                       Validación de firmas en el documento
-                    </h2>
+                    </Typography>
                     <div
-                      className="px-3 bg-mi-color-primario text-white"
+                      className="px-3  text-c500"
                       style={{ height: "825px", overflow: "scroll" }}
                     >
                       {firmasVasia && (
@@ -184,65 +234,188 @@ export function VerificarInstr() {
                       )}
                       {firmas &&
                         firmas.map((firma, index) => (
-                          <div key={index} className="border p-3 my-3">
-                            <h1 className="text-center text-2xl">
-                              <strong>Información del Certificado </strong>
-                            </h1>
-                            <p className="px-3">
-                              <strong>Fecha de firma:</strong>{" "}
-                              {firma.fechaFirma}
-                            </p>
-                            <h1 className="text-center text-2xl">
-                              <strong>Titular</strong>
-                            </h1>
-                            <ul className="px-3">
-                              <li>
-                                <strong>Nombre del signatario:</strong>{" "}
+                          <Card elevation={3} key={index} className="px-5">
+                            <Typography
+                              variant="h5"
+                              gutterBottom
+                              className="text-center text-c700"
+                            >
+                              Información del Certificado
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Fecha de firma: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
+                                {formatearFecha(firma.fechaFirma)}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              variant="h5"
+                              gutterBottom
+                              className="text-center text-c700"
+                            >
+                              Titular
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Nombre del signatario: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
                                 {firma.certificado.nombreSignatario}
-                              </li>
-                              <li>
-                                <strong>CI:</strong> {firma.certificado.ci}
-                              </li>
-                              <li>
-                                <strong>Organización del signatario:</strong>{" "}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              CI: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
+                                {firma.certificado.ci}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Organización del signatario: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
                                 {firma.certificado.organizacionSignatario}
-                              </li>
-                              <li>
-                                <strong>Cargo del signatario:</strong>{" "}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Cargo del signatario: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
                                 {firma.certificado.cargoSignatario}
-                              </li>
-                              <li>
-                                <strong>Correo del signatario:</strong>{" "}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Correo del signatario: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
                                 {firma.certificado.emailSignatario}
-                              </li>
-                            </ul>
-                            <h1 className="text-center ">
-                              <strong>Emisor</strong>
-                            </h1>
-                            <ul className="px-3">
-                              <li>
-                                <strong>Nombre ECA:</strong>{" "}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              variant="h5"
+                              gutterBottom
+                              className="text-center text-c700"
+                            >
+                              Emisor
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Nombre ECA: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
                                 {firma.certificado.nombreECA}
-                              </li>
-                              <li>
-                                <strong>Descripción ECA:</strong>{" "}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Descripción ECA: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
                                 {firma.certificado.descripcionECA}
-                              </li>
-                            </ul>
-                            <h1 className="text-center ">
-                              <strong>Periodo Validez</strong>
-                            </h1>
-                            <ul className="px-3">
-                              <li>
-                                <strong>Inicio de validez:</strong>{" "}
-                                {firma.certificado.inicioValidez}
-                              </li>
-                              <li>
-                                <strong>Fin de validez:</strong>{" "}
-                                {firma.certificado.finValidez}
-                              </li>
-                            </ul>
-                          </div>
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              variant="h5"
+                              gutterBottom
+                              className="text-center text-c700"
+                            >
+                              Periodo Validez
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Inicio de validez: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
+                                {formatearFecha(
+                                  firma.certificado.inicioValidez
+                                )}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              className=" text-c700"
+                              variant="subtitle2"
+                              gutterBottom
+                            >
+                              Fin de validez: {""}
+                              <Typography
+                                variant="subtitle1"
+                                gutterBottom
+                                className="text-c500"
+                                style={{ display: "inline-block" }}
+                              >
+                                {formatearFecha(firma.certificado.finValidez)}
+                              </Typography>
+                            </Typography>
+                          </Card>
                         ))}
                     </div>
                   </CardContent>

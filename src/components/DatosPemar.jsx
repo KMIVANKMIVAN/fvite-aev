@@ -8,7 +8,8 @@ import { BajarEliminarAnexos } from "./BajarEliminarAnexos";
 import { SubirBajarEliminarPdf } from "./SubirBajarEliminarPdf";
 import { AnexsosPdf } from "./AnexsosPdf";
 
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 
 import { EnviarBanco } from "./EnviarBanco";
@@ -16,13 +17,14 @@ import { EnviarBanco } from "./EnviarBanco";
 import { Instructivo } from "./Instructivo";
 import { VerificarInstr } from "./VerificarInstr";
 
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+// import Paper from "@material-ui/core/Paper";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
@@ -31,6 +33,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
+
+import Typography from "@mui/material/Typography";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -191,72 +196,107 @@ export function DatosPemar({
       )}
       <VerificarInstr />
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <p className="text-mi-color-primario text-1xl font-bold">
+        <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           PROYECTO: {titulo}
-        </p>
-        <br />
-        <p className="text-mi-color-primario text-1xl font-bold">
+        </Typography>
+        <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           CODIGO: {contcodComplejaData[0]?.proy_cod}
-        </p>
-        <br />
-      </div>
-      <Paper className={classes.root}>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth, textAlign: "center" }}
-                    className={classes.tableCell}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            {
-              <TableBody>
-                {rows.map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <>
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ textAlign: "center" }}
-                              className={classes.tableCell}
-                            >
-                              {column.id === "monto_desembolsado" ||
-                              column.id === "multa" ? (
-                                formatearNumero(
-                                  value !== null && value !== undefined
-                                    ? value
-                                    : 0
-                                )
-                              ) : column.id === "id_aev" ? (
-                                <>
-                                  <h1
-                                    className="text-center text-mi-color-primario"
-                                    style={{ fontSize: "1rem" }}
-                                  >
-                                    <strong>{`${row.id}-AEV`}</strong>
-                                  </h1>
-                                  <ButtonGroup
-                                    variant="text"
-                                    aria-label="text button group"
-                                  >
-                                    <Tooltip
-                                      title="Subir PDF"
-                                      placement="left-end"
+        </Typography>
+
+        <Paper className={classes.root}>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth, textAlign: "center" }}
+                      className={classes.tableCell}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              {
+                <TableBody>
+                  {rows.map((row, index) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <>
+                              <TableCell
+                                key={column.id}
+                                align={column.align}
+                                style={{ textAlign: "center" }}
+                                className={classes.tableCell}
+                              >
+                                {column.id === "monto_desembolsado" ||
+                                column.id === "multa" ? (
+                                  formatearNumero(
+                                    value !== null && value !== undefined
+                                      ? value
+                                      : 0
+                                  )
+                                ) : column.id === "id_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
                                     >
-                                      <Button
-                                        disabled={
+                                      {`${row.id}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            desabilitarAEVBUSA
+                                              ? true
+                                              : desabilitarBUSA
+                                              ? true
+                                              : row.buttonAEV === 1
+                                              ? true
+                                              : false
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.id + "-AEV");
+                                            setNombrePdfSeleccionado(
+                                              row.id + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.id + "-AEV"}
+                                        buttonAEVBUSA={
                                           desabilitarAEVBUSA
                                             ? true
                                             : desabilitarBUSA
@@ -265,46 +305,27 @@ export function DatosPemar({
                                             ? true
                                             : false
                                         }
-                                        color="error"
-                                        size="small"
-                                        component="span"
-                                        endIcon={
-                                          <UploadRoundedIcon size="large" />
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.id}
+                                        buttonAEV={
+                                          desabilitarAEVBUSA
+                                            ? true
+                                            : desabilitarBUSA
+                                            ? true
+                                            : row.buttonAEV === 1
+                                            ? true
+                                            : false
                                         }
-                                        onClick={() => {
-                                          buscar(row.id + "-AEV");
-                                          setNombrePdfSeleccionado(
-                                            row.id + "-AEV"
-                                          );
-                                          setForceRender(
-                                            (prevState) => !prevState
-                                          );
-                                          if (instructivoRef.current) {
-                                            instructivoRef.current.scrollIntoView(
-                                              {
-                                                behavior: "smooth",
-                                              }
-                                            );
-                                          }
-                                        }}
-                                      ></Button>
-                                    </Tooltip>
-                                    <SubirBajarEliminarPdf
-                                      nombrepdf={row.id + "-AEV"}
-                                      buttonAEVBUSA={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                  </ButtonGroup>
-                                  <h2 className="text-center text-mi-color-primario"></h2>
-                                  <div className="pb-2 flex  justify-center items-center">
-                                    <AnexsosPdf
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
                                       nombrepdf={row.id}
                                       buttonAEV={
                                         desabilitarAEVBUSA
@@ -316,105 +337,26 @@ export function DatosPemar({
                                           : false
                                       }
                                     />
-                                  </div>
-                                </>
-                              ) : column.id === "id_anexo" ? (
-                                <>
-                                  <BajarEliminarAnexos
-                                    nombrepdf={row.id}
-                                    buttonAEV={
-                                      desabilitarAEVBUSA
-                                        ? true
-                                        : desabilitarBUSA
-                                        ? true
-                                        : row.buttonAEV === 1
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                </>
-                              ) : column.id === "id_aevbanco" ? (
-                                <>
-                                  <EnviarBanco
-                                    nombrepdf={`${row.id}-AEV`}
-                                    buttonAEVBUSA={
-                                      desabilitarAEVBUSA
-                                        ? true
-                                        : desabilitarBUSA
-                                        ? true
-                                        : row.buttonAEV === 1
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                </>
-                              ) : column.id === "id_bancoaev" ? (
-                                <>
-                                  <EnviarBanco
-                                    nombrepdf={`${row.id}-BUSA`}
-                                    buttonAEVBUSA={
-                                      desabilitarAEVBUSA
-                                        ? true
-                                        : desabilitarAEV
-                                        ? true
-                                        : row.buttonBUSA === 1
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                </>
-                              ) : column.id === "id_busa" ? (
-                                <>
-                                  <h1
-                                    className="text-center text-blue-500"
-                                    style={{ fontSize: "1rem" }}
-                                  >
-                                    <strong>{`${row.id}-BUSA`}</strong>
-                                  </h1>
-                                  <ButtonGroup
-                                    variant="text"
-                                    aria-label="text button group"
-                                  >
-                                    <Tooltip
-                                      title="Subir PDF"
-                                      placement="left-end"
-                                    >
-                                      <Button
-                                        disabled={
-                                          desabilitarAEVBUSA
-                                            ? true
-                                            : desabilitarAEV
-                                            ? true
-                                            : row.buttonBUSA === 1
-                                            ? true
-                                            : false
-                                        }
-                                        color="error"
-                                        size="small"
-                                        component="span"
-                                        endIcon={
-                                          <UploadRoundedIcon size="large" />
-                                        }
-                                        onClick={() => {
-                                          buscar(row.id + "-BUSA");
-                                          setNombrePdfSeleccionado(
-                                            row.id + "-BUSA"
-                                          );
-                                          setForceRender(
-                                            (prevState) => !prevState
-                                          );
-                                          if (instructivoRef.current) {
-                                            instructivoRef.current.scrollIntoView(
-                                              {
-                                                behavior: "smooth",
-                                              }
-                                            );
-                                          }
-                                        }}
-                                      ></Button>
-                                    </Tooltip>
-                                    <SubirBajarEliminarPdf
-                                      nombrepdf={row.id + "-BUSA"}
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.id}-AEV`}
+                                      buttonAEVBUSA={
+                                        desabilitarAEVBUSA
+                                          ? true
+                                          : desabilitarBUSA
+                                          ? true
+                                          : row.buttonAEV === 1
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.id}-BUSA`}
                                       buttonAEVBUSA={
                                         desabilitarAEVBUSA
                                           ? true
@@ -425,81 +367,146 @@ export function DatosPemar({
                                           : false
                                       }
                                     />
-                                  </ButtonGroup>
-                                </>
-                              ) : column.format && typeof value === "number" ? (
-                                column.format(value)
-                              ) : (
-                                value
-                              )}
-                            </TableCell>
-                          </>
-                        );
+                                  </>
+                                ) : column.id === "id_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.id}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            desabilitarAEVBUSA
+                                              ? true
+                                              : desabilitarAEV
+                                              ? true
+                                              : row.buttonBUSA === 1
+                                              ? true
+                                              : false
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.id + "-BUSA");
+                                            setNombrePdfSeleccionado(
+                                              row.id + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.id + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          desabilitarAEVBUSA
+                                            ? true
+                                            : desabilitarAEV
+                                            ? true
+                                            : row.buttonBUSA === 1
+                                            ? true
+                                            : false
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) : column.format &&
+                                  typeof value === "number" ? (
+                                  column.format(value)
+                                ) : (
+                                  value
+                                )}
+                              </TableCell>
+                            </>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell style={{ textAlign: "right" }}>
+                      <strong className="text-c500">TOTAL </strong>
+                    </TableCell>
+                    <TableCell style={{ textAlign: "center" }}>
+                      <strong className=" text-c500">= </strong>
+                      {contcodComplejaData.map((data) => {
+                        totalMulta += data.multa;
+                        if (data.monto_desembolsado) {
+                          totalMontoDesembolsado += data.monto_desembolsado;
+                        }
+                        return null;
                       })}
-                    </TableRow>
-                  );
-                })}
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell style={{ textAlign: "right" }}>
-                    <strong className=" text-mi-color-secundario">
-                      TOTAL{" "}
-                    </strong>
-                  </TableCell>
-                  <TableCell style={{ textAlign: "center" }}>
-                    <strong className=" text-mi-color-secundario">= </strong>
-                    {contcodComplejaData.map((data) => {
-                      totalMulta += data.multa;
-                      if (data.monto_desembolsado) {
-                        totalMontoDesembolsado += data.monto_desembolsado;
-                      }
-                      return null;
-                    })}
-                    {formatearNumero(totalMulta)}
-                  </TableCell>
-                  <TableCell style={{ textAlign: "center" }}>
-                    <strong className="text-mi-color-secundario">= </strong>
-                    {formatearNumero(totalMontoDesembolsado)}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            }
-          </Table>
-        </TableContainer>
-      </Paper>
-      <br />
-      {respuestasError && (
-        <p className="text-red-700 text-center p-5">{respuestasError}</p>
-      )}
-      {respuestas === false && nombrePdfSeleccionado && (
-        <div ref={instructivoRef}>
-          <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />
-        </div>
-      )}
-      {respuestas && (
-        <Dialog
-          open={open || respuestas}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleClose}
-          aria-describedby="alert-dialog-slide-description"
-        >
-          <DialogContent>
-            {respuestas && (
-              <h1 className="text-center m-2 text-red-500">
-                El archivo ya se subio al servidor puede eliminar, para subir un
-                nuevo INSTRUCTIVO
-              </h1>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cerrar</Button>
-          </DialogActions>
-        </Dialog>
-      )}
+                      {formatearNumero(totalMulta)}
+                    </TableCell>
+                    <TableCell style={{ textAlign: "center" }}>
+                      <strong className="text-c500">= </strong>
+                      {formatearNumero(totalMontoDesembolsado)}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              }
+            </Table>
+          </TableContainer>
+        </Paper>
+        <br />
+        {respuestasError && (
+          <p className="text-red-700 text-center p-5">{respuestasError}</p>
+        )}
+        {respuestas === false && nombrePdfSeleccionado && (
+          <div ref={instructivoRef}>
+            <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />
+          </div>
+        )}
+        {respuestas && (
+          <Dialog
+            open={open || respuestas}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogContent>
+              {respuestas && (
+                <h1 className="text-center m-2 text-red-500">
+                  El archivo ya se subio al servidor puede eliminar, para subir
+                  un nuevo INSTRUCTIVO
+                </h1>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cerrar</Button>
+            </DialogActions>
+          </Dialog>
+        )}
+      </div>
     </>
   );
 }

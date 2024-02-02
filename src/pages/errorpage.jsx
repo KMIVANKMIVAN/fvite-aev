@@ -1,72 +1,69 @@
-import React, { useState, useEffect } from "react";
-import { useRouteError } from "react-router-dom";
-import { Container, Grid, Paper, Typography, Box } from "@mui/material";
-import per1 from "../assets/per1.png";
-import per2 from "../assets/per2.png";
+import React from "react";
+import { useNavigate, useRouteError } from "react-router-dom";
+import { Box, Button, Container, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import error404 from "../assets/error404.png";
 
 export function ErrorPage() {
+  const navigate = useNavigate(); // Utiliza useNavigate en lugar de useHistory
   const error = useRouteError();
-  const isSpanish = navigator.language.includes("es");
 
-  const [moveImages, setMoveImages] = useState(true);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setMoveImages((prevMoveImages) => !prevMoveImages);
-    }, 3000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+  const handleGoBack = () => {
+    navigate(-1); // Esta línea hace que vaya a la página anterior
+  };
 
   return (
-    <Container className="pt-10">
+    <Container>
       <Grid
         container
-        justifyContent="center"
+        // justifyContent="center"
         alignItems="center"
         style={{ height: "100vh" }}
       >
-        <Grid item xs={12}>
-          <Typography className="text-center" variant="h4" color="error">
-            {isSpanish
-              ? "Lo sentimos, hubo un error al cargar la página."
-              : error.statusText || error.message}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            animation: "fadeInUp 1s ease-in-out",
+            "@keyframes fadeInUp": {
+              from: { transform: "translateY(50px)", opacity: 0 },
+              to: { transform: "translateY(0)", opacity: 1 },
+            },
+          }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Algo no está bien...
           </Typography>
+          <Typography className="md:pr-10" variant="subtitle1" gutterBottom>
+            La página que estás intentando abrir no existe. Es posible que haya
+            escrito mal la dirección o el La página se ha movido a otra URL.{" "}
+            <br /> Si cree que se trata de un error, comuníquese con el soporte.
+            {/* {error.statusText || error.message}s */}
+          </Typography>
+          <Button variant="outlined" onClick={handleGoBack}>
+            Volver a la página anterior
+          </Button>
         </Grid>
-        <Grid item xs={4}></Grid>
-        <Grid item xs={2}>
-          <Box
-            sx={{
-              transform: moveImages
-                ? "translate(0%, 0%)"
-                : "translate(-50%, -50%)",
-              transition: "transform 1s",
-            }}
-          >
-            <img
-              src={per1}
-              alt="Error 404"
-              style={{ width: 300, height: 300 }}
-            />
-          </Box>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            animation: "fadeInUp 1s ease-in-out, heartbeat 1.5s infinite",
+            "@keyframes fadeInUp": {
+              from: { transform: "translateY(50px)", opacity: 0 },
+              to: { transform: "translateY(0)", opacity: 1 },
+            },
+            "@keyframes heartbeat": {
+              from: { transform: "scale(1)" },
+              "50%": { transform: "scale(1.05)" },
+              to: { transform: "scale(1)" },
+            },
+          }}
+        >
+          <img src={error404} alt="Error 404" />
         </Grid>
-        <Grid item xs={2}>
-          <Box
-            sx={{
-              transform: moveImages
-                ? "translate(0%, 0%)"
-                : "translate(50%, -50%)",
-              transition: "transform 1s",
-            }}
-          >
-            <img
-              src={per2}
-              alt="Error 404"
-              style={{ width: 300, height: 300 }}
-            />
-          </Box>
-        </Grid>
-        <Grid item xs={4}></Grid>
       </Grid>
     </Container>
   );

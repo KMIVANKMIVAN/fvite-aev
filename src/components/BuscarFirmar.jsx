@@ -1,4 +1,45 @@
 import { useState, useEffect } from "react";
+// import * as React from "react";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+
+import { useTheme } from "@mui/material/styles";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `vertical-tab-${index}`,
+    "aria-controls": `vertical-tabpanel-${index}`,
+  };
+}
+
 import Button from "@mui/material/Button";
 
 import axios from "axios";
@@ -25,13 +66,30 @@ function formatearNumero(numero) {
   return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
+function formatearFecha(fecha) {
+  // Convierte la cadena de fecha en un objeto de fecha
+  const fechaObjeto = new Date(fecha);
+
+  // Obtiene los componentes de la fecha
+  const dia = fechaObjeto.getUTCDate().toString().padStart(2, "0");
+  const mes = (fechaObjeto.getUTCMonth() + 1).toString().padStart(2, "0");
+  const año = fechaObjeto.getUTCFullYear();
+  const horas = fechaObjeto.getUTCHours().toString().padStart(2, "0");
+  const minutos = fechaObjeto.getUTCMinutes().toString().padStart(2, "0");
+  const segundos = fechaObjeto.getUTCSeconds().toString().padStart(2, "0");
+
+  // Formatea la fecha en el formato deseado
+  const fechaFormateada = `${mes}-${dia}-${año} ${horas}:${minutos}:${segundos}`;
+
+  return fechaFormateada;
+}
+
 import { useSelector } from "react-redux";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Grid from "@mui/material/Grid";
-
+import Stack from "@mui/material/Stack";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Unstable_Grid2";
+import Container from "@mui/material/Container";
 export function BuscarFirmar() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -47,18 +105,23 @@ export function BuscarFirmar() {
 
   const [updateComponent, setUpdateComponent] = useState(0);
 
-  const [datosBusa, setDatosBusa] = useState(false);
+  const [datosBusa, setDatosBusa] = useState([]);
   const [errorDatosBusa, setErrorDatosBusa] = useState(null);
 
   const [expandedPanels, setExpandedPanels] = useState({});
   const [desabilitarBUSA, setDesabilitarBUSA] = useState(true);
 
-  const handleChange = (index) => (isExpanded) => {
-    setExpandedPanels({
-      ...expandedPanels,
-      [index]: isExpanded,
-    });
+  const [value, setValue] = useState(0);
+
+  const theme = useTheme();
+
+  const handleChange2 = (event, newValue) => {
+    // setUpdateComponent(0);
+    setTipoPemar(false);
+    setTipoVivien(false);
+    setValue(newValue);
   };
+
   const token = obtenerToken();
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -92,6 +155,7 @@ export function BuscarFirmar() {
     datosparabusa();
   }, []);
   const handleUploadPDFs = (dataContCod) => {
+    setUpdateComponent(0);
     setSelectedContCod(dataContCod);
 
     if (Array.isArray(datosBusa) && datosBusa.length > 0) {
@@ -134,254 +198,182 @@ export function BuscarFirmar() {
         {errorDatosBusa && (
           <p className="text-red-700 text-center p-5">{errorDatosBusa}</p>
         )}
-        {conjuntosDatos.map((conjunto, conjuntoIndex) => (
-          <Grid container spacing={2} key={conjuntoIndex}>
-            {conjunto.map((data, index) => (
-              <Grid item xs={12} sm={12} md={6} key={index} className="py-2">
-                <Accordion
-                  expanded={expandedPanels[index]}
-                  onChange={handleChange(index)}
-                  elevation={24}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`panel${index}bh-content`}
-                    id={`panel${index}bh-header`}
-                  >
-                    <Typography
-                      sx={{
-                        width: "33%",
-                        flexShrink: 0,
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {data.codigo && (
-                        <>
-                          <strong className="text-mi-color-secundario">
-                            CODIGO:
-                          </strong>{" "}
-                          {data.codigo}
-                        </>
-                      )}
-                      <Button
-                        size="small"
-                        color="success"
-                        variant="outlined"
-                        onClick={() => handleUploadPDFs(data.cont_cod)}
-                      >
-                        Seleccionar
-                      </Button>
-                    </Typography>
-                    <Typography sx={{ fontSize: "0.75rem" }}>
-                      <strong className="text-mi-color-secundario">
-                        PROYECTO:
-                      </strong>{" "}
-                      {data.nombre_proyecto}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography
-                      sx={{
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      <Grid container spacing={2} key={conjuntoIndex}>
-                        <Grid item xs={12} md={6}>
-                          {data.tipo && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                TIPO
-                              </strong>{" "}
-                              {data.tipo}
-                              <br />
-                            </>
-                          )}
-                          {data.id_desembolso && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                ID DESEMBOLSO
-                              </strong>{" "}
-                              {data.id_desembolso}
-                              <br />
-                            </>
-                          )}
-                          <strong className="text-mi-color-secundario">
-                            DESCUENTO ANTICIPO RETENCION:
-                          </strong>{" "}
-                          {formatearNumero(data.descuento_anti_reten)}
-                          <br />
-                          {data.monto_desembolsado && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                MONTO DESEMBOLSADO:
-                              </strong>{" "}
-                              {formatearNumero(data.monto_desembolsado)}
-                              <br />
-                            </>
-                          )}
-                          {data.titular && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                TITULAR:
-                              </strong>{" "}
-                              {data.titular}
-                              <br />
-                            </>
-                          )}
-                          {data.idcuenta && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                ID DE CUENTA:
-                              </strong>{" "}
-                              {data.idcuenta}
-                              <br />
-                            </>
-                          )}
-                          {data.numero_inst && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                NUMERO DE INST:
-                              </strong>{" "}
-                              {data.numero_inst}
-                              <br />
-                            </>
-                          )}
-                          {data.fecha_insert && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                FECHA DE INSERT:
-                              </strong>{" "}
-                              {data.fecha_insert}
-                              <br />
-                            </>
-                          )}
-                          {data.fecha_banco && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                FECHA BANCO:
-                              </strong>{" "}
-                              {data.fecha_banco}
-                              <br />
-                            </>
-                          )}
-                          {data.fecha_busa && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                FECHA BUSA:
-                              </strong>{" "}
-                              {data.fecha_busa}
-                              <br />
-                            </>
-                          )}
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          {data.id_proyecto && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                ID:
-                              </strong>{" "}
-                              {data.id_proyecto}
-                              <br />
-                            </>
-                          )}
-                          {data.cont_cod && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                CONT CODIGO:
-                              </strong>{" "}
-                              {data.cont_cod}
-                              <br />
-                            </>
-                          )}
-                          {data.monto_fisico && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                MONTO FISICO:
-                              </strong>{" "}
-                              {formatearNumero(data.monto_fisico)}
-                              <br />
-                            </>
-                          )}
-                          <strong className="text-mi-color-secundario">
-                            MULTA:
-                          </strong>{" "}
-                          {formatearNumero(data.multa)}
-                          <br />
-                          {data.cuentatitular && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                CUENTA TITULAR:
-                              </strong>{" "}
-                              {data.cuentatitular}
-                              <br />
-                            </>
-                          )}
-                          {data.estado && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                ESTADO:
-                              </strong>{" "}
-                              {data.estado}
-                              <br />
-                            </>
-                          )}
-                          {data.numero_factura && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                NUMERO DE FACTURA:
-                              </strong>{" "}
-                              {data.numero_factura}
-                              <br />
-                            </>
-                          )}
-                          {data.fecha_abono && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                FECHA ABONO:
-                              </strong>{" "}
-                              {data.fecha_abono}
-                              <br />
-                            </>
-                          )}
-                          {data.archivo && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                ARCHIVO:
-                              </strong>{" "}
-                              {data.archivo}
-                              <br />
-                            </>
-                          )}
-                          {data.archivo_busa && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                ARCHIVO BUSA:
-                              </strong>{" "}
-                              {data.archivo_busa}
-                              <br />
-                            </>
-                          )}
-                          {data.objeto && (
-                            <>
-                              <strong className="text-mi-color-secundario">
-                                OBJETO:
-                              </strong>{" "}
-                              {data.objeto}
-                              <br />
-                            </>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-              </Grid>
+        <Box
+          component={"div"}
+          sx={{
+            flexGrow: 1,
+            bgcolor: "background.paper",
+            display: { md: "flex" },
+          }}
+        >
+          <Tabs
+            // orientation={{ md: "column", xs: "row" }}
+            sx={{
+              // display: "flex",
+              // flexDirection: { xs: "column", md: "row" },
+              borderRight: 1,
+              borderColor: "divider",
+              minWidth: 190,
+              height: { md: 300 },
+            }}
+            /* orientation={
+              theme.breakpoints.down("sm") ? "horizontal" : "vertical"
+            } */
+            orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
+            // orientation={{ xs: "horizontal", md: "vertical" }[breakpoint]}
+            variant="scrollable"
+            value={value}
+            onChange={handleChange2}
+            aria-label="Vertical tabs example"
+          >
+            {datosBusa.map((item, index) => (
+              <Tab key={index} label={item.codigo} {...a11yProps(index)} />
             ))}
-          </Grid>
-        ))}
+          </Tabs>
+          {datosBusa.map((item, index) => (
+            <TabPanel key={index} value={value} index={index}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid xs={12} md={2}>
+                    <Button
+                      size="small"
+                      color="success"
+                      variant="outlined"
+                      onClick={() => handleUploadPDFs(item.cont_cod)}
+                    >
+                      Seleccionar
+                    </Button>
+                  </Grid>
+                  <Grid xs={12} md={10}>
+                    <Typography variant="caption" display="block" gutterBottom>
+                      PROYECTO: {item.nombre_proyecto}
+                    </Typography>
+                  </Grid>
+                  <Grid xs={12} md={6}>
+                    <Typography variant="caption" display="block" gutterBottom>
+                      {item.tipo ? (
+                        <>
+                          TIPO: {item.tipo} <br />
+                        </>
+                      ) : null}
+                      {item.descuento_anti_reten ? (
+                        <>
+                          DESCUENTO ANTICIPO RETENCION:
+                          {formatearNumero(item.descuento_anti_reten)} <br />
+                        </>
+                      ) : null}
+                      {item.idcuenta ? (
+                        <>
+                          ID DE CUENTA: {item.idcuenta} <br />
+                        </>
+                      ) : null}
+                      {item.fecha_insert ? (
+                        <>
+                          FECHA DE INSERT: {formatearFecha(item.fecha_insert)} <br />
+                        </>
+                      ) : null}
+                      {item.fecha_busa ? (
+                        <>
+                          FECHA BUSA: {formatearFecha(item.fecha_busa)} <br />
+                        </>
+                      ) : null}
+                      {item.cont_cod ? (
+                        <>
+                          CONT CODIGO: {item.cont_cod} <br />
+                        </>
+                      ) : null}
+                      {item.multa ? (
+                        <>
+                          MULTA: {formatearNumero(item.multa)} <br />
+                        </>
+                      ) : null}
+                      {item.estado ? (
+                        <>
+                          ESTADO: {item.estado} <br />
+                        </>
+                      ) : null}
+                      {item.archivo ? (
+                        <>
+                          ARCHIVO: {item.archivo} <br />
+                        </>
+                      ) : null}
+                      {item.archivo_busa ? (
+                        <>
+                          ARCHIVO BUSA: {item.archivo_busa} <br />
+                        </>
+                      ) : null}
+                      {/* {item. && <> {item.}</>} */}
+                    </Typography>
+                  </Grid>
+                  <Grid xs={12} md={6}>
+                    <Typography variant="caption" display="block" gutterBottom>
+                      {item.id_desembolso ? (
+                        <>
+                          ID DESEMBOLSO: {item.id_desembolso} <br />
+                        </>
+                      ) : null}
+                      {item.titular ? (
+                        <>
+                          TITULAR: {item.titular} <br />
+                        </>
+                      ) : null}
+                      {item.numero_inst ? (
+                        <>
+                          NUMERO DE INST: {item.numero_inst} <br />
+                        </>
+                      ) : null}
+                      {item.fecha_banco ? (
+                        <>
+                          FECHA BANCO: {formatearFecha(item.fecha_banco)} <br />
+                        </>
+                      ) : null}
+                      {item.id_proyecto ? (
+                        <>
+                          ID: {item.id_proyecto} <br />
+                        </>
+                      ) : null}
+                      {item.monto_fisico ? (
+                        <>
+                          MONTO FISICO: {formatearNumero(item.monto_fisico)}{" "}
+                          <br />
+                        </>
+                      ) : null}
+                      {item.cuentatitular ? (
+                        <>
+                          CUENTA TITULAR: {item.cuentatitular} <br />
+                        </>
+                      ) : null}
+                      {item.numero_factura ? (
+                        <>
+                          NUMERO DE FACTURA: {item.numero_factura} <br />
+                        </>
+                      ) : null}
+                      {item.fecha_abono ? (
+                        <>
+                          FECHA ABONO:{" "}
+                          {formatearFecha(item.fecha_bufecha_abonosa)} <br />
+                        </>
+                      ) : null}
+
+                      {/* {item. && <> {item.}</>} */}
+                    </Typography>
+                  </Grid>
+                  <Grid xs={12}>
+                    <Typography variant="caption" display="block" gutterBottom>
+                      {item.objeto ? (
+                        <>
+                          OBJETO: {item.objeto}
+                        </>
+                      ) : null}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+              <br />
+            </TabPanel>
+          ))}
+        </Box>
       </div>
-      <br />
-      <br />
       {tipoPemar && (
         <DatosPemar
           key={updateComponent}

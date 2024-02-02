@@ -7,6 +7,43 @@ import { obtenerToken } from "../utils/auth";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material/styles";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+function a11yProps(index) {
+  return {
+    id: `vertical-tab-${index}`,
+    "aria-controls": `vertical-tabpanel-${index}`,
+  };
+}
+
 import { DatosComplViviend } from "./DatosComplViviend";
 
 function formatearNumero(numero) {
@@ -44,6 +81,8 @@ export function BuscarViviend({ codigoProyecto }) {
   const [updateComponent, setUpdateComponent] = useState(0);
   const [expandedPanels, setExpandedPanels] = useState({});
   const [desabilitarAEV, setDesabilitarAEV] = useState(true);
+
+  const [value, setValue] = useState(0);
 
   const handleChange = (index) => (event, isExpanded) => {
     setExpandedPanels({
@@ -100,13 +139,102 @@ export function BuscarViviend({ codigoProyecto }) {
     conjuntosDatos.push(datoscontratoData.slice(i, i + elementosPorConjunto));
   }
 
+  const handleChange2 = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
     <>
       {searchError && (
         <p className="text-red-700 text-center p-5">{searchError}</p>
       )}
+      <Box
+        component={"div"}
+        sx={{
+          flexGrow: 1,
+          bgcolor: "background.paper",
+          display: { md: "flex" },
+        }}
+      >
+        <Tabs
+          sx={{
+            borderRight: 1,
+            borderColor: "divider",
+            minWidth: 200,
+            height: { md: 200 },
+          }}
+          orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
+          variant="scrollable"
+          value={value}
+          onChange={handleChange2}
+          aria-label="Vertical tabs example"
+        >
+          {datoscontratoData.map((item, index) => (
+            <Tab key={index} label={item.proy_cod} {...a11yProps(index)} />
+          ))}
+        </Tabs>
+        {datoscontratoData.map((item, index) => (
+          <TabPanel key={index} value={value} index={index}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid container spacing={2}>
+                <Grid xs={12} md={2}>
+                  <Button
+                    size="small"
+                    color="success"
+                    variant="outlined"
+                    onClick={() => handleUploadPDFs(item.cont_cod)}
+                  >
+                    Seleccionar
+                  </Button>
+                </Grid>
+                <Grid xs={12} md={10}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    PROYECTO: {item.cont_des}
+                  </Typography>
+                  <br />
+                </Grid>
+                <Grid xs={12} md={6}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    {item.montocontrato ? (
+                      <>
+                        MONTO CONTRATO Bs: {formatearNumero(item.montocontrato)}{" "}
+                        <br />
+                      </>
+                    ) : null}
+                    {item.bole_fechav ? (
+                      <>
+                        ULTIMA BOLETA: {item.bole_fechav} <br />
+                      </>
+                    ) : null}
+                    {item.etap_cod ? (
+                      <>
+                        ESTADO SAP: {item.etap_cod} <br />
+                      </>
+                    ) : null}
+                  </Typography>
+                </Grid>
+                <Grid xs={12} md={6}>
+                  <Typography variant="caption" display="block" gutterBottom>
+                    {item.inst_des ? (
+                      <>
+                        EMPRESA: {item.inst_des} <br />
+                      </>
+                    ) : null}
+                    {item.depa_des ? (
+                      <>
+                        DEPARTAMENTO: {item.depa_des} <br />
+                      </>
+                    ) : null}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+            <br />
+          </TabPanel>
+        ))}
+      </Box>
       <br />
-      <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
+      {/* <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         {conjuntosDatos.map((conjunto, conjuntoIndex) => (
           <Grid container spacing={2} key={conjuntoIndex}>
             {conjunto.map((data, index) => (
@@ -218,7 +346,7 @@ export function BuscarViviend({ codigoProyecto }) {
         ))}
       </div>
       <br />
-      <br />
+      <br /> */}
       <DatosComplViviend
         key={updateComponent}
         selectedContCod={selectedContCod}
