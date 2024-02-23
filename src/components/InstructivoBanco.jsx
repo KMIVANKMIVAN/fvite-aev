@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { obtenerToken } from "../utils/auth";
+import { obtenerToken } from "../utils/auth.js";
 
 import { jacobitusTotal } from "../libs/adsib/jacobitus-total.es6.js";
 
@@ -23,8 +23,6 @@ import { useDispatch } from "react-redux";
 import { increment } from "../contexts/features/counter/counterSlice.js";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 
 const styles = {
   card: {
@@ -62,7 +60,7 @@ const formatearFecha = (fecha) => {
   return fechaObj.toLocaleDateString("es-ES", options);
 };
 
-export function Instructivo({ nombrepdf }) {
+export function InstructivoBanco({ nombrepdf }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [archivo, setArchivo] = useState(undefined);
@@ -76,65 +74,7 @@ export function Instructivo({ nombrepdf }) {
   const [firmasVasia, setFirmasVasia] = useState(undefined);
   const [archivoCargado, setArchivoCargado] = useState(false);
 
-  const [derivacion, setDerivacion] = useState([]);
-  const [errorderivacion, setErrorDerivacion] = useState([]);
-
-  const [firmador, setFirmador] = useState(null);
-  const [errorfirmador, setErrorFirmador] = useState(null);
-  const [selectedFirmador, setSelectedFirmador] = useState("");
-
-  const [formValues, setFormValues] = useState({
-    id_desembolso: "",
-    firmador: "",
-    fecha_envio: "",
-    limite: "",
-    observacion: "",
-    recibido: "",
-    estado: "",
-    id_enviador: "",
-    id_destinatario: "",
-    documento: "",
-  });
-
-  const [busUsuario, setBusUsuario] = useState(null);
-  const [errorBusUsuario, setErrorBusUsuario] = useState(null);
-
   const dispatch = useDispatch();
-
-  const buscarUsuario = async () => {
-    try {
-      const url = `${apiKey}/users/buscarusuario/${buscar}`;
-      const token = obtenerToken();
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-
-      const response = await axios.get(url, { headers });
-
-      if (response.status === 200) {
-        setReloadComponents(!reloadComponents);
-        setErrorBusUsuario(null);
-        setBusUsuario(response.data);
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          setBusUsuario(null);
-          setErrorBusUsuario(`RS: ${data.message}`);
-        } else if (status === 500) {
-          setBusUsuario(null);
-          setErrorBusUsuario(`RS: ${data.message}`);
-        }
-      } else if (error.request) {
-        setBusUsuario(null);
-        setErrorBusUsuario("RF: No se pudo obtener respuesta del servidor");
-      } else {
-        setBusUsuario(null);
-        setErrorBusUsuario("RF: Error al enviar la solicitud");
-      }
-    }
-  };
 
   const obtenerBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -233,14 +173,13 @@ export function Instructivo({ nombrepdf }) {
     }
   }, [firmas]);
 
-  const token = obtenerToken();
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const base64ToPdf = async () => {
     if (archivoMandar) {
       try {
+        const token = obtenerToken();
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
         const formData = {
           base64String: archivoMandar,
           fileName: nombrepdf,
@@ -263,108 +202,6 @@ export function Instructivo({ nombrepdf }) {
         }
       }
     }
-  };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
-  };
-  const crearDerivacion = async () => {
-    try {
-      const url = `${apiKey}/derivacion`;
-
-      const response = await axios.post(url, { headers });
-
-      if (response.status === 200) {
-        setErrorDerivacion(null);
-        setDerivacion(response.data);
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          setDerivacion(null);
-          setErrorDerivacion(`RS: ${data.message}`);
-        } else if (status === 500) {
-          setDerivacion(null);
-          setErrorDerivacion(`RS: ${data.message}`);
-        }
-      } else if (error.request) {
-        setErrorDerivacion("RF: No se pudo obtener respuesta del servidor");
-      } else {
-        setErrorDerivacion("RF: Error al enviar la solicitud");
-      }
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const url = `${apiKey}/derivacion`;
-
-        const response = await axios.get(url, { headers });
-
-        if (response.status === 200) {
-          setErrorFirmador(null);
-          setDerivacion(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          const { status, data } = error.response;
-          if (status === 400) {
-            setDerivacion(null);
-            setErrorFirmador(`RS: ${data.message}`);
-          } else if (status === 500) {
-            setDerivacion(null);
-            setErrorFirmador(`RS: ${data.message}`);
-          }
-        } else if (error.request) {
-          setErrorFirmador("RF: No se pudo obtener respuesta del servidor");
-        } else {
-          setErrorFirmador("RF: Error al enviar la solicitud");
-        }
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const url = `${apiKey}/firmador`;
-
-        const response = await axios.get(url, { headers });
-
-        if (response.status === 200) {
-          setErrorDerivacion(null);
-          setFirmador(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          const { status, data } = error.response;
-          if (status === 400) {
-            setFirmador(null);
-            setErrorDerivacion(`RS: ${data.message}`);
-          } else if (status === 500) {
-            setFirmador(null);
-            setErrorDerivacion(`RS: ${data.message}`);
-          }
-        } else if (error.request) {
-          setErrorDerivacion("RF: No se pudo obtener respuesta del servidor");
-        } else {
-          setErrorDerivacion("RF: Error al enviar la solicitud");
-        }
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleChangeFirmador = (event) => {
-    setSelectedFirmador(event.target.value);
   };
 
   return (
@@ -421,16 +258,6 @@ export function Instructivo({ nombrepdf }) {
                   {respuestas}
                 </Typography>
               )}
-
-              {errorderivacion && (
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  className="text-center m-2 text-red-500"
-                >
-                  {errorderivacion}
-                </Typography>
-              )}
               <div className="flex justify-center items-center flex-col">
                 <Grid
                   container
@@ -439,77 +266,6 @@ export function Instructivo({ nombrepdf }) {
                   alignItems="center"
                   style={{ flexWrap: "wrap" }}
                 >
-                  <Grid item xs={12}>
-                    <Card variant="outlined" className="p-3">
-                      <form /* onSubmit={dfsfd} */>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12} spacing={2}>
-                            <Select
-                              value={selectedFirmador}
-                              onChange={handleChangeFirmador}
-                              displayEmpty
-                              inputProps={{ "aria-label": "Without label" }}
-                            >
-                              <MenuItem value="" disabled>
-                                Seleccione un firmador
-                              </MenuItem>
-                              {firmador &&
-                                firmador.map((firmadorItem) => (
-                                  <MenuItem
-                                    key={firmadorItem.id}
-                                    value={firmadorItem.id}
-                                  >
-                                    {firmadorItem.cargo}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </Grid>
-                          <Grid item xs={12} spacing={2}>
-                            <Select
-                              name="id_enviador"
-                              value={formValues.id_enviador}
-                              onChange={handleChange}
-                              displayEmpty
-                              inputProps={{ "aria-label": "Without label" }}
-                            >
-                              <MenuItem value="" disabled>
-                                Seleccione la Departamental o Nacional
-                              </MenuItem>
-                              <MenuItem value={4}>Departamental</MenuItem>
-                              <MenuItem value={5}>Nacional</MenuItem>
-                            </Select>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Desembolso"
-                              variant="outlined"
-                              name="id_desembolso"
-                              value={formValues.id_desembolso}
-                              onChange={handleChange}
-                            />
-                          </Grid>
-                          <Grid item xs={6} spacing={2}>
-                            <TextField
-                              id="outlined-basic"
-                              label="Outlined"
-                              variant="outlined"
-                              size="small"
-                            />
-                          </Grid>
-                          <Grid item xs={6} spacing={2}>
-                            <TextField
-                              label="Observación"
-                              variant="outlined"
-                              name="observacion"
-                              value={formValues.observacion}
-                              onChange={handleChange}
-                              size="small"
-                            />
-                          </Grid>
-                        </Grid>
-                      </form>
-                    </Card>
-                  </Grid>
                   <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
                     <Button
                       size="small"
@@ -525,7 +281,6 @@ export function Instructivo({ nombrepdf }) {
                       />
                     </Button>
                   </Grid>
-
                   <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
                     <ButtonGroup size="large" aria-label="large button group">
                       <Button

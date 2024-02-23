@@ -195,6 +195,7 @@ export function BuscarViviend({ codigoProyecto }) {
                 </Grid>
                 <Grid xs={12} md={6}>
                   <Typography variant="caption" display="block" gutterBottom>
+                    ESTADO SAP: {item.id}
                     {item.montocontrato ? (
                       <>
                         MONTO CONTRATO Bs: {formatearNumero(item.montocontrato)}{" "}

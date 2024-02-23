@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-
-
 import Button from "@mui/material/Button";
 
 import axios from "axios";
@@ -12,6 +10,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { DatosComplViviend } from "./DatosComplViviend";
 import { DatosPemar } from "./DatosPemar";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
 
 function formatearNumero(numero) {
   if (numero == null || numero == undefined) {
@@ -33,7 +32,11 @@ import { useSelector } from "react-redux";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
+
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import Box from "@mui/material/Box";
 
 export function BuscarFirmados() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -56,6 +59,17 @@ export function BuscarFirmados() {
   const [expandedPanels, setExpandedPanels] = useState({});
   const [desabilitarAEVBUSA, setDesabilitarAEVBUSA] = useState(true);
 
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+
+  const handleFechaInicioChange = (event) => {
+    setFechaInicio(event.target.value);
+  };
+
+  const handleFechaFinChange = (event) => {
+    setFechaFin(event.target.value);
+  };
+
   const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
@@ -67,33 +81,29 @@ export function BuscarFirmados() {
     Authorization: `Bearer ${token}`,
   };
 
-  useEffect(() => {
-    const datosparabusa = async () => {
-      try {
-        const urlTipoRespaldo = `${apiKey}/cuadro/consultabusaaev`;
-        const response = await axios.get(urlTipoRespaldo, { headers });
-        if (response.status === 200) {
-          setErrorDatosBusa(null);
-          setDatosBusa(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          const { status, data } = error.response;
-          if (status === 400) {
-            setErrorDatosBusa(`RS: ${data.message}`);
-          } else if (status === 500) {
-            setErrorDatosBusa(`RS: ${data.message}`);
-          }
-        } else if (error.request) {
-          setErrorDatosBusa("RF: No se pudo obtener respuesta del servidor");
-        } else {
-          setErrorDatosBusa("RF: Error al enviar la solicitud");
-        }
+  const handleSearch = async () => {
+    try {
+      const urlTipoRespaldo = `${apiKey}/cuadro/consultabusaaev/${fechaInicio}/${fechaFin}`;
+      const response = await axios.get(urlTipoRespaldo, { headers });
+      if (response.status === 200) {
+        setErrorDatosBusa(null);
+        setDatosBusa(response.data);
       }
-    };
-
-    datosparabusa();
-  }, []);
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setErrorDatosBusa(`RS: ${data.message}`);
+        } else if (status === 500) {
+          setErrorDatosBusa(`RS: ${data.message}`);
+        }
+      } else if (error.request) {
+        setErrorDatosBusa("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setErrorDatosBusa("RF: Error al enviar la solicitud");
+      }
+    }
+  };
 
   const handleUploadPDFs = (dataContCod) => {
     setSelectedContCod(dataContCod);
@@ -135,7 +145,43 @@ export function BuscarFirmados() {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        
+        <Grid container spacing={2}>
+          <Grid xs={12}>
+            <Typography className="p-3 text-c600 " variant="h6" gutterBottom>
+              Seleccione el rango de fecha que requiere Buscar
+            </Typography>
+          </Grid>
+          <Grid xs={6} textAlign="end">
+            <InputLabel>Fecha de inicio:</InputLabel>
+            <Input
+              variant="filled"
+              type="date"
+              id="fechaInicio"
+              value={fechaInicio}
+              onChange={handleFechaInicioChange}
+            />
+          </Grid>
+          <Grid xs={6} textAlign="start">
+            <InputLabel>Fecha de fin:</InputLabel>
+            <Input
+              variant="filled"
+              type="date"
+              id="fechaFin"
+              value={fechaFin}
+              onChange={handleFechaFinChange}
+            />
+          </Grid>
+          <Grid xs={12} textAlign="center">
+            <Button
+              onClick={handleSearch}
+              variant="outlined"
+              endIcon={<ZoomInIcon />}
+              disabled={!fechaInicio || !fechaFin}
+            >
+              Buscar
+            </Button>
+          </Grid>
+        </Grid>
         {errorDatosBusa && (
           <p className="text-red-700 text-center p-5">{errorDatosBusa}</p>
         )}

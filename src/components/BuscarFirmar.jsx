@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-// import * as React from "react";
+import { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -40,13 +39,14 @@ function a11yProps(index) {
   };
 }
 
+import TextField from "@mui/material/TextField";
+
 import Button from "@mui/material/Button";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { DatosComplViviend } from "./DatosComplViviend";
 import { DatosPemar } from "./DatosPemar";
@@ -86,10 +86,7 @@ function formatearFecha(fecha) {
 
 import { useSelector } from "react-redux";
 
-import Stack from "@mui/material/Stack";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import Container from "@mui/material/Container";
 export function BuscarFirmar() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -112,6 +109,11 @@ export function BuscarFirmar() {
   const [desabilitarBUSA, setDesabilitarBUSA] = useState(true);
 
   const [value, setValue] = useState(0);
+
+  const [inputValue, setInputValue] = useState("");
+  const [filteredDatosBusa, setFilteredDatosBusa] = useState([]);
+
+  const scrollRef = useRef(null);
 
   const theme = useTheme();
 
@@ -154,6 +156,15 @@ export function BuscarFirmar() {
 
     datosparabusa();
   }, []);
+
+  useEffect(() => {
+    // Filter data based on inputValue
+    const filteredData = datosBusa.filter((item) =>
+      item.codigo.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    setFilteredDatosBusa(filteredData);
+  }, [inputValue, datosBusa]);
+
   const handleUploadPDFs = (dataContCod) => {
     setUpdateComponent(0);
     setSelectedContCod(dataContCod);
@@ -179,11 +190,34 @@ export function BuscarFirmar() {
     }
 
     setUpdateComponent((prev) => prev + 1);
+
+    /* setTimeout(() => {
+      scrollRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 500); */
+    setTimeout(() => {
+      if (tipoPemar) {
+        scrollRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      } else if (tipoVivien) {
+        scrollRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 300);
   };
 
+  /* useEffect(() => {
+    handleUploadPDFs(selectedContCod);
+  }, [count]); */
   useEffect(() => {
     handleUploadPDFs(selectedContCod);
-  }, [count]);
+  }, [count, filteredDatosBusa, selectedContCod]);
 
   const elementosPorConjunto = 2;
 
@@ -198,6 +232,21 @@ export function BuscarFirmar() {
         {errorDatosBusa && (
           <p className="text-red-700 text-center p-5">{errorDatosBusa}</p>
         )}
+        <Box
+          component="form"
+          sx={{
+            "& > :not(style)": { m: 1, width: "18ch" },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            label="Buscar"
+            variant="standard"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+        </Box>
         <Box
           component={"div"}
           sx={{
@@ -226,13 +275,13 @@ export function BuscarFirmar() {
             onChange={handleChange2}
             aria-label="Vertical tabs example"
           >
-            {datosBusa.map((item, index) => (
+            {filteredDatosBusa.map((item, index) => (
               <Tab key={index} label={item.codigo} {...a11yProps(index)} />
             ))}
           </Tabs>
-          {datosBusa.map((item, index) => (
+          {filteredDatosBusa.map((item, index) => (
             <TabPanel key={index} value={value} index={index}>
-              <Box sx={{ flexGrow: 1 }}>
+              <Box ref={scrollRef} sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                   <Grid xs={12} md={2}>
                     <Button
@@ -269,7 +318,8 @@ export function BuscarFirmar() {
                       ) : null}
                       {item.fecha_insert ? (
                         <>
-                          FECHA DE INSERT: {formatearFecha(item.fecha_insert)} <br />
+                          FECHA DE INSERT: {formatearFecha(item.fecha_insert)}{" "}
+                          <br />
                         </>
                       ) : null}
                       {item.fecha_busa ? (
@@ -360,11 +410,7 @@ export function BuscarFirmar() {
                   </Grid>
                   <Grid xs={12}>
                     <Typography variant="caption" display="block" gutterBottom>
-                      {item.objeto ? (
-                        <>
-                          OBJETO: {item.objeto}
-                        </>
-                      ) : null}
+                      {item.objeto ? <>OBJETO: {item.objeto}</> : null}
                     </Typography>
                   </Grid>
                 </Grid>
