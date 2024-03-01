@@ -4,7 +4,6 @@ import App from "./App.jsx";
 import "./index.css";
 
 import { Navbar } from "./components/Navbar.jsx";
-import { Footer } from "./components/Footer.jsx";
 
 import { Provider } from "react-redux";
 import { store } from "./contexts/store.js";
