@@ -170,7 +170,8 @@ export function Instructivo({ nombrepdf }) {
       });
       if (pin) {
         FreezeUI({ text: "Firmando documento" });
-        const slot = -1;
+        // const slot = -1;
+        const slot = 1;
         let respuesta =
           await jacobitusTotal.obtenerCertificadosParaFirmaDigital(slot, pin);
         if (

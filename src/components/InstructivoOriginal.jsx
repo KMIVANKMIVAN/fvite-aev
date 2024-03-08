@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { obtenerToken } from "../utils/auth";
+import { obtenerToken } from "../utils/auth.js";
 
 import { jacobitusTotal } from "../libs/adsib/jacobitus-total.es6.js";
 
@@ -60,7 +60,7 @@ const formatearFecha = (fecha) => {
   return fechaObj.toLocaleDateString("es-ES", options);
 };
 
-export function InstructivoBanco({ nombrepdf }) {
+export function InstructivoOriginal({ nombrepdf }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [archivo, setArchivo] = useState(undefined);
@@ -70,11 +70,6 @@ export function InstructivoBanco({ nombrepdf }) {
 
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
-
-  const [resivirPDF, setResivirPDF] = useState(null);
-  const [resivirPDFError, setErrorResivirPDF] = useState(null);
-  const [PDFenBASE64, setPDFenBASE64] = useState(null);
-  const [nomPDF, setNomPDF] = useState("");
 
   const [firmasVasia, setFirmasVasia] = useState(undefined);
   const [archivoCargado, setArchivoCargado] = useState(false);
@@ -93,79 +88,11 @@ export function InstructivoBanco({ nombrepdf }) {
   const cargarArchivoBase64 = async (event) => {
     if (event.target.files) {
       FreezeUI({ text: "Cargando documento" });
-      // const archivoPdf = await obtenerBase64(event.target.files[0]);
-      const archivoPdf = PDFenBASE64;
+      const archivoPdf = await obtenerBase64(event.target.files[0]);
       setArchivo(archivoPdf);
       setArchivoCargado(true);
     }
   };
-
-  const handleNomPDFChange = (event) => {
-    setNomPDF(event.target.value);
-  };
-
-  const handleBuscarPDFClick = async () => {
-    if (nomPDF) {
-      await pdfSearch(); // Asegúrate de que pdfSearch() sea una función asincrónica
-    } else {
-      alert("Por favor, ingrese un nombre de PDF antes de buscar.");
-    }
-  };
-
-  const pdfSearch = async () => {
-    try {
-      const urlTipoRespaldo = `${apiKey}/generarpdfs/enviarpdf/${nomPDF}`;
-      const response = await axios.get(urlTipoRespaldo, {
-        responseType: "arraybuffer",
-      });
-      if (response.status === 200) {
-        setErrorResivirPDF(null);
-        const pdfBuffer = Buffer.from(response.data, "binary");
-        const base64PDF = pdfBuffer.toString("base64");
-        setArchivo(`data:application/pdf;base64,${base64PDF}`);
-        setArchivoCargado(true);
-      }
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400 || status === 500) {
-          setErrorResivirPDF(`RS: ${data.message}`);
-        }
-      } else if (error.request) {
-        setErrorResivirPDF("RF: No se pudo obtener respuesta del servidor");
-      } else {
-        setErrorResivirPDF("RF: Error al enviar la solicitud");
-      }
-    }
-  };
-
-  /* const pdfSearch = async () => {
-    try {
-      const urlTipoRespaldo = `${apiKey}/generarpdfs/enviarpdf/${nomPDF}`;
-      const response = await axios.get(urlTipoRespaldo);
-      if (response.status === 200) {
-        setErrorResivirPDF(null);
-        const pdfBuffer = Buffer.from(response.data, "binary"); // Crea un buffer a partir de los bytes del PDF
-        const base64PDF = pdfBuffer.toString("base64"); // Convierte el buffer a base64
-        setPDFenBASE64(base64PDF);
-        setResivirPDF(response.data);
-      }
-      
-    } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          setErrorResivirPDF(`RS: ${data.message}`);
-        } else if (status === 500) {
-          setErrorResivirPDF(`RS: ${data.message}`);
-        }
-      } else if (error.request) {
-        setErrorResivirPDF("RF: No se pudo obtener respuesta del servidor");
-      } else {
-        setErrorResivirPDF("RF: Error al enviar la solicitud");
-      }
-    }
-  }; */
 
   const firmarPdf = async () => {
     if (archivo) {
@@ -279,16 +206,6 @@ export function InstructivoBanco({ nombrepdf }) {
 
   return (
     <>
-      <TextField
-        type="text"
-        value={nomPDF}
-        onChange={handleNomPDFChange}
-        label="Outlined"
-        variant="outlined"
-      />
-      <Button onClick={handleBuscarPDFClick} variant="outlined">
-        Buscar PDF
-      </Button>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Card elevation={3}>

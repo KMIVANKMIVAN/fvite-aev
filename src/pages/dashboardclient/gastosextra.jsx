@@ -1,4 +1,6 @@
 import { BuscarViviend } from "../../components/BuscarViviend";
+import { InstructivoBanco } from "../../components/InstructivoBanco";
+
 import Typography from "@mui/material/Typography";
 
 export function GastosExtra() {
@@ -21,7 +23,8 @@ export function GastosExtra() {
       >
         INSTRUCTIVOS DE DESEMBOLSO "GASTOS EXTRAUDINARIOS"
       </Typography>
-      <BuscarViviend />
+      {/* <BuscarViviend /> */}
+      <InstructivoBanco />
     </>
   );
 }

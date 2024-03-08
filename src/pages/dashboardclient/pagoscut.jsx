@@ -1,5 +1,8 @@
-import { BuscarViviend } from "../../components/BuscarViviend";
+import { useState } from "react";
+
 import Typography from "@mui/material/Typography";
+
+
 
 export function PagosCut() {
   return (
@@ -21,7 +24,8 @@ export function PagosCut() {
       >
         INSTRUCTIVOS DE DESEMBOLSO "PAGOS C.U.T."
       </Typography>
-      <BuscarViviend />
+      <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
+      </div>
     </>
   );
 }
