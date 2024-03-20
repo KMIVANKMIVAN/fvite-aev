@@ -143,7 +143,6 @@ export function BuscarPemar({ codigoProyecto }) {
   }
 
   const handleChange2 = (event, newValue) => {
-    
     setValue(newValue);
   };
 
@@ -412,6 +411,7 @@ export function BuscarPemar({ codigoProyecto }) {
         selectedCodid={selectedCodid}
         titulo={titulo}
         desabilitarAEV={desabilitarAEV}
+        codigoProyecto={codigoProyecto}
       />
       <br />
     </>

@@ -1,5 +1,4 @@
-import { BuscarViviend } from "../../components/BuscarViviend";
-import { InstructivoBanco } from "../../components/InstructivoBanco";
+import { MostrarDerivacion } from "../../components/verificarBuson/MostrarDerivacion";
 
 import Typography from "@mui/material/Typography";
 
@@ -21,10 +20,9 @@ export function GastosExtra() {
           e.target.style.textShadow = "4px 4px 8px rgba(0, 0, 0, 0.4)";
         }}
       >
-        INSTRUCTIVOS DE DESEMBOLSO "GASTOS EXTRAUDINARIOS"
+        INSTRUCTIVOS DE DESEMBOLSO "GASTOS EXTRAORDINARIOS"
       </Typography>
-      {/* <BuscarViviend /> */}
-      <InstructivoBanco />
+      <MostrarDerivacion />
     </>
   );
 }

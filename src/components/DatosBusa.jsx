@@ -67,6 +67,8 @@ export function DatosBusa({ selectedContCod }) {
   const [errorcontcodComplejaData, setErrorContcodComplejaData] = useState([]);
 
   const [nombrePdfSeleccionado, setNombrePdfSeleccionado] = useState(null);
+  const [idDesembolso, setIdDesembolso] = useState(null);
+
   const [forceRender, setForceRender] = useState(false);
 
   const [respuestas, setRespuestas] = useState(null);
@@ -178,6 +180,9 @@ export function DatosBusa({ selectedContCod }) {
     setOpen(false);
     setRespuestas(null);
   };
+
+  console.log("idDesembolso11111", idDesembolso);
+  console.log("nombrePdfSeleccionado22222", nombrePdfSeleccionado);
   return (
     <>
       {respuestasError && (
@@ -270,6 +275,7 @@ export function DatosBusa({ selectedContCod }) {
                                         }
                                         onClick={() => {
                                           buscar(row.iddesem + "-AEV");
+                                          setIdDesembolso(row.iddesem);
                                           setNombrePdfSeleccionado(
                                             row.iddesem + "-AEV"
                                           );
@@ -364,6 +370,7 @@ export function DatosBusa({ selectedContCod }) {
                                         }
                                         onClick={() => {
                                           buscar(row.iddesem + "-BUSA");
+                                          setIdDesembolso(row.iddesem);
                                           setNombrePdfSeleccionado(
                                             row.iddesem + "-BUSA"
                                           );
@@ -446,7 +453,11 @@ export function DatosBusa({ selectedContCod }) {
       {respuestasError && <h1>{respuestasError}</h1>}
       {respuestas === false && nombrePdfSeleccionado && (
         <div ref={instructivoRef}>
-          <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />
+          <Instructivo
+            key={forceRender}
+            idDesembolso={idDesembolso}
+            nombrepdf={nombrePdfSeleccionado}
+          />
         </div>
       )}
       {respuestas && (

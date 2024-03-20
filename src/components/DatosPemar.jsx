@@ -70,6 +70,7 @@ export function DatosPemar({
   desabilitarAEV,
   desabilitarBUSA,
   desabilitarAEVBUSA,
+  codigoProyecto,
 }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
@@ -77,6 +78,8 @@ export function DatosPemar({
   const [errorcontcodComplejaData, setErrorContcodComplejaData] = useState([]);
 
   const [nombrePdfSeleccionado, setNombrePdfSeleccionado] = useState(null);
+  const [idDesembolso, setIdDesembolso] = useState(null);
+
   const [forceRender, setForceRender] = useState(false);
 
   const [respuestas, setRespuestas] = useState(null);
@@ -189,6 +192,7 @@ export function DatosPemar({
 
   return (
     <>
+      <h1>hola {codigoProyecto}</h1>
       {errorcontcodComplejaData && (
         <p className="text-red-700 text-center p-5">
           {errorcontcodComplejaData}
@@ -278,6 +282,7 @@ export function DatosPemar({
                                           }
                                           onClick={() => {
                                             buscar(row.id + "-AEV");
+                                            setIdDesembolso(row.id);
                                             setNombrePdfSeleccionado(
                                               row.id + "-AEV"
                                             );
@@ -404,6 +409,7 @@ export function DatosPemar({
                                           }
                                           onClick={() => {
                                             buscar(row.id + "-BUSA");
+                                            setIdDesembolso(row.id);
                                             setNombrePdfSeleccionado(
                                               row.id + "-BUSA"
                                             );
@@ -482,7 +488,12 @@ export function DatosPemar({
         )}
         {respuestas === false && nombrePdfSeleccionado && (
           <div ref={instructivoRef}>
-            <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />
+            <Instructivo
+              codigoProyecto={codigoProyecto}
+              key={forceRender}
+              idDesembolso={idDesembolso}
+              nombrepdf={nombrePdfSeleccionado}
+            />
           </div>
         )}
         {respuestas && (

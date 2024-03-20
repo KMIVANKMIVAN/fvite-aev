@@ -113,6 +113,8 @@ export function BuscarFirmar() {
   const [inputValue, setInputValue] = useState("");
   const [filteredDatosBusa, setFilteredDatosBusa] = useState([]);
 
+  const [codigoProyecto, setCodigoProyecto] = useState(null);
+
   const scrollRef = useRef(null);
 
   const theme = useTheme();
@@ -226,6 +228,8 @@ export function BuscarFirmar() {
     conjuntosDatos.push(datosBusa.slice(i, i + elementosPorConjunto));
   }
 
+  // console.log("holanda", idDesembolso);
+
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
@@ -288,7 +292,10 @@ export function BuscarFirmar() {
                       size="small"
                       color="success"
                       variant="outlined"
-                      onClick={() => handleUploadPDFs(item.cont_cod)}
+                      onClick={() => {
+                        handleUploadPDFs(item.cont_cod);
+                        setCodigoProyecto(item.cont_cod);
+                      }}
                     >
                       Seleccionar
                     </Button>
@@ -422,6 +429,7 @@ export function BuscarFirmar() {
       </div>
       {tipoPemar && (
         <DatosPemar
+          codigoProyecto={codigoProyecto}
           key={updateComponent}
           selectedCodid={selectedCodid}
           titulo={titulo}
@@ -430,6 +438,7 @@ export function BuscarFirmar() {
       )}
       {tipoVivien && (
         <DatosComplViviend
+          codigoProyecto={codigoProyecto}
           key={updateComponent}
           selectedContCod={selectedContCod}
           desabilitarBUSA={desabilitarBUSA}

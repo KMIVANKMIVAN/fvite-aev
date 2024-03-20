@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { guardarToken } from "../utils/auth";
-import { guardarUserId, guardarUserNivel } from "../utils/userdata";
+import {
+  guardarUserId,
+  guardarUserNivel,
+  guardarIdOficina,
+} from "../utils/userdata";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -77,6 +81,7 @@ export function Login() {
         }
         guardarUserId(user.id);
         guardarUserNivel(user.nivel);
+        guardarIdOficina(user.id_oficina);
         guardarToken(access_token);
       }
     } catch (error) {

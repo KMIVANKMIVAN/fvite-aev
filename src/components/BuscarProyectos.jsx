@@ -93,11 +93,7 @@ export function BuscarProyectos() {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <Typography
-          className=" text-c600 text-2xl"
-          variant="h4"
-          gutterBottom
-        >
+        <Typography className=" text-c600 text-2xl" variant="h4" gutterBottom>
           Buscar
         </Typography>
         <Grid container spacing={2}>

@@ -67,3 +67,41 @@ export const eliminarUserNivel = () => {
     console.error("Error al eliminar el usernivel:", error);
   }
 };
+export const guardarIdOficina = (idOficina: number) => {
+  if (typeof idOficina !== "number") {
+    console.error("IdOficina no válido");
+    return;
+  }
+  try {
+    console.log("11111111111111");
+    console.log(idOficina.toString());
+
+    localStorage.setItem("IdOficina", idOficina.toString());
+  } catch (error) {
+    console.error("Error al guardar el user IdOficina:", error);
+  }
+};
+export const obtenerIdOficina = () => {
+  try {
+    const userIdOficina = localStorage.getItem("IdOficina");
+    if (userIdOficina === null) {
+      console.error("No se encontró el IdOficina de usuario en el localStorage");
+      return null; // o puedes devolver un valor predeterminado si lo deseas
+    }
+
+    return parseInt(userIdOficina, 10); // Convierte la cadena de ID a un número
+  } catch (error) {
+    console.error("Error al obtener el IdOficina de usuario:", error);
+    return null; // o un valor predeterminado en caso de error
+  }
+};
+export const eliminarIdOficina = () => {
+  try {
+    console.log("se elimino el IdOficina");
+
+    localStorage.removeItem("idOficina");
+  } catch (error) {
+    console.error("Error al eliminar el IdOficina:", error);
+  }
+};
+

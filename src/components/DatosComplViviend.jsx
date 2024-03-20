@@ -64,12 +64,15 @@ export function DatosComplViviend({
   desabilitarAEV,
   desabilitarBUSA,
   desabilitarAEVBUSA,
+  codigoProyecto,
 }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
   const [nombrePdfSeleccionado, setNombrePdfSeleccionado] = useState(null);
+  const [idDesembolso, setIdDesembolso] = useState(null);
+
   const [forceRender, setForceRender] = useState(false);
 
   const [respuestas, setRespuestas] = useState(null);
@@ -181,6 +184,9 @@ export function DatosComplViviend({
     setOpen(false);
     setRespuestas(null);
   };
+
+  console.log("idDesembolso11111", idDesembolso);
+  console.log("nombrePdfSeleccionado22222", nombrePdfSeleccionado);
   return (
     <>
       {errorData && <p className="text-red-700 text-center p-5">{errorData}</p>}
@@ -269,6 +275,7 @@ export function DatosComplViviend({
                                           }
                                           onClick={() => {
                                             buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
                                             setNombrePdfSeleccionado(
                                               row.iddesem + "-AEV"
                                             );
@@ -389,6 +396,7 @@ export function DatosComplViviend({
                                           }
                                           onClick={() => {
                                             buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
                                             setNombrePdfSeleccionado(
                                               row.iddesem + "-BUSA"
                                             );
@@ -477,7 +485,12 @@ export function DatosComplViviend({
         )}
         {respuestas === false && nombrePdfSeleccionado && (
           <div ref={instructivoRef}>
-            <Instructivo key={forceRender} nombrepdf={nombrePdfSeleccionado} />
+            <Instructivo
+              codigoProyecto={codigoProyecto}
+              key={forceRender}
+              idDesembolso={idDesembolso}
+              nombrepdf={nombrePdfSeleccionado}
+            />
           </div>
         )}
         {respuestas && (

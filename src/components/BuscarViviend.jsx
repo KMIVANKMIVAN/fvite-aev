@@ -352,6 +352,7 @@ export function BuscarViviend({ codigoProyecto }) {
         key={updateComponent}
         selectedContCod={selectedContCod}
         desabilitarAEV={desabilitarAEV}
+        codigoProyecto={codigoProyecto}
       />
       <br />
     </>
