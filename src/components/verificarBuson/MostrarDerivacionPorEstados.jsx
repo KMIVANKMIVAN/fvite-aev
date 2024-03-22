@@ -151,6 +151,7 @@ export function MostrarDerivacionPorEstados({ estado }) {
   // Efecto para cargar datos iniciales o recargar la tabla
   useEffect(() => {
     if (recargarTabla) {
+      setBusonDerivacion([]);
       handleSearch(); // Ejecuta la búsqueda solo si recargarTabla es true.
     }
     // Dependencia en recargarTabla para reaccionar a sus cambios.
