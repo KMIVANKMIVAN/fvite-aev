@@ -20,7 +20,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
+export function SubirBajarEliminarPdf({
+  nombrepdf,
+  buttonAEVBUSA,
+  vivienda,
+  nomCarperta,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [respuestas, setRespuestas] = useState(null);
@@ -52,7 +57,7 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
     formData.append("file", selecionarPDF);
     try {
       const response = await axios.post(
-        `${urlBase}/upload/${nombrepdf}`,
+        `${urlBase}/upload/${nomCarperta}/${nombrepdf}`,
         formData,
         {
           headers: {
@@ -96,10 +101,13 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
 
   const descargarPdf = async () => {
     try {
-      const response = await axios.get(`${urlBase}/download/${nombrepdf}`, {
-        headers,
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        `${urlBase}/download/${nomCarperta}/${nombrepdf}`,
+        {
+          headers,
+          responseType: "blob",
+        }
+      );
 
       const contentDisposition = response.headers["content-disposition"];
       const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
@@ -244,7 +252,9 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
             color="error"
             onClick={descargarPdf}
             endIcon={<PictureAsPdfRoundedIcon size="large" />}
-          ></Button>
+          >
+            ba
+          </Button>
         </Tooltip>
         <Tooltip title="Eliminar PDF" placement="right-start">
           <Button
@@ -254,7 +264,9 @@ export function SubirBajarEliminarPdf({ nombrepdf, buttonAEVBUSA, vivienda }) {
             color="error"
             onClick={eliminarPdf}
             endIcon={<DeleteRoundedIcon size="large" />}
-          ></Button>
+          >
+            c
+          </Button>
         </Tooltip>
       </ButtonGroup>
       <Dialog

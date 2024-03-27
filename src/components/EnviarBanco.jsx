@@ -101,7 +101,7 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
             variant="contained"
             onClick={abrirGuardarPdf}
           >
-            Enviar PDF
+            Enviar PDF (el primero)
             <br />
             {nombrepdf}
           </Button>
@@ -154,7 +154,7 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
         )}
         <DialogActions>
           <Button onClick={enviarBanco} variant="contained" color="error">
-            Enviar {nombrepdf}
+            Enviar {nombrepdf} (el segundo confirmar)
           </Button>
           <Button
             onClick={() => {

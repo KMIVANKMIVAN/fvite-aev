@@ -19,6 +19,8 @@ import { VerificarInstr } from "./VerificarInstr";
 
 import Typography from "@mui/material/Typography";
 
+import { obtenerUserNivel } from "../utils/userdata";
+
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -83,6 +85,8 @@ export function DatosComplViviend({
   const [open, setOpen] = useState(false);
 
   const instructivoRef = useRef(null);
+
+  // const habilitarDeshabilitar
 
   const classes = useStyles();
 
@@ -185,8 +189,8 @@ export function DatosComplViviend({
     setRespuestas(null);
   };
 
-  console.log("idDesembolso11111", idDesembolso);
-  console.log("nombrePdfSeleccionado22222", nombrePdfSeleccionado);
+  console.log("191919191", obtenerUserNivel());
+
   return (
     <>
       {errorData && <p className="text-red-700 text-center p-5">{errorData}</p>}
@@ -258,7 +262,7 @@ export function DatosComplViviend({
                                         placement="left-end"
                                       >
                                         <Button
-                                          disabled={
+                                          /*  disabled={
                                             desabilitarAEVBUSA
                                               ? true
                                               : desabilitarBUSA
@@ -266,6 +270,18 @@ export function DatosComplViviend({
                                               : row.buttonAEV === 1
                                               ? true
                                               : false
+                                          } */
+                                          // disabled={obtenerUserNivel() === 40}
+                                          /* disabled={
+                                            row.buttonAEV === "1"
+                                              ? true
+                                              : obtenerUserNivel() === 40
+                                              ? true
+                                              : false
+                                          } */
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
                                           }
                                           color="error"
                                           size="small"
@@ -290,12 +306,20 @@ export function DatosComplViviend({
                                               );
                                             }
                                           }}
-                                        ></Button>
+                                        >
+                                          a
+                                        </Button>
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.iddesem + "-AEV"}
-                                        buttonAEVBUSA={
+                                        /* buttonAEVBUSA={
                                           row.buttonAEV === 1 ? true : false
+                                        } */
+                                        buttonAEVBUSA={
+                                          // obtenerUserNivel() === 40
+
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
                                         }
                                       />
                                     </ButtonGroup>
@@ -303,7 +327,7 @@ export function DatosComplViviend({
                                     <div className="pb-2 flex  justify-center items-center">
                                       <AnexsosPdf
                                         nombrepdf={row.iddesem}
-                                        buttonAEV={
+                                        /* buttonAEV={
                                           desabilitarAEVBUSA
                                             ? true
                                             : desabilitarBUSA
@@ -311,6 +335,11 @@ export function DatosComplViviend({
                                             : row.buttonAEV === 1
                                             ? true
                                             : false
+                                        } */
+                                        // buttonAEV={obtenerUserNivel() === 40}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
                                         }
                                       />
                                     </div>
@@ -319,7 +348,7 @@ export function DatosComplViviend({
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.id}-AEV`}
-                                      buttonAEVBUSA={
+                                      /* buttonAEVBUSA={
                                         desabilitarAEVBUSA
                                           ? true
                                           : desabilitarBUSA
@@ -327,6 +356,11 @@ export function DatosComplViviend({
                                           : row.buttonAEV === 1
                                           ? true
                                           : false
+                                      } */
+                                      // buttonAEVBUSA={obtenerUserNivel() === 40}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
                                       }
                                     />
                                   </>
@@ -334,7 +368,7 @@ export function DatosComplViviend({
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.id}-BUSA`}
-                                      buttonAEVBUSA={
+                                      /* buttonAEVBUSA={
                                         desabilitarAEVBUSA
                                           ? true
                                           : desabilitarAEV
@@ -342,6 +376,11 @@ export function DatosComplViviend({
                                           : row.buttonBUSA === 1
                                           ? true
                                           : false
+                                      } */
+                                      // buttonAEVBUSA={obtenerUserNivel() === 9}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
                                       }
                                     />
                                   </>
@@ -349,7 +388,7 @@ export function DatosComplViviend({
                                   <>
                                     <BajarEliminarAnexos
                                       nombrepdf={row.iddesem}
-                                      buttonAEV={
+                                      /* buttonAEV={
                                         desabilitarAEVBUSA
                                           ? true
                                           : desabilitarBUSA
@@ -357,6 +396,11 @@ export function DatosComplViviend({
                                           : row.buttonAEV === 1
                                           ? true
                                           : false
+                                      } */
+                                      // buttonAEV={obtenerUserNivel() === 40}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
                                       }
                                     />
                                   </>
@@ -379,7 +423,7 @@ export function DatosComplViviend({
                                         placement="left-end"
                                       >
                                         <Button
-                                          disabled={
+                                          /* disabled={
                                             desabilitarAEVBUSA
                                               ? true
                                               : desabilitarAEV
@@ -387,6 +431,11 @@ export function DatosComplViviend({
                                               : row.buttonBUSA === 1
                                               ? true
                                               : false
+                                          } */
+                                          // disabled={obtenerUserNivel() === 9}
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
                                           }
                                           color="error"
                                           size="small"
@@ -411,11 +460,13 @@ export function DatosComplViviend({
                                               );
                                             }
                                           }}
-                                        ></Button>
+                                        >
+                                          BUSASIBIR
+                                        </Button>
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.iddesem + "-BUSA"}
-                                        buttonAEVBUSA={
+                                        /* buttonAEVBUSA={
                                           desabilitarAEVBUSA
                                             ? true
                                             : desabilitarAEV
@@ -423,6 +474,10 @@ export function DatosComplViviend({
                                             : row.buttonBUSA === 1
                                             ? true
                                             : false
+                                        } */
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
                                         }
                                       />
                                     </ButtonGroup>

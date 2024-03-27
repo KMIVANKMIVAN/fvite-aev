@@ -95,7 +95,7 @@ export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
   // console.log("idDesembolso", idDesembolso);
 
   const fetchPdfBase64 = async () => {
-    const url = `${apiKey}/recibirpdfsenviar/traerpdffirmarbase/${idDesembolso}`;
+    const url = `${apiKey}/recibirpdfsenviar/firmarbasenomcompl/${idDesembolso}`;
 
     try {
       const response = await axios.get(url);
@@ -228,29 +228,31 @@ export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
         };
         const formData = {
           base64String: archivoMandar,
+          CarpetaName: idDesembolso,
           fileName: nombrepdf,
         };
-        const url = `${apiKey}/documentpdf/base64apdf`;
+        // const url = `${apiKey}/documentpdf/base64apdf/${idDesembolso}`;
+        //ver para mandar dentro de la carpetajnn'jkm
+        const url = `${apiKey}/recibirpdfsenviar/capeta`;
         const response = await axios.post(url, formData, {
           headers: {
             ...headers,
           },
         });
         setErrorRespuestas(null);
-        setRespuestas(`RS: ${response.data}`);
+        // setRespuestas(`RS: ${response.message}`);
+        setRespuestas(`RS: ${response.data?.message}`);
       } catch (error) {
-        if (error.response && error.response.data) {
+        if (error.response && error.response?.data) {
           setRespuestas(null);
-          setErrorRespuestas(`RS: ${error.response.data}`);
+          setErrorRespuestas(`RS: ${error.response?.data}`);
         } else {
           setRespuestas(null);
-          setErrorRespuestas(`RS: ${error}`);
+          setErrorRespuestas(`RF: ${error}`);
         }
       }
     }
   };
-
-  console.log("en buton", mostrarInstruc);
 
   return (
     <>
@@ -343,7 +345,7 @@ export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
                           startIcon={<CloudUploadIcon />}
                           onClick={fetchPdfBase64}
                         >
-                          Optener PDF
+                          Obtener PDF
                         </Button>
                       </Grid>
                       <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
@@ -402,7 +404,6 @@ export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
                       )}
                       {archivoCargado && (
                         <>
-                          <h1>hola</h1>
                           <embed
                             className="form-control"
                             id="archivoPdf"
