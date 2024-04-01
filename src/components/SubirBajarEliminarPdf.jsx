@@ -154,7 +154,7 @@ export function SubirBajarEliminarPdf({
 
   const eliminarPdf = async () => {
     try {
-      const response = await axios.delete(`${urlBase}/delete/${nombrepdf}`, {
+      const response = await axios.delete(`${urlBase}/delete/${nomCarperta}/${nombrepdf}`, {
         headers,
       });
 
@@ -253,7 +253,6 @@ export function SubirBajarEliminarPdf({
             onClick={descargarPdf}
             endIcon={<PictureAsPdfRoundedIcon size="large" />}
           >
-            ba
           </Button>
         </Tooltip>
         <Tooltip title="Eliminar PDF" placement="right-start">
@@ -265,7 +264,6 @@ export function SubirBajarEliminarPdf({
             onClick={eliminarPdf}
             endIcon={<DeleteRoundedIcon size="large" />}
           >
-            c
           </Button>
         </Tooltip>
       </ButtonGroup>

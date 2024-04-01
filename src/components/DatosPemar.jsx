@@ -194,7 +194,6 @@ export function DatosPemar({
 
   return (
     <>
-      <h1>hola {codigoProyecto}</h1>
       {errorcontcodComplejaData && (
         <p className="text-red-700 text-center p-5">
           {errorcontcodComplejaData}
@@ -304,7 +303,6 @@ export function DatosPemar({
                                             }
                                           }}
                                         >
-                                          p1
                                         </Button>
                                       </Tooltip>
                                       <SubirBajarEliminarPdf

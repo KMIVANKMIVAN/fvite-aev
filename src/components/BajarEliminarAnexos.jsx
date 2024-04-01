@@ -241,9 +241,7 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
                       descargarPdf(item.desembolsos_id, item.archivo);
                     }}
                     endIcon={<PictureAsPdfRoundedIcon size="large" />}
-                  >
-                    1
-                  </Button>
+                  ></Button>
                 </Tooltip>
                 <Tooltip title="Eliminar PDF" placement="right-start">
                   <Button
@@ -254,9 +252,7 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
                       eliminarPdf(item.desembolsos_id, item.archivo);
                     }}
                     endIcon={<DeleteRoundedIcon size="large" />}
-                  >
-                    2
-                  </Button>
+                  ></Button>
                 </Tooltip>
               </ButtonGroup>
             </div>

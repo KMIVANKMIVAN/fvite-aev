@@ -61,13 +61,7 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-export function DatosComplViviend({
-  selectedContCod,
-  desabilitarAEV,
-  desabilitarBUSA,
-  desabilitarAEVBUSA,
-  codigoProyecto,
-}) {
+export function DatosComplViviend({ selectedContCod, codigoProyecto }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
@@ -189,8 +183,6 @@ export function DatosComplViviend({
     setRespuestas(null);
   };
 
-  console.log("191919191", obtenerUserNivel());
-
   return (
     <>
       {errorData && <p className="text-red-700 text-center p-5">{errorData}</p>}
@@ -306,12 +298,12 @@ export function DatosComplViviend({
                                               );
                                             }
                                           }}
-                                        >
-                                          a
-                                        </Button>
+                                        ></Button>
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        // nomCarAnt={row.iddesem}
                                         /* buttonAEVBUSA={
                                           row.buttonAEV === 1 ? true : false
                                         } */
@@ -347,7 +339,7 @@ export function DatosComplViviend({
                                 ) : column.id === "id_aevbanco" ? (
                                   <>
                                     <EnviarBanco
-                                      nombrepdf={`${row.id}-AEV`}
+                                      nombrepdf={`${row.iddesem}-AEV`}
                                       /* buttonAEVBUSA={
                                         desabilitarAEVBUSA
                                           ? true
@@ -367,7 +359,7 @@ export function DatosComplViviend({
                                 ) : column.id === "id_bancoaev" ? (
                                   <>
                                     <EnviarBanco
-                                      nombrepdf={`${row.id}-BUSA`}
+                                      nombrepdf={`${row.iddesem}-BUSA`}
                                       /* buttonAEVBUSA={
                                         desabilitarAEVBUSA
                                           ? true
@@ -460,9 +452,7 @@ export function DatosComplViviend({
                                               );
                                             }
                                           }}
-                                        >
-                                          BUSASIBIR
-                                        </Button>
+                                        ></Button>
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.iddesem + "-BUSA"}

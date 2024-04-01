@@ -101,8 +101,6 @@ export function EnviarBanco({ nombrepdf, buttonAEVBUSA, vivienda }) {
             variant="contained"
             onClick={abrirGuardarPdf}
           >
-            Enviar PDF (el primero)
-            <br />
             {nombrepdf}
           </Button>
         </Tooltip>
