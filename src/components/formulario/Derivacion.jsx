@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, {  useState, useEffect } from "react";
 
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
@@ -21,8 +21,15 @@ export function Derivacion({
   documento,
   codigoProyecto,
   rederizarInstructivo,
+  esVivienda,
+  esPemar,
+  selectVContCodPCodid,
 }) {
   // const { selectedId } = useContext(FormularioContext);
+
+  console.log("-->", selectVContCodPCodid);
+  console.log("-->", esVivienda);
+  console.log("-->", esPemar);
 
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -34,12 +41,15 @@ export function Derivacion({
 
   const [formValues, setFormValues] = useState({
     id_desembolso: idDesembolso,
-    limite: "",
+
     estado: "",
     id_enviador: obtenerUserId(),
     // id_destinatario: "",
     codigo_proyecto: codigoProyecto,
     documento: documento,
+    selectVContCodPCodid: selectVContCodPCodid,
+    esVivienda: esVivienda,
+    esPemar: esPemar,
   });
 
   const [derivacion, setDerivacion] = useState(null);
@@ -192,28 +202,6 @@ export function Derivacion({
             <Typography variant="h6" gutterBottom className="text-c400">
               PRIMER PASO CREE LA DERIVACION
             </Typography>
-          </Grid>
-
-          <Grid item xs={12} md={2}>
-            <FormControl fullWidth>
-              <Select
-                label="Límite"
-                name="limite"
-                value={formValues.limite}
-                onChange={handleChange}
-                displayEmpty
-                fullWidth
-                required
-              >
-                <MenuItem value="" disabled>
-                  Limite
-                </MenuItem>
-                <MenuItem value={4}>Departamental</MenuItem>
-                <MenuItem value={8} disabled>
-                  Nacional
-                </MenuItem>
-              </Select>
-            </FormControl>
           </Grid>
           {/* <Grid item xs={12} md={6}>
             <TextField

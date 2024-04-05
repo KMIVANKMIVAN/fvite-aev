@@ -17,6 +17,8 @@ import { EnviarBanco } from "./EnviarBanco";
 import { Instructivo } from "./Instructivo";
 import { VerificarInstr } from "./VerificarInstr";
 
+import AddIcon from "@mui/icons-material/Add";
+
 import { obtenerUserNivel } from "../utils/userdata";
 
 // import Paper from "@material-ui/core/Paper";
@@ -69,11 +71,12 @@ function formatearNumero(numero) {
 export function DatosPemar({
   selectedCodid,
   titulo,
-  desabilitarAEV,
-  desabilitarBUSA,
-  desabilitarAEVBUSA,
   codigoProyecto,
+  esVivienda,
+  esPemar,
 }) {
+  console.log("entro a qui DatosPemar");
+
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
@@ -86,6 +89,9 @@ export function DatosPemar({
 
   const [respuestas, setRespuestas] = useState(null);
   const [respuestasError, setErrorRespuestas] = useState(null);
+
+  const [mandarIDdesem, setMandarIDdesem] = useState(null);
+  const [mostrarAnexos, setMostrarAnexos] = useState(false);
 
   const [open, setOpen] = useState(false);
 
@@ -140,9 +146,10 @@ export function DatosPemar({
   let totalMontoDesembolsado = 0;
 
   const columns = [
-    { id: "id_aevbanco", label: "ENVIAR AL BANCO", minWidth: 200 },
-    { id: "id_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
-    { id: "id_anexo", label: "ANEXOS AEV", minWidth: 300 },
+    // { id: "id_aevbanco", label: "ENVIAR AL BANCO", minWidth: 200 },
+    { id: "mandarAnexInstr", label: "PROCESAR", minWidth: 200 },
+    // { id: "id_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
+    // { id: "id_anexo", label: "ANEXOS AEV", minWidth: 300 },
     { id: "id_bancoaev", label: "ENVIAR A LA AEV", minWidth: 200 },
     { id: "id_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 },
     { id: "multa", label: "MULTA", minWidth: 150 },
@@ -199,7 +206,12 @@ export function DatosPemar({
           {errorcontcodComplejaData}
         </p>
       )}
-      <VerificarInstr />
+      {/* <VerificarInstr /> */}
+      {/* hola{codigoProyecto} */}
+      {/* hola{selectedCodid} */}
+      <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
+        INSTRUCTIVOS:
+      </Typography>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           PROYECTO: {titulo}
@@ -207,7 +219,6 @@ export function DatosPemar({
         <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           CODIGO: {contcodComplejaData[0]?.proy_cod}
         </Typography>
-
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">
@@ -242,12 +253,11 @@ export function DatosPemar({
                               >
                                 {column.id === "monto_desembolsado" ||
                                 column.id === "multa" ? (
-                                  formatearNumero(
+                                  (formatearNumero(
                                     value !== null && value !== undefined
                                       ? value
                                       : 0
-                                  )
-                                ) : column.id === "id_aev" ? (
+                                  ) /*: column.id === "id_aev" ? (
                                   <>
                                     <Typography
                                       className="text-center text-c500"
@@ -266,15 +276,6 @@ export function DatosPemar({
                                         placement="left-end"
                                       >
                                         <Button
-                                          /* disabled={
-                                            desabilitarAEVBUSA
-                                              ? true
-                                              : desabilitarBUSA
-                                              ? true
-                                              : row.buttonAEV === 1
-                                              ? true
-                                              : false
-                                          } */
                                           disabled={
                                             row.buttonAEV === "1" ||
                                             obtenerUserNivel() === 40
@@ -302,23 +303,11 @@ export function DatosPemar({
                                               );
                                             }
                                           }}
-                                        >
-                                        </Button>
+                                        ></Button>
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.id + "-AEV"}
-                                        /* buttonAEVBUSA={
-                                          desabilitarAEVBUSA
-                                            ? true
-                                            : desabilitarBUSA
-                                            ? true
-                                            : row.buttonAEV === 1
-                                            ? true
-                                            : false
-                                        } */
                                         buttonAEVBUSA={
-                                          // obtenerUserNivel() === 40
-
                                           row.buttonAEV === "1" ||
                                           obtenerUserNivel() === 40
                                         }
@@ -329,15 +318,6 @@ export function DatosPemar({
                                     <div className="pb-2 flex  justify-center items-center">
                                       <AnexsosPdf
                                         nombrepdf={row.id}
-                                        /* buttonAEV={
-                                          desabilitarAEVBUSA
-                                            ? true
-                                            : desabilitarBUSA
-                                            ? true
-                                            : row.buttonAEV === 1
-                                            ? true
-                                            : false
-                                        } */
                                         buttonAEV={
                                           row.buttonAEV === "1" ||
                                           obtenerUserNivel() === 40
@@ -350,15 +330,6 @@ export function DatosPemar({
                                   <>
                                     <BajarEliminarAnexos
                                       nombrepdf={row.id}
-                                      /* buttonAEV={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false
-                                      } */
                                       buttonAEV={
                                         row.buttonAEV === "1" ||
                                         obtenerUserNivel() === 40
@@ -366,19 +337,11 @@ export function DatosPemar({
                                       nomCarperta={row.id}
                                     />
                                   </>
-                                ) : column.id === "id_aevbanco" ? (
+                                ) */)
+                                ) : /* ) : column.id === "id_aevbanco" ? (
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.id}-AEV`}
-                                      /* buttonAEVBUSA={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false
-                                      } */
                                       buttonAEVBUSA={
                                         row.buttonAEV === "1" ||
                                         obtenerUserNivel() === 40
@@ -386,19 +349,25 @@ export function DatosPemar({
                                       nomCarperta={row.id}
                                     />
                                   </>
+                                ) */
+                                column.id === "mandarAnexInstr" ? (
+                                  <>
+                                    <Button
+                                      onClick={() => {
+                                        setMandarIDdesem(row.id);
+                                        setMostrarAnexos(true);
+                                      }}
+                                      variant="outlined"
+                                      size="small"
+                                    >
+                                      {/* PROCESAR: {`${row.id}-AEV`} */}
+                                      PROCESAR: {row.id}
+                                    </Button>
+                                  </>
                                 ) : column.id === "id_bancoaev" ? (
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.id}-BUSA`}
-                                      /* buttonAEVBUSA={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarAEV
-                                          ? true
-                                          : row.buttonBUSA === 1
-                                          ? true
-                                          : false
-                                      } */
                                       buttonAEVBUSA={
                                         row.buttonBUSA === "1" ||
                                         obtenerUserNivel() === 9
@@ -425,15 +394,6 @@ export function DatosPemar({
                                         placement="left-end"
                                       >
                                         <Button
-                                          /* disabled={
-                                            desabilitarAEVBUSA
-                                              ? true
-                                              : desabilitarAEV
-                                              ? true
-                                              : row.buttonBUSA === 1
-                                              ? true
-                                              : false
-                                          } */
                                           disabled={
                                             row.buttonBUSA === "1" ||
                                             obtenerUserNivel() === 9
@@ -465,15 +425,6 @@ export function DatosPemar({
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.id + "-BUSA"}
-                                        /* buttonAEVBUSA={
-                                          desabilitarAEVBUSA
-                                            ? true
-                                            : desabilitarAEV
-                                            ? true
-                                            : row.buttonBUSA === 1
-                                            ? true
-                                            : false
-                                        } */
                                         buttonAEVBUSA={
                                           row.buttonBUSA === "1" ||
                                           obtenerUserNivel() === 9
@@ -535,6 +486,9 @@ export function DatosPemar({
               key={forceRender}
               idDesembolso={idDesembolso}
               nombrepdf={nombrePdfSeleccionado}
+              selectVContCodPCodid={selectedCodid}
+              esVivienda={esVivienda}
+              esPemar={esPemar}
             />
           </div>
         )}
@@ -560,6 +514,7 @@ export function DatosPemar({
           </Dialog>
         )}
       </div>
+      {mostrarAnexos && <AnexsosPdf nombrepdf={mandarIDdesem} />}
     </>
   );
 }

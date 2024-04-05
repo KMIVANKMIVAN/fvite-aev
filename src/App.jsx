@@ -17,7 +17,6 @@ import { PagosCut } from "./pages/dashboardclient/pagoscut.jsx";
 
 import RequireAuth from "./utils/requireAuth.jsx";
 
-
 const router = createBrowserRouter([
   {
     path: "/",

@@ -67,7 +67,7 @@ function formatearNumero(numero) {
 import { useSelector } from "react-redux";
 
 import Grid from "@mui/material/Grid";
-export function BuscarPemar({ codigoProyecto }) {
+export function BuscarPemar({ codigoProyecto, esVivienda, esPemar }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);
@@ -151,6 +151,9 @@ export function BuscarPemar({ codigoProyecto }) {
       {errorSearch && (
         <p className="text-red-700 text-center p-5">{errorSearch}</p>
       )}
+      <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
+        INFORMACION DEL PROYECTO:
+      </Typography>
       <Box
         component={"div"}
         sx={{
@@ -257,8 +260,9 @@ export function BuscarPemar({ codigoProyecto }) {
         key={updateComponent}
         selectedCodid={selectedCodid}
         titulo={titulo}
-        desabilitarAEV={desabilitarAEV}
         codigoProyecto={codigoProyecto}
+        esPemar={esPemar}
+        esVivienda={esVivienda}
       />
       <br />
     </>

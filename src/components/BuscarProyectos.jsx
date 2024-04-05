@@ -191,12 +191,16 @@ export function BuscarProyectos() {
         <BuscarViviend
           key={reloadComponents}
           codigoProyecto={codigoSeleccionado}
+          esVivienda={vivienda}
+          esPemar={pemar}
         />
       )}
       {pemar && (
         <BuscarPemar
           key={reloadComponents}
           codigoProyecto={codigoSeleccionado}
+          esPemar={pemar}
+          esVivienda={vivienda}
         />
       )}
       <br />

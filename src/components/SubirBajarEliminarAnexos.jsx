@@ -3,6 +3,8 @@ import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 import { obtenerUserId } from "../utils/userdata";
 
+import TextField from "@mui/material/TextField";
+
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -11,6 +13,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
+
+import Input from "@mui/material/Input";
+
+import { AnexosInstruc } from "./AnexosInstruc";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -89,54 +95,22 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
 
   return (
     <>
-      <Tooltip title="Subir PDF" placement="top">
-        <Button
-          color="error"
-          size="small"
-          component="span"
-          variant="outlined"
-          onClick={abrirGuardarPdf}
-        >
-          Seleccionar PDF
-        </Button>
-      </Tooltip>
-      <Dialog
-        open={abrirGuardar}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={cerrarGuardarPdf}
+      <input size="small" type="file" accept=".pdf" onChange={cargarElPDF} />
+      <Button
+        disabled={!selecionarPDF}
+        onClick={guardarPdf}
+        variant="outlined"
+        size="small"
       >
-        <DialogTitle className="text-center">
-          {"Subir Instructivo PDF"}
-        </DialogTitle>
-        <DialogContent>
-          <div className="flex justify-center items-center flex-col">
-            <input
-              className="block w-full text-sm bold text-mi-color-primario
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-md file:border-0
-                file:text-sm file:font-semibold
-              file:bg-mi-color-primario file:text-white
-              hover:file:bg-mi-color-terceario"
-              type="file"
-              accept=".pdf"
-              onChange={cargarElPDF}
-            />
-          </div>
-        </DialogContent>
-        {respuestasError && (
-          <p className="text-center m-2 text-red-500">{respuestasError}</p>
-        )}
-        {respuestaMessage && (
-          <p className="text-center m-2 text-green-500">{respuestaMessage}</p>
-        )}
-        <DialogActions>
-          <Button disabled={!selecionarPDF} onClick={guardarPdf}>
-            Subir PDF
-          </Button>
-          <Button onClick={cerrarGuardarPdf}>Cerrar</Button>
-        </DialogActions>
-      </Dialog>
+        Subir PDF
+      </Button>
+      {respuestasError && (
+        <p className="text-center m-2 text-red-500">{respuestasError}</p>
+      )}
+      {respuestaMessage && (
+        <p className="text-center m-2 text-green-500">{respuestaMessage}</p>
+      )}
+     
     </>
   );
 }

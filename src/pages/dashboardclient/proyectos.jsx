@@ -24,7 +24,7 @@ export function Proyectos() {
       >
         INSTRUCTIVOS DE DESEMBOLSO "PROYECTOS"
       </Typography>
-      <MostrarDerivacion />
+      {/* <MostrarDerivacion /> */}
       {/* <div style={{ position: "sticky", top: "0" }}>
         <Paper elevation={3}>
           <MostrarDerivacion />

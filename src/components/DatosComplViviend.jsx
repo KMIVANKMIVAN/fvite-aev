@@ -61,8 +61,15 @@ function formatearNumero(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-export function DatosComplViviend({ selectedContCod, codigoProyecto }) {
+export function DatosComplViviend({
+  selectedContCod,
+  codigoProyecto,
+  esVivienda,
+  esPemar,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  console.log("entro a qui DatosComplViviend");
 
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
@@ -186,7 +193,9 @@ export function DatosComplViviend({ selectedContCod, codigoProyecto }) {
   return (
     <>
       {errorData && <p className="text-red-700 text-center p-5">{errorData}</p>}
-      <VerificarInstr />
+      {/* chau{codigoProyecto} */}
+      {/* chau{selectedContCod} */}
+      {/* <VerificarInstr /> */}
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
         <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           PROYECTO: {contcodComplejaData[0]?.objeto}
@@ -535,6 +544,9 @@ export function DatosComplViviend({ selectedContCod, codigoProyecto }) {
               key={forceRender}
               idDesembolso={idDesembolso}
               nombrepdf={nombrePdfSeleccionado}
+              selectVContCodPCodid={selectedContCod}
+              esVivienda={esVivienda}
+              esPemar={esPemar}
             />
           </div>
         )}

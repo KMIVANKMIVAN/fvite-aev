@@ -68,7 +68,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Grid from "@mui/material/Grid";
 
-export function BuscarViviend({ codigoProyecto }) {
+export function BuscarViviend({ codigoProyecto, esVivienda, esPemar }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const count = useSelector((state) => state.counter.value);
@@ -235,12 +235,12 @@ export function BuscarViviend({ codigoProyecto }) {
         ))}
       </Box>
       <br />
-      
       <DatosComplViviend
         key={updateComponent}
         selectedContCod={selectedContCod}
-        desabilitarAEV={desabilitarAEV}
         codigoProyecto={codigoProyecto}
+        esVivienda={esVivienda}
+        esPemar={esPemar}
       />
       <br />
     </>

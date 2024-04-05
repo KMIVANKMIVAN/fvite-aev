@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+
+import Typography from "@mui/material/Typography";
 import { obtenerToken } from "../utils/auth";
 
 import Button from "@mui/material/Button";
@@ -9,7 +11,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import Grid from "@mui/material/Unstable_Grid2";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 
@@ -17,8 +18,17 @@ import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 
 import { SubirBajarEliminarAnexos } from "./SubirBajarEliminarAnexos";
 
+import AddIcon from "@mui/icons-material/Add";
+
 import { useDispatch } from "react-redux";
 import { increment } from "../contexts/features/counter/counterSlice";
+
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Unstable_Grid2";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+
+import { AnexosInstruc } from "./AnexosInstruc";
 
 export function AnexsosPdf({ nombrepdf, buttonAEV }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -97,12 +107,84 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
 
   return (
     <>
-      <Button
+      <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
+        PROCESAR EL INSTRUCTIVO:
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid xs={12}>
+          <Button
+            // disabled={buttonAEV}
+            // onClick={handleClickOpen}
+            endIcon={<AddIcon size="large" />}
+          >
+            Crear Anexos de {nombrepdf}
+          </Button>
+        </Grid>
+        <Grid xs={6} md={4}>
+          {/* <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel> */}
+          {/* <Select
+        native
+        value={selectedValue}
+        onChange={handleChange}
+        input={<OutlinedInput label="Seleccionar" id="demo-dialog-native" />}
+      >
+        <option aria-label="None" value="" />
+        {tipoRespaldoData.map((option) => (
+          <option key={option.id} value={option.detalle}>
+            {option.detalle}
+          </option>
+        ))}
+      </Select> */}
+          <Select
+            size="small"
+            native
+            value={selectedValue}
+            onChange={handleChange}
+            input={
+              <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
+            }
+          >
+            <option aria-label="None" value="">
+              Seleccionar
+            </option>
+            {tipoRespaldoData.map((option) => (
+              <option key={option.id} value={option.detalle}>
+                {option.detalle}
+              </option>
+            ))}
+          </Select>
+        </Grid>
+        {selectedValue && (
+          <>
+            <Grid xs={4}>
+              <SubirBajarEliminarAnexos
+                iddesem={nombrepdf}
+                tiporesid={nomPDFAnex}
+                referencias={referencias}
+              />
+            </Grid>
+            <Grid xs={4}>
+              <TextField
+                size="small"
+                // id="standard-basic"
+                label="Referencias"
+                variant="outlined"
+                value={referencias}
+                onChange={handleReferenciasChange}
+              />
+            </Grid>
+          </>
+        )}
+        <Grid xs={12}></Grid>
+      </Grid>
+      <AnexosInstruc nombrepdf={nombrepdf} />
+
+      {/* <Button
         disabled={buttonAEV}
         onClick={handleClickOpen}
-        endIcon={<ArrowCircleUpIcon size="large" />}
+        endIcon={<AddIcon size="large" />}
       >
-        Anexos
+        Crear Anexos
       </Button>
       <Dialog
         disableEscapeKeyDown
@@ -116,6 +198,7 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
             {errorTsipoRespaldoData}
           </p>
         )}
+
         <DialogTitle className="text-center">Anexos PDFs AEV</DialogTitle>
         <DialogContent>
           <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel>
@@ -166,7 +249,7 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
             Cerrar
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 }

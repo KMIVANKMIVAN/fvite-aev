@@ -25,6 +25,9 @@ import { CambiarEstado } from "./CambiarEstado";
 
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 
+import { DatosComplViviend } from "../DatosComplViviend";
+import { DatosPemar } from "../DatosPemar";
+
 export function MostrarDerivacionPorEstados({ estado }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -34,10 +37,25 @@ export function MostrarDerivacionPorEstados({ estado }) {
   const [errorEstado, setErrorEstado] = useState(null);
   const [estadoOptions, setEstadoOptions] = useState([]);
 
-  const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState("");
+  // const [fechaInicio, setFechaInicio] = useState("");
+  // const [fechaFin, setFechaFin] = useState("");
+
+  const hoy = new Date();
+  const primerDiaDelMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+    .toISOString()
+    .slice(0, 10);
+  const diaActual = hoy.toISOString().slice(0, 10);
+
+  const [fechaInicio, setFechaInicio] = useState(primerDiaDelMes);
+  const [fechaFin, setFechaFin] = useState(diaActual);
 
   const [recargarTabla, setRecargarTabla] = useState(false);
+
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const handleComponentRender = (rowData) => {
+    setSelectedRowData(rowData);
+  };
 
   const handleFechaInicioChange = (event) => {
     setFechaInicio(event.target.value);
@@ -52,6 +70,10 @@ export function MostrarDerivacionPorEstados({ estado }) {
     Authorization: `Bearer ${token}`,
   };
 
+  useEffect(() => {
+    // Asegúrate de que esta búsqueda solo se ejecute una vez al cargar el componente.
+    handleSearch();
+  }, []);
   const handleSearch = async () => {
     if (!recargarTabla) return;
     try {
@@ -107,6 +129,12 @@ export function MostrarDerivacionPorEstados({ estado }) {
     // { id: "id", label: "ID", minWidth: 50, align: "center" },
     { id: "estado", label: "ESTADO ACTUAL", minWidth: 50, align: "center" },
     {
+      id: "renderComponent",
+      label: "Ver",
+      minWidth: 150,
+      align: "center",
+    },
+    {
       id: "codigo_proyecto",
       label: "CODIGO DE PROYECTO",
       minWidth: 50,
@@ -157,7 +185,7 @@ export function MostrarDerivacionPorEstados({ estado }) {
     // Dependencia en recargarTabla para reaccionar a sus cambios.
   }, [recargarTabla]);
 
-  console.log("hjkdfsjkhsdfjkhsdf", recargarTabla);
+  // console.log("hjkdfsjkhsdfjkhsdf", recargarTabla);
 
   return (
     <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
@@ -304,6 +332,14 @@ export function MostrarDerivacionPorEstados({ estado }) {
                                       ? "Rechazado"
                                       : "Aceptado"}
                                   </div>
+                                ) : column.id === "renderComponent" ? (
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={() => handleComponentRender(row)}
+                                  >
+                                    Ver Proyecto
+                                  </Button>
                                 ) : (
                                   value
                                 )}
@@ -318,6 +354,22 @@ export function MostrarDerivacionPorEstados({ estado }) {
             </Paper>
           </Grid>
         </>
+      )}
+      {selectedRowData && selectedRowData.esVivienda && (
+        <DatosComplViviend
+          selectedContCod={selectedRowData.selectVContCodPCodid}
+          codigoProyecto={selectedRowData.codigoProyecto}
+          esVivienda={selectedRowData.esVivienda}
+          esPemar={selectedRowData.esPemar}
+        />
+      )}
+      {selectedRowData && selectedRowData.esPemar && (
+        <DatosPemar
+          selectedCodid={selectedRowData.selectVContCodPCodid}
+          codigoProyecto={selectedRowData.codigoProyecto}
+          esVivienda={selectedRowData.esVivienda}
+          esPemar={selectedRowData.esPemar}
+        />
       )}
     </div>
   );

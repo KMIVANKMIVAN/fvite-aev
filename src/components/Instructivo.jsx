@@ -63,9 +63,14 @@ const formatearFecha = (fecha) => {
   return fechaObj.toLocaleDateString("es-ES", options);
 };
 
-export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
-  console.log("hola en Instructivos", idDesembolso);
-
+export function Instructivo({
+  idDesembolso,
+  nombrepdf,
+  codigoProyecto,
+  esVivienda,
+  esPemar,
+  selectVContCodPCodid,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [archivoMandar, setArchivoMandar] = useState(null);
@@ -257,13 +262,16 @@ export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
   return (
     <>
       <Card elevation={3}>
-        <Derivacion
+        {/*  <Derivacion
           codigoProyecto={codigoProyecto}
           idDesembolso={idDesembolso}
           documento={nombrepdf}
           rederizarInstructivo={setMostrarInstruc}
-        />
-        {mostrarInstruc && (
+          selectVContCodPCodid={selectVContCodPCodid}
+          esVivienda={esVivienda}
+          esPemar={esPemar}
+        /> */}
+        {/* {mostrarInstruc && ( */}
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Card elevation={3}>
@@ -646,7 +654,7 @@ export function Instructivo({ idDesembolso, nombrepdf, codigoProyecto }) {
               </Card>
             </Grid>
           </Grid>
-        )}
+        {/* )} */}
       </Card>
       <br />
     </>
