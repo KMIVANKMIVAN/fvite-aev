@@ -9,10 +9,15 @@ import ArticleIcon from "@mui/icons-material/Article";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import { useNavigate } from "react-router-dom";
 import Divider from "@mui/material/Divider";
-
+import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
 const submenuItems = [
-  { icon: <GiteIcon />, text: "Proyectos", path: "/dashboardclient/proyectos" },
   {
+    icon: <NotificationAddIcon />,
+    text: "Instructivos A Firmar",
+    path: "/dashboardclient/busonderivacion",
+  },
+  { icon: <GiteIcon />, text: "Proyectos", path: "/dashboardclient/proyectos" },
+  /*  {
     icon: <AssessmentIcon />,
     text: "Gastos Extraudinarios",
     path: "/dashboardclient/gastosextra",
@@ -21,7 +26,7 @@ const submenuItems = [
     icon: <ArticleIcon />,
     text: "Pagos C.U.T.",
     path: "/dashboardclient/pagoscut",
-  },
+  }, */
   {
     icon: <AssignmentTurnedInIcon />,
     text: "Firmados AEV y BUSA",

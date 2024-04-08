@@ -95,9 +95,6 @@ export function Dashboard() {
 
   const isGridVisible = !drawerOpen;
 
-  console.log("isGridVisible", isGridVisible);
-  console.log("drawerOpen", drawerOpen);
-
   /* const g1 = isGridVisible
     ? {
         display: drawerOpen ? "none" : "block",

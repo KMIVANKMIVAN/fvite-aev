@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 
 import { SubirBajarEliminarAnexos } from "./SubirBajarEliminarAnexos";
+import { BajarEliminarAnexos } from "./BajarEliminarAnexos";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -29,8 +30,17 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 
 import { AnexosInstruc } from "./AnexosInstruc";
+// import { BajarEliminarAnexos } from "./BajarEliminarAnexos";
 
-export function AnexsosPdf({ nombrepdf, buttonAEV }) {
+export function AnexsosPdf({
+  buttonAEV,
+  nombrepdf,
+  codigoProyecto,
+  idDesembolso,
+  selectVContCodPCodid,
+  esPemar,
+  esVivienda,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const dispatch = useDispatch();
@@ -42,7 +52,9 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
   const [tipoRespaldoData, setTipoRespaldoData] = useState([]);
   const [errorTsipoRespaldoData, setErrorTipoRespaldoData] = useState(null);
 
-  const [referencias, setReferencias] = useState(null);
+  const [referencias, setReferencias] = useState("");
+
+  const [reloadBajarEliminar, setReloadBajarEliminar] = useState(false); // Estado para controlar la recarga
 
   const handleReferenciasChange = (event) => {
     setReferencias(event.target.value);
@@ -102,6 +114,7 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
   const handleClose = (reason) => {
     if (reason !== "backdropClick") {
       setOpen(false);
+      setReloadBajarEliminar((prevState) => !prevState); // Actualizar el estado para recargar <BajarEliminarAnexos />
     }
   };
 
@@ -110,7 +123,8 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
       <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
         PROCESAR EL INSTRUCTIVO:
       </Typography>
-      <Grid container spacing={2}>
+      <div className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4">
+        {/* <Grid container spacing={2}>
         <Grid xs={12}>
           <Button
             // disabled={buttonAEV}
@@ -120,9 +134,9 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
             Crear Anexos de {nombrepdf}
           </Button>
         </Grid>
-        <Grid xs={6} md={4}>
-          {/* <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel> */}
-          {/* <Select
+        <Grid xs={6} md={4}> */}
+        {/* <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel> */}
+        {/* <Select
         native
         value={selectedValue}
         onChange={handleChange}
@@ -135,7 +149,7 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
           </option>
         ))}
       </Select> */}
-          <Select
+        {/* <Select
             size="small"
             native
             value={selectedValue}
@@ -177,79 +191,101 @@ export function AnexsosPdf({ nombrepdf, buttonAEV }) {
         )}
         <Grid xs={12}></Grid>
       </Grid>
-      <AnexosInstruc nombrepdf={nombrepdf} />
+      <AnexosInstruc nombrepdf={nombrepdf} /> */}
 
-      {/* <Button
-        disabled={buttonAEV}
-        onClick={handleClickOpen}
-        endIcon={<AddIcon size="large" />}
-      >
-        Crear Anexos
-      </Button>
-      <Dialog
-        disableEscapeKeyDown
-        open={open}
-        className="p-5"
-        onClose={handleClose}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {errorTsipoRespaldoData && (
-          <p className="text-red-700 text-center p-5">
-            {errorTsipoRespaldoData}
-          </p>
-        )}
+        <Button
+          disabled={buttonAEV}
+          onClick={handleClickOpen}
+          endIcon={<AddIcon size="large" />}
+          variant="outlined"
+          style={{ width: "fit-content" }}
+        >
+          CARGAR Anexos
+        </Button>
+        <Dialog
+          disableEscapeKeyDown
+          open={open}
+          className="p-5"
+          onClose={handleClose}
+          onClick={(e) => e.stopPropagation()}
+          disableBackdropClick={true}
+        >
+          {errorTsipoRespaldoData && (
+            <p className="text-red-700 text-center p-5">
+              {errorTsipoRespaldoData}
+            </p>
+          )}
 
-        <DialogTitle className="text-center">Anexos PDFs AEV</DialogTitle>
-        <DialogContent>
-          <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel>
-          <Select
-            native
-            value={selectedValue}
-            onChange={handleChange}
-            input={
-              <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
-            }
-          >
-            <option aria-label="None" value="" />
+          <DialogTitle className="text-center">Anexos PDFs AEV</DialogTitle>
+          <DialogContent>
+            <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel>
+            <Select
+              native
+              value={selectedValue}
+              onChange={handleChange}
+              input={
+                <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
+              }
+            >
+              {/* <option aria-label="None" value="" />
             {tipoRespaldoData.map((option) => (
               <option key={option.id} value={option.detalle}>
                 {option.detalle}
               </option>
-            ))}
-          </Select>
-          {selectedValue && (
-            <Grid container spacing={2}>
-              <Grid xs={12} md={5}>
-                <div className="pt-3">
-                  <SubirBajarEliminarAnexos
-                    iddesem={nombrepdf}
-                    tiporesid={nomPDFAnex}
-                    referencias={referencias}
+            ))} */}
+              <option aria-label="None" value="">
+                Seleccionar
+              </option>
+              {tipoRespaldoData.map((option) => (
+                <option key={option.id} value={option.detalle}>
+                  {option.detalle}
+                </option>
+              ))}
+            </Select>
+            {selectedValue && (
+              <Grid container spacing={2}>
+                <Grid xs={12} md={5}>
+                  <div className="pt-3">
+                    <SubirBajarEliminarAnexos
+                      iddesem={nombrepdf}
+                      tiporesid={nomPDFAnex}
+                      referencias={referencias}
+                    />
+                  </div>
+                </Grid>
+                <Grid xs={12} md={7}>
+                  <TextField
+                    id="standard-basic"
+                    label="Referencias"
+                    variant="standard"
+                    value={referencias}
+                    onChange={handleReferenciasChange}
                   />
-                </div>
+                </Grid>
               </Grid>
-              <Grid xs={12} md={7}>
-                <TextField
-                  id="standard-basic"
-                  label="Referencias"
-                  variant="standard"
-                  value={referencias}
-                  onChange={handleReferenciasChange}
-                />
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              handleClose(), dispatch(increment());
-            }}
-          >
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                handleClose();
+                //,  dispatch(increment());
+              }}
+            >
+              Cerrar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      <BajarEliminarAnexos
+        key={reloadBajarEliminar}
+        nombrepdf={nombrepdf}
+        codigoProyecto={codigoProyecto}
+        idDesembolso={idDesembolso}
+        selectVContCodPCodid={selectVContCodPCodid}
+        esPemar={esPemar}
+        esVivienda={esVivienda}
+      />
     </>
   );
 }

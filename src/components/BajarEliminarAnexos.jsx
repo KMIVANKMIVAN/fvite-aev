@@ -15,6 +15,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Slide from "@mui/material/Slide";
 
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Unstable_Grid2";
+import Typography from "@mui/material/Typography";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -22,11 +32,21 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 import { useDispatch, useSelector } from "react-redux";
 import { increment } from "../contexts/features/counter/counterSlice";
 
-export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
+import { Instructivo } from "./Instructivo";
+
+export function BajarEliminarAnexos({
+  nombrepdf,
+  buttonAEV,
+  codigoProyecto,
+  idDesembolso,
+  selectVContCodPCodid,
+  esPemar,
+  esVivienda,
+}) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-  const dispatch = useDispatch();
-  const count = useSelector((state) => state.counter.value);
+  // const dispatch = useDispatch();
+  // const count = useSelector((state) => state.counter.value);
 
   const [abrirErrorDescarga, setAbrirErrorDescarga] = useState(false);
   const [abrirEliminar, setAbrirEliminar] = useState(false);
@@ -38,6 +58,8 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
   const [respuestaDescargar, setRespuestaDescargar] = useState(null);
   const [respuestaEliminar, setRespuestaEliminar] = useState(null);
   const [ErrorEliminar, setErrorEliminar] = useState(null);
+
+  const [reloadEliminar, setReloadEliminar] = useState(false); // Estado para controlar la recarga
 
   const token = obtenerToken();
   const headers = {
@@ -72,11 +94,8 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
         }
       }
     };
-
-    if (nombrepdf || count !== prevCount) {
-      obtenerDatosFindAllOne();
-    }
-  }, [nombrepdf, count]);
+    obtenerDatosFindAllOne();
+  }, [nombrepdf, reloadEliminar]);
 
   const descargarPdf = async (desembolsosId, archivo) => {
     try {
@@ -139,6 +158,8 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
         }
       );
       if (response.status === 200) {
+        setRespuestaFindallone(null);
+        setReloadEliminar((prevState) => !prevState);
         setErrorEliminar(null);
         setRespuestaEliminar(`RS: ${response.data}`);
         setAbrirEliminar(true);
@@ -159,6 +180,29 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
     }
   };
 
+  const columns = [
+    {
+      id: "bajarelimi",
+      label: "DESCARGAR | ELIMINAR",
+      minWidth: 50,
+      align: "center",
+    },
+    {
+      id: "detalle",
+      label: "DETALLE",
+      minWidth: 100,
+      align: "center",
+    },
+    { id: "fecha_insert", label: "FECHA", minWidth: 100, align: "center" },
+    {
+      id: "referencia",
+      label: "REFERENCIA",
+      minWidth: 100,
+      align: "center",
+    },
+  ];
+
+  const rows = respuestaFindallone;
   return (
     <>
       {errorRespuestaFindallone && (
@@ -189,7 +233,8 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
           <DialogActions>
             <Button
               onClick={() => {
-                setAbrirEliminar(false), dispatch(increment());
+                setAbrirEliminar(false);
+                // , dispatch(increment());
               }}
             >
               Cerrar
@@ -225,39 +270,138 @@ export function BajarEliminarAnexos({ nombrepdf, buttonAEV }) {
           </DialogActions>
         </Dialog>
       )}
-      {respuestaFindallone &&
-        respuestaFindallone.map((item) => (
-          <div key={item.id} className="grid grid-cols-1 ">
-            <div>
-              <p className="">{item.detalle}</p>
-            </div>
-            <div>
-              <ButtonGroup variant="text" aria-label="text button group">
-                <Tooltip title="Descargar PDF" placement="top">
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={() => {
-                      descargarPdf(item.desembolsos_id, item.archivo);
-                    }}
-                    endIcon={<PictureAsPdfRoundedIcon size="large" />}
-                  ></Button>
-                </Tooltip>
-                <Tooltip title="Eliminar PDF" placement="right-start">
-                  <Button
-                    disabled={buttonAEV}
-                    size="small"
-                    color="error"
-                    onClick={() => {
-                      eliminarPdf(item.desembolsos_id, item.archivo);
-                    }}
-                    endIcon={<DeleteRoundedIcon size="large" />}
-                  ></Button>
-                </Tooltip>
-              </ButtonGroup>
-            </div>
+      {respuestaFindallone && (
+        // respuestaFindallone.map((item) => (
+        <>
+          <div
+            // key={reloadComponents}
+            className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4"
+          >
+            <Paper sx={{ width: "100%", overflow: "hidden" }}>
+              <TableContainer sx={{ maxHeight: 500 }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row, index) => (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.id}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell
+                              key={column.id}
+                              align="center"
+                              style={{ textAlign: "center" }}
+                            >
+                              {column.id === "bajarelimi" ? (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <div
+                                    // key={item.id}
+                                    className="grid grid-cols-1 "
+                                  >
+                                    <div>
+                                      {/* <p className="">{item.detalle}</p> */}
+                                    </div>
+                                    <div>
+                                      <ButtonGroup
+                                        variant="text"
+                                        aria-label="text button group"
+                                      >
+                                        <Tooltip
+                                          title="Descargar PDF"
+                                          placement="top"
+                                        >
+                                          <Button
+                                            size="small"
+                                            color="error"
+                                            onClick={() => {
+                                              descargarPdf(
+                                                row.desembolsos_id,
+                                                row.archivo
+                                              );
+                                            }}
+                                            endIcon={
+                                              <PictureAsPdfRoundedIcon size="large" />
+                                            }
+                                          ></Button>
+                                        </Tooltip>
+                                        <Tooltip
+                                          title="Eliminar PDF"
+                                          placement="right-start"
+                                        >
+                                          <Button
+                                            disabled={buttonAEV}
+                                            size="small"
+                                            color="error"
+                                            onClick={() => {
+                                              eliminarPdf(
+                                                row.desembolsos_id,
+                                                row.archivo
+                                              );
+                                            }}
+                                            endIcon={
+                                              <DeleteRoundedIcon size="large" />
+                                            }
+                                          ></Button>
+                                        </Tooltip>
+                                      </ButtonGroup>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : column.id === "respaldo" ? (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <p className="">{row.detalle}</p>
+                                  {/* <ActualizarUser idActualizarUser={row.id} /> */}
+                                </div>
+                              ) : (
+                                value
+                              )}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
           </div>
-        ))}
+          <Instructivo
+            nombrepdf={nombrepdf}
+            codigoProyecto={codigoProyecto}
+            idDesembolso={idDesembolso}
+            selectVContCodPCodid={selectVContCodPCodid}
+            esVivienda={esVivienda}
+            esPemar={esPemar}
+          />
+        </>
+      )}
     </>
   );
 }

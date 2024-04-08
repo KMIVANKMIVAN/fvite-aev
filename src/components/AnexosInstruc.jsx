@@ -79,14 +79,14 @@ export function AnexosInstruc({ nombrepdf }) {
   }, [nombrepdf]);
 
   const columns = [
-    { id: "bajarelimi", label: "ANEXOS", minWidth: 50, align: "center" },
+    { id: "bajarelimi", label: "DESCARGAR | ELIMINAR", minWidth: 50, align: "center" },
     {
       id: "desembolsos_id",
       label: "INSTRUCTIVO",
       minWidth: 100,
       align: "center",
     },
-    { id: "fecha_insert", label: "FECHA", minWidth: 100, align: "center" },
+    { id: "fecha_insert", label: "FECHA 1", minWidth: 100, align: "center" },
     {
       id: "tiporespaldo_id",
       label: "RESPALDO",

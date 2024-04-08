@@ -14,6 +14,7 @@ import { BusaAevFirmados } from "./pages/dashboardclient/busaaevfirmados.jsx";
 import { Proyectos } from "./pages/dashboardclient/proyectos.jsx";
 import { GastosExtra } from "./pages/dashboardclient/gastosextra.jsx";
 import { PagosCut } from "./pages/dashboardclient/pagoscut.jsx";
+import { BusonDeriv } from "./pages/dashboardclient/busonderiv.jsx";
 
 import RequireAuth from "./utils/requireAuth.jsx";
 
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "pagosCut",
         element: <PagosCut />,
+      },
+      {
+        path: "busonderivacion",
+        element: <BusonDeriv />,
       },
     ],
   },

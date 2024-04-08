@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
@@ -41,6 +41,7 @@ export function Derivacion({
 
   const [formValues, setFormValues] = useState({
     id_desembolso: idDesembolso,
+    // id_desembolso: documento,
 
     estado: "",
     id_enviador: obtenerUserId(),
@@ -174,6 +175,7 @@ export function Derivacion({
 
   return (
     <div style={{ padding: "10px" }}>
+      hola{idDesembolso}:idDesembolso{documento}:documento
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           {/* <Grid item xs={12} md={5}>

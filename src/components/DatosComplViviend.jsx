@@ -85,6 +85,9 @@ export function DatosComplViviend({
 
   const [open, setOpen] = useState(false);
 
+  const [mandarIDdesem, setMandarIDdesem] = useState(null);
+  const [mostrarAnexos, setMostrarAnexos] = useState(false);
+
   const instructivoRef = useRef(null);
 
   // const habilitarDeshabilitar
@@ -138,11 +141,12 @@ export function DatosComplViviend({
   let totalMontoDesembolsado = 0;
 
   const columns = [
-    { id: "id_aevbanco", label: "ENVIAR AL BANCO", minWidth: 200 },
+    /* { id: "id_aevbanco", label: "ENVIAR AL BANCO", minWidth: 200 },
     { id: "iddesem_aev", label: "INSTRUCTIVO DESEMBOLSO AEV", minWidth: 150 },
     { id: "iddesem_anexo", label: "ANEXOS AEV", minWidth: 300 },
     { id: "id_bancoaev", label: "ENVIAR A LA AEV", minWidth: 200 },
-    { id: "iddesem_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 },
+    { id: "iddesem_busa", label: "INSTRUCTIVO DESEMBOLSO BUSA", minWidth: 150 }, */
+    { id: "mandarAnexInstr", label: "PROCESAR", minWidth: 200 },
     { id: "multa", label: "MULTA", minWidth: 150 },
     { id: "descuento_anti_reten", label: "DESCUENTO ANTICIPO", minWidth: 150 },
     { id: "monto_fisico", label: "MONTO FISICO", minWidth: 150 },
@@ -197,12 +201,12 @@ export function DatosComplViviend({
       {/* chau{selectedContCod} */}
       {/* <VerificarInstr /> */}
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        <Typography className="text-c1p" variant="subtitle2" gutterBottom>
+        {/* <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           PROYECTO: {contcodComplejaData[0]?.objeto}
         </Typography>
         <Typography className="text-c1p" variant="subtitle2" gutterBottom>
           CODIGO: {contcodComplejaData[0]?.proy_cod}
-        </Typography>
+        </Typography> */}
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label="sticky table">
@@ -244,7 +248,21 @@ export function DatosComplViviend({
                                       ? value
                                       : 0
                                   )
-                                ) : column.id === "iddesem_aev" ? (
+                                ) : column.id === "mandarAnexInstr" ? (
+                                  (<>
+                                    <Button
+                                      onClick={() => {
+                                        setMandarIDdesem(row.iddesem);
+                                        setIdDesembolso(row.iddesem);
+                                        setMostrarAnexos(true);
+                                      }}
+                                      variant="outlined"
+                                      size="small"
+                                    >
+                                      {/* PROCESAR: {`${row.id}-AEV`} */}
+                                      PROCESAR: {row.iddesem}
+                                    </Button>
+                                  </> /*: column.id === "iddesem_aev" ? (
                                   <>
                                     <Typography
                                       className="text-center text-c500"
@@ -263,23 +281,6 @@ export function DatosComplViviend({
                                         placement="left-end"
                                       >
                                         <Button
-                                          /*  disabled={
-                                            desabilitarAEVBUSA
-                                              ? true
-                                              : desabilitarBUSA
-                                              ? true
-                                              : row.buttonAEV === 1
-                                              ? true
-                                              : false
-                                          } */
-                                          // disabled={obtenerUserNivel() === 40}
-                                          /* disabled={
-                                            row.buttonAEV === "1"
-                                              ? true
-                                              : obtenerUserNivel() === 40
-                                              ? true
-                                              : false
-                                          } */
                                           disabled={
                                             row.buttonAEV === "1" ||
                                             obtenerUserNivel() === 40
@@ -312,13 +313,7 @@ export function DatosComplViviend({
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.iddesem + "-AEV"}
                                         nomCarperta={row.iddesem}
-                                        // nomCarAnt={row.iddesem}
-                                        /* buttonAEVBUSA={
-                                          row.buttonAEV === 1 ? true : false
-                                        } */
                                         buttonAEVBUSA={
-                                          // obtenerUserNivel() === 40
-
                                           row.buttonAEV === "1" ||
                                           obtenerUserNivel() === 40
                                         }
@@ -328,16 +323,6 @@ export function DatosComplViviend({
                                     <div className="pb-2 flex  justify-center items-center">
                                       <AnexsosPdf
                                         nombrepdf={row.iddesem}
-                                        /* buttonAEV={
-                                          desabilitarAEVBUSA
-                                            ? true
-                                            : desabilitarBUSA
-                                            ? true
-                                            : row.buttonAEV === 1
-                                            ? true
-                                            : false
-                                        } */
-                                        // buttonAEV={obtenerUserNivel() === 40}
                                         buttonAEV={
                                           row.buttonAEV === "1" ||
                                           obtenerUserNivel() === 40
@@ -349,16 +334,6 @@ export function DatosComplViviend({
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.iddesem}-AEV`}
-                                      /* buttonAEVBUSA={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false
-                                      } */
-                                      // buttonAEVBUSA={obtenerUserNivel() === 40}
                                       buttonAEVBUSA={
                                         row.buttonAEV === "1" ||
                                         obtenerUserNivel() === 40
@@ -369,16 +344,6 @@ export function DatosComplViviend({
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.iddesem}-BUSA`}
-                                      /* buttonAEVBUSA={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarAEV
-                                          ? true
-                                          : row.buttonBUSA === 1
-                                          ? true
-                                          : false
-                                      } */
-                                      // buttonAEVBUSA={obtenerUserNivel() === 9}
                                       buttonAEVBUSA={
                                         row.buttonBUSA === "1" ||
                                         obtenerUserNivel() === 9
@@ -389,16 +354,6 @@ export function DatosComplViviend({
                                   <>
                                     <BajarEliminarAnexos
                                       nombrepdf={row.iddesem}
-                                      /* buttonAEV={
-                                        desabilitarAEVBUSA
-                                          ? true
-                                          : desabilitarBUSA
-                                          ? true
-                                          : row.buttonAEV === 1
-                                          ? true
-                                          : false
-                                      } */
-                                      // buttonAEV={obtenerUserNivel() === 40}
                                       buttonAEV={
                                         row.buttonAEV === "1" ||
                                         obtenerUserNivel() === 40
@@ -424,16 +379,6 @@ export function DatosComplViviend({
                                         placement="left-end"
                                       >
                                         <Button
-                                          /* disabled={
-                                            desabilitarAEVBUSA
-                                              ? true
-                                              : desabilitarAEV
-                                              ? true
-                                              : row.buttonBUSA === 1
-                                              ? true
-                                              : false
-                                          } */
-                                          // disabled={obtenerUserNivel() === 9}
                                           disabled={
                                             row.buttonBUSA === "1" ||
                                             obtenerUserNivel() === 9
@@ -465,15 +410,6 @@ export function DatosComplViviend({
                                       </Tooltip>
                                       <SubirBajarEliminarPdf
                                         nombrepdf={row.iddesem + "-BUSA"}
-                                        /* buttonAEVBUSA={
-                                          desabilitarAEVBUSA
-                                            ? true
-                                            : desabilitarAEV
-                                            ? true
-                                            : row.buttonBUSA === 1
-                                            ? true
-                                            : false
-                                        } */
                                         buttonAEVBUSA={
                                           row.buttonBUSA === "1" ||
                                           obtenerUserNivel() === 9
@@ -481,7 +417,1403 @@ export function DatosComplViviend({
                                       />
                                     </ButtonGroup>
                                   </>
-                                ) : column.format &&
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */)
+                                ) : /* : column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "iddesem_aev" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c500"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-AEV`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonAEV === "1" ||
+                                            obtenerUserNivel() === 40
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-AEV");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-AEV"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-AEV"}
+                                        nomCarperta={row.iddesem}
+                                        buttonAEVBUSA={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                    <h2 className="text-center text-c500"></h2>
+                                    <div className="pb-2 flex  justify-center items-center">
+                                      <AnexsosPdf
+                                        nombrepdf={row.iddesem}
+                                        buttonAEV={
+                                          row.buttonAEV === "1" ||
+                                          obtenerUserNivel() === 40
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : column.id === "id_aevbanco" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-AEV`}
+                                      buttonAEVBUSA={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.iddesem}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_anexo" ? (
+                                  <>
+                                    <BajarEliminarAnexos
+                                      nombrepdf={row.iddesem}
+                                      buttonAEV={
+                                        row.buttonAEV === "1" ||
+                                        obtenerUserNivel() === 40
+                                      }
+                                    />
+                                  </>
+                                ) : column.id === "iddesem_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.iddesem}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.iddesem + "-BUSA");
+                                            setIdDesembolso(row.iddesem);
+                                            setNombrePdfSeleccionado(
+                                              row.iddesem + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.iddesem + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ column.format &&
                                   typeof value === "number" ? (
                                   column.format(value)
                                 ) : (
@@ -495,10 +1827,10 @@ export function DatosComplViviend({
                     );
                   })}
                   <TableRow>
+                    {/* <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
+                    <TableCell></TableCell> */}
                     <TableCell style={{ textAlign: "right" }}>
                       <strong className=" text-c500">TOTAL </strong>
                     </TableCell>
@@ -540,10 +1872,10 @@ export function DatosComplViviend({
         {respuestas === false && nombrePdfSeleccionado && (
           <div ref={instructivoRef}>
             <Instructivo
-              codigoProyecto={codigoProyecto}
               key={forceRender}
-              idDesembolso={idDesembolso}
               nombrepdf={nombrePdfSeleccionado}
+              codigoProyecto={codigoProyecto}
+              idDesembolso={idDesembolso}
               selectVContCodPCodid={selectedContCod}
               esVivienda={esVivienda}
               esPemar={esPemar}
@@ -572,6 +1904,16 @@ export function DatosComplViviend({
           </Dialog>
         )}
       </div>
+      {mostrarAnexos && (
+        <AnexsosPdf
+          nombrepdf={mandarIDdesem}
+          codigoProyecto={codigoProyecto}
+          idDesembolso={idDesembolso}
+          selectVContCodPCodid={selectedContCod}
+          esVivienda={esVivienda}
+          esPemar={esPemar}
+        />
+      )}
     </>
   );
 }
