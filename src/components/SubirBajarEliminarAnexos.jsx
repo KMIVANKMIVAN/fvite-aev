@@ -65,9 +65,9 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
       if (error.response) {
         const { status, data } = error.response;
         if (status === 400) {
-          setErrorRespuestas(`RS: ${data.message}`);
+          setErrorRespuestas(`RS: ${data.error}`);
         } else if (status === 500) {
-          setErrorRespuestas(`RS: ${data.message}`);
+          setErrorRespuestas(`RS: ${data.error}`);
         }
       } else if (error.request) {
         setErrorRespuestas("RF: No se pudo obtener respuesta del servidor");

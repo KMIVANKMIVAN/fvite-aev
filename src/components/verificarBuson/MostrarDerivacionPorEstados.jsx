@@ -51,9 +51,10 @@ export function MostrarDerivacionPorEstados({ estado }) {
 
   const [recargarTabla, setRecargarTabla] = useState(false);
 
-  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedRowData, setSelectedRowData] = useState([]);
 
   const handleComponentRender = (rowData) => {
+    console.log("///", rowData);
     setSelectedRowData(rowData);
   };
 
@@ -188,6 +189,7 @@ export function MostrarDerivacionPorEstados({ estado }) {
   // console.log("hjkdfsjkhsdfjkhsdf", recargarTabla);
 
   return (
+    <>
     <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
       {errorEstado && (
         <p className="text-red-700 text-center p-5">{errorEstado}</p>
@@ -242,135 +244,130 @@ export function MostrarDerivacionPorEstados({ estado }) {
           <Typography variant="h6" gutterBottom>
             Lista Instructivo de Desembolsos:
           </Typography>
-          <Grid container>
-            <Paper sx={{ width: "100%", overflow: "hidden" }}>
-              <TableContainer sx={{ maxHeight: 500 }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns
-                        .filter(
-                          (column) =>
-                            !(estado === "2" || estado === "3") ||
-                            column.id !== "actualizarestado"
-                        ) // Excluye la columna 'estado' si `estado` es 2 o 3.
-                        .map((column) => (
+          <TableContainer sx={{ maxHeight: 500 }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns
+                    .filter(
+                      (column) =>
+                        !(estado === "2" || estado === "3") ||
+                        column.id !== "actualizarestado"
+                    ) // Excluye la columna 'estado' si `estado` es 2 o 3.
+                    .map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{
+                          minWidth: column.minWidth,
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    {columns
+                      .filter(
+                        (column) =>
+                          !(estado === "2" || estado === "3") ||
+                          column.id !== "actualizarestado"
+                      ) // Aplica el mismo filtro aquí
+                      .map((column) => {
+                        let value = row[column.id];
+                        if (column.format && typeof value === "string") {
+                          value = column.format(value);
+                        }
+                        return (
                           <TableCell
                             key={column.id}
-                            align={column.align}
+                            align="center"
                             style={{
-                              minWidth: column.minWidth,
+                              textAlign: "center",
                               fontSize: "0.8rem",
                             }}
                           >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row, index) => (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.id}
-                      >
-                        {columns
-                          .filter(
-                            (column) =>
-                              !(estado === "2" || estado === "3") ||
-                              column.id !== "actualizarestado"
-                          ) // Aplica el mismo filtro aquí
-                          .map((column) => {
-                            let value = row[column.id];
-                            if (column.format && typeof value === "string") {
-                              value = column.format(value);
-                            }
-                            return (
-                              <TableCell
-                                key={column.id}
-                                align="center"
+                            {column.id === "actualizarestado" ? (
+                              <div
                                 style={{
-                                  textAlign: "center",
-                                  fontSize: "0.8rem",
+                                  display: "flex",
+                                  justifyContent: "center",
                                 }}
                               >
-                                {/* Aquí va la lógica para renderizar el contenido de la celda, incluyendo la condición para 'actualizarestado' y 'estado' */}
-                                {column.id === "actualizarestado" ? (
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="Basic button group"
-                                    >
-                                      {estadoOptions.map((option, index) => (
-                                        <CambiarEstado
-                                          key={index}
-                                          idDerivacion={row.id}
-                                          idEstado={option.id}
-                                          nombreEstado={option.estado}
-                                          recargar={setRecargarTabla}
-                                        />
-                                      ))}
-                                    </ButtonGroup>
-                                  </div>
-                                ) : column.id === "estado" ? (
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    {value === 1
-                                      ? "Enviado"
-                                      : value === 2
-                                      ? "Rechazado"
-                                      : "Aceptado"}
-                                  </div>
-                                ) : column.id === "renderComponent" ? (
-                                  <Button
-                                    size="small"
-                                    variant="outlined"
-                                    onClick={() => handleComponentRender(row)}
-                                  >
-                                    Ver Proyecto
-                                  </Button>
-                                ) : (
-                                  value
-                                )}
-                              </TableCell>
-                            );
-                          })}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </Grid>
+                                <ButtonGroup
+                                  variant="text"
+                                  aria-label="Basic button group"
+                                >
+                                  {estadoOptions.map((option, index) => (
+                                    <CambiarEstado
+                                      key={index}
+                                      idDerivacion={row.id}
+                                      idEstado={option.id}
+                                      nombreEstado={option.estado}
+                                      recargar={setRecargarTabla}
+                                    />
+                                  ))}
+                                </ButtonGroup>
+                              </div>
+                            ) : column.id === "estado" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                {value === 1
+                                  ? "Enviado"
+                                  : value === 2
+                                  ? "Rechazado"
+                                  : "Aceptado"}
+                              </div>
+                            ) : column.id === "renderComponent" ? (
+                              <Button
+                                size="small"
+                                variant="outlined"
+                                onClick={() => handleComponentRender(row)}
+                              >
+                                Ver Proyecto
+                              </Button>
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       )}
-      {selectedRowData && selectedRowData.esVivienda && (
+    </div>
+    {selectedRowData.esVivienda === 1 && (
+      <>
         <DatosComplViviend
           selectedContCod={selectedRowData.selectVContCodPCodid}
-          codigoProyecto={selectedRowData.codigoProyecto}
+          codigoProyecto={selectedRowData.codigo_proyecto}
           esVivienda={selectedRowData.esVivienda}
           esPemar={selectedRowData.esPemar}
         />
-      )}
-      {selectedRowData && selectedRowData.esPemar && (
+      </>
+    )}
+    {selectedRowData.esPemar === 1 && (
+      <>
         <DatosPemar
           selectedCodid={selectedRowData.selectVContCodPCodid}
-          codigoProyecto={selectedRowData.codigoProyecto}
+          codigoProyecto={selectedRowData.codigo_proyecto}
           esVivienda={selectedRowData.esVivienda}
           esPemar={selectedRowData.esPemar}
         />
-      )}
-    </div>
+      </>
+    )}
+    </>
   );
 }

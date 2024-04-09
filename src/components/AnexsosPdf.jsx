@@ -277,6 +277,7 @@ export function AnexsosPdf({
           </DialogActions>
         </Dialog>
       </div>
+      
       <BajarEliminarAnexos
         key={reloadBajarEliminar}
         nombrepdf={nombrepdf}

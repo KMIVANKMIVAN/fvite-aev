@@ -38,6 +38,7 @@ const RequireAuth = ({ children }) => {
       "/dashboardclient/gastosextra",
       "/dashboardclient/pagoscut",
       "/dashboardclient/proyectos",
+      "/dashboardclient/busonderivacion",
     ],
     9: [
       "/",
@@ -47,6 +48,7 @@ const RequireAuth = ({ children }) => {
       "/dashboardclient/gastosextra",
       "/dashboardclient/pagoscut",
       "/dashboardclient/proyectos",
+      "/dashboardclient/busonderivacion",
     ],
     40: ["/", "/updatepassword", "/dashboardclient/busafirmar"],
   };

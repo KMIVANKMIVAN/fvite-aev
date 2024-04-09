@@ -25,19 +25,10 @@ export function Derivacion({
   esPemar,
   selectVContCodPCodid,
 }) {
-  // const { selectedId } = useContext(FormularioContext);
-
-  console.log("-->", selectVContCodPCodid);
-  console.log("-->", esVivienda);
-  console.log("-->", esPemar);
-
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
   const [errorEstado, setErrorEstado] = useState(null);
   const [estadoOptions, setEstadoOptions] = useState("");
-
-  const [errorFirmador, setErrorFirmador] = useState(null);
-  const [firmadorOptions, setFirmadorOptions] = useState([]);
 
   const [formValues, setFormValues] = useState({
     id_desembolso: idDesembolso,
@@ -63,32 +54,6 @@ export function Derivacion({
   const headers = {
     Authorization: `Bearer ${token}`,
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const url = `${apiKey}/firmador/findAllDepartamento`;
-        const response = await axios.get(url, { headers });
-
-        if (response.status === 200) {
-          setErrorFirmador(null);
-          setFirmadorOptions(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          const { status, data } = error.response;
-          if (status === 400 || status === 500) {
-            setErrorFirmador(`RS: ${data.message}`);
-          }
-        } else if (error.request) {
-          setErrorFirmador("RF: No se pudo obtener respuesta del servidor");
-        } else {
-          setErrorFirmador("RF: Error al enviar la solicitud");
-        }
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -156,10 +121,10 @@ export function Derivacion({
       if (error.response) {
         const { status, data } = error.response;
         setMessageDerivacion(`RS: ${data.error}`);
-        setErrorDerivacion(`Error : ${data.message}`);
+        setErrorDerivacion(`Conflicto: ${data.message}`);
       } else {
         setErrorDerivacion(
-          "Error al enviar la solicitud de creación de derivación"
+          "Conflicto al enviar la solicitud de creación de derivación"
         );
       }
     }
@@ -175,47 +140,19 @@ export function Derivacion({
 
   return (
     <div style={{ padding: "10px" }}>
-      hola{idDesembolso}:idDesembolso{documento}:documento
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          {/* <Grid item xs={12} md={5}>
-            <FormControl fullWidth>
-              <Select
-                label="Firmador"
-                name="firmador"
-                value={formValues.firmador}
-                onChange={handleChange}
-                displayEmpty
-                fullWidth
-                required
-              >
-                <MenuItem value="" disabled>
-                  Seleccione el Firmante Actual
-                </MenuItem>
-                {firmadorOptions.map((firmadorItem) => (
-                  <MenuItem key={firmadorItem.id} value={firmadorItem.id}>
-                    {firmadorItem.cargo}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid> */}
           <Grid item xs={12} textAlign="center">
             <Typography variant="h6" gutterBottom className="text-c400">
-              PRIMER PASO CREE LA DERIVACION
+              SEGUNDO PASO
             </Typography>
           </Grid>
-          {/* <Grid item xs={12} md={6}>
-            <TextField
-              label="Observación"
-              name="observacion"
-              value={formValues.observacion}
-              onChange={handleChange}
-              fullWidth
-              // required
-            />
-          </Grid> */}
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom className="text-c400">
+              Enviar al Siguiente Firmante
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={4}>
             <FormControl fullWidth>
               <Select
                 label="Estado"
@@ -246,10 +183,9 @@ export function Derivacion({
               required
             />
           </Grid>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <SelecUsuario pasar={setSelectedId} nombresPasar={selectedId} />
           </Grid>
-          {/* <input type="hidden" /> */}
           <Grid item xs={6}>
             <input
               label="ID Desembolso"
@@ -272,17 +208,6 @@ export function Derivacion({
               type="hidden"
             />
           </Grid>
-          {/* <Grid item xs={6}>
-            <input
-              label="ID Enviador"
-              value={codigoProyecto}
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-              type="hidden"
-            />
-          </Grid> */}
           <Grid item xs={12}>
             <Button type="submit" variant="contained" color="primary">
               Enviar
@@ -306,6 +231,9 @@ export function Derivacion({
       )}
       {messagederivacion && (
         <p className="text-red-700 text-center ">{messagederivacion}</p>
+      )}
+      {errorEstado && (
+        <p className="text-red-700 text-center ">{errorEstado}</p>
       )}
     </div>
   );

@@ -75,7 +75,6 @@ export function DatosPemar({
   esVivienda,
   esPemar,
 }) {
-  console.log("entro a qui DatosPemar");
 
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
@@ -355,7 +354,7 @@ export function DatosPemar({
                                     <Button
                                       onClick={() => {
                                         setMandarIDdesem(row.id);
-                                        setIdDesembolso(row.id)
+                                        setIdDesembolso(row.id);
                                         setMostrarAnexos(true);
                                       }}
                                       variant="outlined"
@@ -365,6 +364,144 @@ export function DatosPemar({
                                       PROCESAR: {row.id}
                                     </Button>
                                   </> /* : column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.id}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                      nomCarperta={row.id}
+                                    />
+                                  </>
+                                ) : column.id === "id_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.id}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.id + "-BUSA");
+                                            setIdDesembolso(row.id);
+                                            setNombrePdfSeleccionado(
+                                              row.id + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.id + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                        nomCarperta={row.id}
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "id_bancoaev" ? (
+                                  <>
+                                    <EnviarBanco
+                                      nombrepdf={`${row.id}-BUSA`}
+                                      buttonAEVBUSA={
+                                        row.buttonBUSA === "1" ||
+                                        obtenerUserNivel() === 9
+                                      }
+                                      nomCarperta={row.id}
+                                    />
+                                  </>
+                                ) : column.id === "id_busa" ? (
+                                  <>
+                                    <Typography
+                                      className="text-center text-c700"
+                                      variant="button"
+                                      display="block"
+                                      gutterBottom
+                                    >
+                                      {`${row.id}-BUSA`}
+                                    </Typography>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Subir PDF"
+                                        placement="left-end"
+                                      >
+                                        <Button
+                                          disabled={
+                                            row.buttonBUSA === "1" ||
+                                            obtenerUserNivel() === 9
+                                          }
+                                          color="error"
+                                          size="small"
+                                          component="span"
+                                          endIcon={
+                                            <UploadRoundedIcon size="large" />
+                                          }
+                                          onClick={() => {
+                                            buscar(row.id + "-BUSA");
+                                            setIdDesembolso(row.id);
+                                            setNombrePdfSeleccionado(
+                                              row.id + "-BUSA"
+                                            );
+                                            setForceRender(
+                                              (prevState) => !prevState
+                                            );
+                                            if (instructivoRef.current) {
+                                              instructivoRef.current.scrollIntoView(
+                                                {
+                                                  behavior: "smooth",
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        ></Button>
+                                      </Tooltip>
+                                      <SubirBajarEliminarPdf
+                                        nombrepdf={row.id + "-BUSA"}
+                                        buttonAEVBUSA={
+                                          row.buttonBUSA === "1" ||
+                                          obtenerUserNivel() === 9
+                                        }
+                                        nomCarperta={row.id}
+                                      />
+                                    </ButtonGroup>
+                                  </>
+                                ) */ /*: column.id === "id_bancoaev" ? (
                                   <>
                                     <EnviarBanco
                                       nombrepdf={`${row.id}-BUSA`}

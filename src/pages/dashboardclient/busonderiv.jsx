@@ -20,7 +20,7 @@ export function BusonDeriv() {
           e.target.style.textShadow = "4px 4px 8px rgba(0, 0, 0, 0.4)";
         }}
       >
-        INSTRUCTIVOS DE DESEMBOLSO "GASTOS EXTRAORDINARIOS"
+        BUSON DERIVACION
       </Typography>
       <MostrarDerivacion />
     </>
