@@ -25,6 +25,8 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
+import StyledTableCell from "./stilostablas/EtilosTable";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -33,6 +35,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { increment } from "../contexts/features/counter/counterSlice";
 
 import { Instructivo } from "./Instructivo";
+
+const formatearFecha = (fecha) => {
+  const fechaObj = new Date(fecha);
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  return fechaObj.toLocaleDateString("es-ES", options);
+};
 
 export function BajarEliminarAnexos({
   nombrepdf,
@@ -51,7 +66,7 @@ export function BajarEliminarAnexos({
   const [abrirErrorDescarga, setAbrirErrorDescarga] = useState(false);
   const [abrirEliminar, setAbrirEliminar] = useState(false);
 
-  const [respuestaFindallone, setRespuestaFindallone] = useState(null);
+  const [respuestaFindallone, setRespuestaFindallone] = useState([]);
   const [errorRespuestaFindallone, setErrorRespuestaFindallone] =
     useState(null);
 
@@ -193,7 +208,13 @@ export function BajarEliminarAnexos({
       minWidth: 100,
       align: "center",
     },
-    { id: "fecha_insert", label: "FECHA", minWidth: 100, align: "center" },
+    {
+      id: "fecha_insert",
+      label: "FECHA",
+      minWidth: 100,
+      align: "center",
+      format: (value) => formatearFecha(value),
+    },
     {
       id: "referencia",
       label: "REFERENCIA",
@@ -202,7 +223,11 @@ export function BajarEliminarAnexos({
     },
   ];
 
-  const rows = respuestaFindallone;
+  // const rows = respuestaFindallone;
+  const rows = respuestaFindallone.map((row) => ({
+    ...row,
+    fecha_insert: formatearFecha(row.fecha_insert), // Formatear la fecha para cada fila
+  }));
   return (
     <>
       {errorRespuestaFindallone && (
@@ -283,13 +308,26 @@ export function BajarEliminarAnexos({
                   <TableHead>
                     <TableRow>
                       {columns.map((column) => (
-                        <TableCell
+                        <>
+                          {/* <TableCell
                           key={column.id}
                           align={column.align}
                           style={{ minWidth: column.minWidth }}
                         >
                           {column.label}
-                        </TableCell>
+                        </TableCell> */}
+                          <StyledTableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{
+                              minWidth: column.minWidth,
+                              textAlign: "center",
+                            }}
+                            // className={classes.tableCell}
+                          >
+                            {column.label}
+                          </StyledTableCell>
+                        </>
                       ))}
                     </TableRow>
                   </TableHead>

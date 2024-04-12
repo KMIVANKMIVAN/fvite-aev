@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
@@ -7,6 +7,10 @@ import { obtenerToken } from "../utils/auth";
 import { obtenerUserId } from "../utils/userdata";
 
 import SearchIcon from "@mui/icons-material/Search";
+
+import { useSelector, useDispatch } from "react-redux";
+
+import StyledTableCell from "./stilostablas/EtilosTable";
 
 import { BuscarPemar } from "./BuscarPemar";
 import { BuscarViviend } from "./BuscarViviend";
@@ -46,8 +50,22 @@ export function BuscarProyectos() {
   const [pemar, setPemar] = useState(false);
   const [codigoSeleccionado, setCodigoSeleccionado] = useState("");
   const [reloadComponents, setReloadComponents] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true); // Nuevo estado para controlar la primera renderización
   const pemarArray = [5, 11, 13, 17, 15, 18];
   const viviendaArray = [1, 2, 10, 14, 19, 3, 4, 16, 9];
+
+  const updateComponent2 = useSelector((state) => state.pemar.updateComponent);
+
+  useEffect(() => {
+    if (!isFirstRender) {
+      // Verificar si no es la primera renderización
+      // Si no lo es, ocultar ambos componentes
+      setVivienda(false);
+      setPemar(false);
+    } else {
+      setIsFirstRender(false); // Marcar que no es la primera renderización
+    }
+  }, [updateComponent2]);
 
   const handleSearch = async () => {
     try {
@@ -131,13 +149,26 @@ export function BuscarProyectos() {
                 <TableHead>
                   <TableRow>
                     {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        {column.label}
-                      </TableCell>
+                      <>
+                        {/* <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell> */}
+                        <StyledTableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{
+                            minWidth: column.minWidth,
+                            textAlign: "center",
+                          }}
+                          // className={classes.tableCell}
+                        >
+                          {column.label}
+                        </StyledTableCell>
+                      </>
                     ))}
                   </TableRow>
                 </TableHead>
@@ -189,7 +220,7 @@ export function BuscarProyectos() {
       <br />
       {vivienda && (
         <BuscarViviend
-          key={reloadComponents}
+          key={updateComponent2}
           codigoProyecto={codigoSeleccionado}
           esVivienda={vivienda}
           esPemar={pemar}
@@ -197,7 +228,7 @@ export function BuscarProyectos() {
       )}
       {pemar && (
         <BuscarPemar
-          key={reloadComponents}
+          key={updateComponent2}
           codigoProyecto={codigoSeleccionado}
           esPemar={pemar}
           esVivienda={vivienda}

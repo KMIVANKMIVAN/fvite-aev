@@ -16,6 +16,9 @@ import { GastosExtra } from "./pages/dashboardclient/gastosextra.jsx";
 import { PagosCut } from "./pages/dashboardclient/pagoscut.jsx";
 import { BusonDeriv } from "./pages/dashboardclient/busonderiv.jsx";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import RequireAuth from "./utils/requireAuth.jsx";
 
 const router = createBrowserRouter([
@@ -84,6 +87,9 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      {/* <ToastContainer /> */}
+      {/* <ToastContainer position="bottom-right" /> */}
+      <ToastContainer containerId="global-container"/>
     </>
   );
 }

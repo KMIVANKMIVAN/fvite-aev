@@ -10,9 +10,6 @@ import {
   eliminarUserId,
 } from "../utils/userdata";
 
-import Drawer from "@mui/material/Drawer";
-import AppBar from "@mui/material/AppBar";
-
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -37,21 +34,6 @@ import TouchAppIcon from "@mui/icons-material/TouchApp";
 import { useNavigate } from "react-router-dom";
 
 import Divider from "@mui/material/Divider";
-
-import {
-  c50,
-  c100,
-  c200,
-  c300,
-  c400,
-  c500,
-  c600,
-  c700,
-  c800,
-  c900,
-  c950,
-} from "../components/Temas";
-import { g1, g2, g3, g4, g5, g6, g7 } from "../components/TemasGradiantes";
 
 export function DashboardClient() {
   const navigate = useNavigate();
@@ -95,28 +77,20 @@ export function DashboardClient() {
 
   const isGridVisible = !drawerOpen;
 
-  console.log("isGridVisible", isGridVisible);
-  console.log("drawerOpen", drawerOpen);
-
-  /* const g1 = isGridVisible
-    ? {
-        display: drawerOpen ? "none" : "block",
-        transition: "transform 0.5s ease-out",
-        transform: fadeOut ? "translateX(-150%)" : "translateX(0)",
-      }
-    : {
-        display: drawerOpen ? "none" : "block",
-        transition: "transform 0.5s ease-out",
-        transform: fadeOut ? "translateX(100%)" : "translateX(0)",
-      }; */
-
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <Toolbar
+          /* sx={{
+            backgroundColor: "#028ac7",
+            color: "#f0faff",
+          }} */
           sx={{
             backgroundColor: "#028ac7",
             color: "#f0faff",
+            position: "sticky", // Hace que la barra de herramientas sea sticky
+            top: 0, // Mantiene la barra en la parte superior de la ventana
+            zIndex: 1100, // Asegura que la barra de herramientas se mantenga sobre otros contenidos
           }}
         >
           <IconButton
@@ -130,27 +104,16 @@ export function DashboardClient() {
         </Toolbar>
         <Grid container>
           {isGridVisible && (
-            <Grid
-              item
-              xs={12}
-              lg={2}
-              /* style={{
-                display: drawerOpen ? "none" : "block",
-                transition: "transform 0.5s ease-out",
-                transform: fadeOut ? "translateX(-150%)" : "translateX(0)",
-              }} */
-            >
+            <Grid item xs={12} lg={2}>
               <Box>
                 <Paper
                   sx={{
                     borderRadius: "0px",
-                    // backgroundColor: "#028ac7",
-                    // color: "#f0faff",
+                    position: "sticky",
                   }}
                 >
                   <List
                     sx={{
-                      // borderRadius: "0px",
                       backgroundColor: "#028ac7",
                       color: "#f0faff",
                     }}

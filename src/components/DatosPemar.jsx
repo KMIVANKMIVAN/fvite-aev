@@ -1,27 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { useSelector, useDispatch } from "react-redux";
+
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
-import { BajarEliminarAnexos } from "./BajarEliminarAnexos";
-
-import { SubirBajarEliminarPdf } from "./SubirBajarEliminarPdf";
 import { AnexsosPdf } from "./AnexsosPdf";
 
-// import { makeStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@mui/styles";
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
-
-import { EnviarBanco } from "./EnviarBanco";
-
-import { Instructivo } from "./Instructivo";
-import { VerificarInstr } from "./VerificarInstr";
-
-import AddIcon from "@mui/icons-material/Add";
-
-import { obtenerUserNivel } from "../utils/userdata";
-
-// import Paper from "@material-ui/core/Paper";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -30,15 +16,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Tooltip from "@mui/material/Tooltip";
-
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
 
 import Typography from "@mui/material/Typography";
+
+import StyledTableCell from "./stilostablas/EtilosTable";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -68,6 +50,17 @@ function formatearNumero(numero) {
   return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
+const formatearFecha = (fecha) => {
+  const fechaObj = new Date(fecha);
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  };
+
+  return fechaObj.toLocaleDateString("es-ES", options);
+};
+
 export function DatosPemar({
   selectedCodid,
   titulo,
@@ -75,8 +68,10 @@ export function DatosPemar({
   esVivienda,
   esPemar,
 }) {
-
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
+
+  const [reloadComponent, setReloadComponent] = useState(false);
+
   const [contcodComplejaData, setContcodComplejaData] = useState([]);
 
   const [errorcontcodComplejaData, setErrorContcodComplejaData] = useState([]);
@@ -98,12 +93,15 @@ export function DatosPemar({
 
   const classes = useStyles();
 
+  const prevUpdateComponent = useRef(null);
+  const updateComponent = useSelector((state) => state.pemar.updateComponent);
+
   const token = obtenerToken();
   const headers = {
     Authorization: `Bearer ${token}`,
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchData = async () => {
       if (selectedCodid) {
         try {
@@ -135,7 +133,40 @@ export function DatosPemar({
     };
 
     fetchData();
-  }, [selectedCodid]);
+  }, [selectedCodid, updateComponent]); */
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedCodid && updateComponent !== prevUpdateComponent.current) {
+        prevUpdateComponent.current = updateComponent; // Actualizar el valor previo
+
+        try {
+          const url = `${apiKey}/cuadro/consultasipago/${selectedCodid}`;
+          const response = await axios.get(url, { headers });
+
+          if (response.status === 200) {
+            setErrorContcodComplejaData(null);
+            setContcodComplejaData(response.data);
+          }
+        } catch (error) {
+          if (error.response) {
+            const { status, data } = error.response;
+            if (status === 400 || status === 500) {
+              setErrorContcodComplejaData(`RS: ${data.message}`);
+            }
+          } else if (error.request) {
+            setErrorContcodComplejaData(
+              "RF: No se pudo obtener respuesta del servidor"
+            );
+          } else {
+            setErrorContcodComplejaData("RF: Error al enviar la solicitud");
+          }
+        }
+      }
+    };
+
+    fetchData();
+  }, [selectedCodid, updateComponent]);
 
   if (contcodComplejaData.length === 0 || selectedCodid === 0) {
     return null;
@@ -155,16 +186,31 @@ export function DatosPemar({
     { id: "monto_desembolsado", label: "DESEMBOLSADO Bs.", minWidth: 150 },
     { id: "detalle", label: "TIPO", minWidth: 300 },
     { id: "objeto", label: "OBJETO", minWidth: 650 },
-    { id: "fecha_banco", label: "FECHA EMISION", minWidth: 150 },
+    {
+      id: "fecha_banco",
+      label: "FECHA EMISION",
+      minWidth: 150,
+      format: (value) => formatearFecha(value),
+    },
     { id: "numero_factura", label: "Nro FACTURA", minWidth: 150 },
     { id: "numero_inst", label: "Nro VALORADO", minWidth: 150 },
-    { id: "fechagenerado", label: "FECHA BANCO", minWidth: 150 },
+    {
+      id: "fechagenerado",
+      label: "FECHA BANCO",
+      minWidth: 150,
+      // format: (value) => formatearFecha(value),
+    },
     { id: "etapa", label: "VoBo", minWidth: 150 },
     { id: "fecha_abono", label: "ABONO EN CUENTA", minWidth: 150 },
     { id: "observacion", label: "OBSERVACIONES", minWidth: 200 },
   ];
 
-  const rows = contcodComplejaData;
+  // const rows = contcodComplejaData;
+  const rows = contcodComplejaData.map((row) => ({
+    ...row,
+    fecha_banco: formatearFecha(row.fecha_banco), // Formatear la fecha para cada fila
+    // fechagenerado: formatearFecha(row.fechagenerado), // Formatear la fecha para cada fila
+  }));
 
   const buscar = async (nombrePdfSeleccionado) => {
     try {
@@ -205,600 +251,128 @@ export function DatosPemar({
           {errorcontcodComplejaData}
         </p>
       )}
-      {/* <VerificarInstr /> */}
-      {/* hola{codigoProyecto} */}
-      {/* hola{selectedCodid} */}
       <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
         INSTRUCTIVOS:
       </Typography>
-      <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        {/* <Typography className="text-c1p" variant="subtitle2" gutterBottom>
-          PROYECTO: {titulo}
-        </Typography>
-        <Typography className="text-c1p" variant="subtitle2" gutterBottom>
-          CODIGO: {contcodComplejaData[0]?.proy_cod}
-        </Typography> */}
-        <Paper className={classes.root}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
+      {/* <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4"> */}
+      <Paper className={classes.root}>
+        <TableContainer className={classes.container}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <>
+                    {/* <TableCell
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth, textAlign: "center" }}
                       className={classes.tableCell}
                     >
                       {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              {
-                <TableBody>
-                  {rows.map((row, index) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <>
-                              <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ textAlign: "center" }}
-                                className={classes.tableCell}
-                              >
-                                {column.id === "monto_desembolsado" ||
-                                column.id === "multa" ? (
-                                  (formatearNumero(
-                                    value !== null && value !== undefined
-                                      ? value
-                                      : 0
-                                  ) /*: column.id === "id_aev" ? (
-                                  <>
-                                    <Typography
-                                      className="text-center text-c500"
-                                      variant="button"
-                                      display="block"
-                                      gutterBottom
-                                    >
-                                      {`${row.id}-AEV`}
-                                    </Typography>
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="text button group"
-                                    >
-                                      <Tooltip
-                                        title="Subir PDF"
-                                        placement="left-end"
-                                      >
-                                        <Button
-                                          disabled={
-                                            row.buttonAEV === "1" ||
-                                            obtenerUserNivel() === 40
-                                          }
-                                          color="error"
-                                          size="small"
-                                          component="span"
-                                          endIcon={
-                                            <UploadRoundedIcon size="large" />
-                                          }
-                                          onClick={() => {
-                                            buscar(row.id + "-AEV");
-                                            setIdDesembolso(row.id);
-                                            setNombrePdfSeleccionado(
-                                              row.id + "-AEV"
-                                            );
-                                            setForceRender(
-                                              (prevState) => !prevState
-                                            );
-                                            if (instructivoRef.current) {
-                                              instructivoRef.current.scrollIntoView(
-                                                {
-                                                  behavior: "smooth",
-                                                }
-                                              );
-                                            }
-                                          }}
-                                        ></Button>
-                                      </Tooltip>
-                                      <SubirBajarEliminarPdf
-                                        nombrepdf={row.id + "-AEV"}
-                                        buttonAEVBUSA={
-                                          row.buttonAEV === "1" ||
-                                          obtenerUserNivel() === 40
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </ButtonGroup>
-                                    <h2 className="text-center text-c500"></h2>
-                                    <div className="pb-2 flex  justify-center items-center">
-                                      <AnexsosPdf
-                                        nombrepdf={row.id}
-                                        buttonAEV={
-                                          row.buttonAEV === "1" ||
-                                          obtenerUserNivel() === 40
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </div>
-                                  </>
-                                ) : column.id === "id_anexo" ? (
-                                  <>
-                                    <BajarEliminarAnexos
-                                      nombrepdf={row.id}
-                                      buttonAEV={
-                                        row.buttonAEV === "1" ||
-                                        obtenerUserNivel() === 40
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) */)
-                                ) : /* ) : column.id === "id_aevbanco" ? (
-                                  <>
-                                    <EnviarBanco
-                                      nombrepdf={`${row.id}-AEV`}
-                                      buttonAEVBUSA={
-                                        row.buttonAEV === "1" ||
-                                        obtenerUserNivel() === 40
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) */
-                                column.id === "mandarAnexInstr" ? (
-                                  (<>
-                                    <Button
-                                      onClick={() => {
-                                        setMandarIDdesem(row.id);
-                                        setIdDesembolso(row.id);
-                                        setMostrarAnexos(true);
-                                      }}
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      {/* PROCESAR: {`${row.id}-AEV`} */}
-                                      PROCESAR: {row.id}
-                                    </Button>
-                                  </> /* : column.id === "id_bancoaev" ? (
-                                  <>
-                                    <EnviarBanco
-                                      nombrepdf={`${row.id}-BUSA`}
-                                      buttonAEVBUSA={
-                                        row.buttonBUSA === "1" ||
-                                        obtenerUserNivel() === 9
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) : column.id === "id_busa" ? (
-                                  <>
-                                    <Typography
-                                      className="text-center text-c700"
-                                      variant="button"
-                                      display="block"
-                                      gutterBottom
-                                    >
-                                      {`${row.id}-BUSA`}
-                                    </Typography>
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="text button group"
-                                    >
-                                      <Tooltip
-                                        title="Subir PDF"
-                                        placement="left-end"
-                                      >
-                                        <Button
-                                          disabled={
-                                            row.buttonBUSA === "1" ||
-                                            obtenerUserNivel() === 9
-                                          }
-                                          color="error"
-                                          size="small"
-                                          component="span"
-                                          endIcon={
-                                            <UploadRoundedIcon size="large" />
-                                          }
-                                          onClick={() => {
-                                            buscar(row.id + "-BUSA");
-                                            setIdDesembolso(row.id);
-                                            setNombrePdfSeleccionado(
-                                              row.id + "-BUSA"
-                                            );
-                                            setForceRender(
-                                              (prevState) => !prevState
-                                            );
-                                            if (instructivoRef.current) {
-                                              instructivoRef.current.scrollIntoView(
-                                                {
-                                                  behavior: "smooth",
-                                                }
-                                              );
-                                            }
-                                          }}
-                                        ></Button>
-                                      </Tooltip>
-                                      <SubirBajarEliminarPdf
-                                        nombrepdf={row.id + "-BUSA"}
-                                        buttonAEVBUSA={
-                                          row.buttonBUSA === "1" ||
-                                          obtenerUserNivel() === 9
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </ButtonGroup>
-                                  </>
-                                ) */ /*: column.id === "id_bancoaev" ? (
-                                  <>
-                                    <EnviarBanco
-                                      nombrepdf={`${row.id}-BUSA`}
-                                      buttonAEVBUSA={
-                                        row.buttonBUSA === "1" ||
-                                        obtenerUserNivel() === 9
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) : column.id === "id_busa" ? (
-                                  <>
-                                    <Typography
-                                      className="text-center text-c700"
-                                      variant="button"
-                                      display="block"
-                                      gutterBottom
-                                    >
-                                      {`${row.id}-BUSA`}
-                                    </Typography>
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="text button group"
-                                    >
-                                      <Tooltip
-                                        title="Subir PDF"
-                                        placement="left-end"
-                                      >
-                                        <Button
-                                          disabled={
-                                            row.buttonBUSA === "1" ||
-                                            obtenerUserNivel() === 9
-                                          }
-                                          color="error"
-                                          size="small"
-                                          component="span"
-                                          endIcon={
-                                            <UploadRoundedIcon size="large" />
-                                          }
-                                          onClick={() => {
-                                            buscar(row.id + "-BUSA");
-                                            setIdDesembolso(row.id);
-                                            setNombrePdfSeleccionado(
-                                              row.id + "-BUSA"
-                                            );
-                                            setForceRender(
-                                              (prevState) => !prevState
-                                            );
-                                            if (instructivoRef.current) {
-                                              instructivoRef.current.scrollIntoView(
-                                                {
-                                                  behavior: "smooth",
-                                                }
-                                              );
-                                            }
-                                          }}
-                                        ></Button>
-                                      </Tooltip>
-                                      <SubirBajarEliminarPdf
-                                        nombrepdf={row.id + "-BUSA"}
-                                        buttonAEVBUSA={
-                                          row.buttonBUSA === "1" ||
-                                          obtenerUserNivel() === 9
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </ButtonGroup>
-                                  </>
-                                ) */ /*: column.id === "id_bancoaev" ? (
-                                  <>
-                                    <EnviarBanco
-                                      nombrepdf={`${row.id}-BUSA`}
-                                      buttonAEVBUSA={
-                                        row.buttonBUSA === "1" ||
-                                        obtenerUserNivel() === 9
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) : column.id === "id_busa" ? (
-                                  <>
-                                    <Typography
-                                      className="text-center text-c700"
-                                      variant="button"
-                                      display="block"
-                                      gutterBottom
-                                    >
-                                      {`${row.id}-BUSA`}
-                                    </Typography>
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="text button group"
-                                    >
-                                      <Tooltip
-                                        title="Subir PDF"
-                                        placement="left-end"
-                                      >
-                                        <Button
-                                          disabled={
-                                            row.buttonBUSA === "1" ||
-                                            obtenerUserNivel() === 9
-                                          }
-                                          color="error"
-                                          size="small"
-                                          component="span"
-                                          endIcon={
-                                            <UploadRoundedIcon size="large" />
-                                          }
-                                          onClick={() => {
-                                            buscar(row.id + "-BUSA");
-                                            setIdDesembolso(row.id);
-                                            setNombrePdfSeleccionado(
-                                              row.id + "-BUSA"
-                                            );
-                                            setForceRender(
-                                              (prevState) => !prevState
-                                            );
-                                            if (instructivoRef.current) {
-                                              instructivoRef.current.scrollIntoView(
-                                                {
-                                                  behavior: "smooth",
-                                                }
-                                              );
-                                            }
-                                          }}
-                                        ></Button>
-                                      </Tooltip>
-                                      <SubirBajarEliminarPdf
-                                        nombrepdf={row.id + "-BUSA"}
-                                        buttonAEVBUSA={
-                                          row.buttonBUSA === "1" ||
-                                          obtenerUserNivel() === 9
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </ButtonGroup>
-                                  </>
-                                ) */ /*: column.id === "id_bancoaev" ? (
-                                  <>
-                                    <EnviarBanco
-                                      nombrepdf={`${row.id}-BUSA`}
-                                      buttonAEVBUSA={
-                                        row.buttonBUSA === "1" ||
-                                        obtenerUserNivel() === 9
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) : column.id === "id_busa" ? (
-                                  <>
-                                    <Typography
-                                      className="text-center text-c700"
-                                      variant="button"
-                                      display="block"
-                                      gutterBottom
-                                    >
-                                      {`${row.id}-BUSA`}
-                                    </Typography>
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="text button group"
-                                    >
-                                      <Tooltip
-                                        title="Subir PDF"
-                                        placement="left-end"
-                                      >
-                                        <Button
-                                          disabled={
-                                            row.buttonBUSA === "1" ||
-                                            obtenerUserNivel() === 9
-                                          }
-                                          color="error"
-                                          size="small"
-                                          component="span"
-                                          endIcon={
-                                            <UploadRoundedIcon size="large" />
-                                          }
-                                          onClick={() => {
-                                            buscar(row.id + "-BUSA");
-                                            setIdDesembolso(row.id);
-                                            setNombrePdfSeleccionado(
-                                              row.id + "-BUSA"
-                                            );
-                                            setForceRender(
-                                              (prevState) => !prevState
-                                            );
-                                            if (instructivoRef.current) {
-                                              instructivoRef.current.scrollIntoView(
-                                                {
-                                                  behavior: "smooth",
-                                                }
-                                              );
-                                            }
-                                          }}
-                                        ></Button>
-                                      </Tooltip>
-                                      <SubirBajarEliminarPdf
-                                        nombrepdf={row.id + "-BUSA"}
-                                        buttonAEVBUSA={
-                                          row.buttonBUSA === "1" ||
-                                          obtenerUserNivel() === 9
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </ButtonGroup>
-                                  </>
-                                ) */ /*: column.id === "id_bancoaev" ? (
-                                  <>
-                                    <EnviarBanco
-                                      nombrepdf={`${row.id}-BUSA`}
-                                      buttonAEVBUSA={
-                                        row.buttonBUSA === "1" ||
-                                        obtenerUserNivel() === 9
-                                      }
-                                      nomCarperta={row.id}
-                                    />
-                                  </>
-                                ) : column.id === "id_busa" ? (
-                                  <>
-                                    <Typography
-                                      className="text-center text-c700"
-                                      variant="button"
-                                      display="block"
-                                      gutterBottom
-                                    >
-                                      {`${row.id}-BUSA`}
-                                    </Typography>
-                                    <ButtonGroup
-                                      variant="text"
-                                      aria-label="text button group"
-                                    >
-                                      <Tooltip
-                                        title="Subir PDF"
-                                        placement="left-end"
-                                      >
-                                        <Button
-                                          disabled={
-                                            row.buttonBUSA === "1" ||
-                                            obtenerUserNivel() === 9
-                                          }
-                                          color="error"
-                                          size="small"
-                                          component="span"
-                                          endIcon={
-                                            <UploadRoundedIcon size="large" />
-                                          }
-                                          onClick={() => {
-                                            buscar(row.id + "-BUSA");
-                                            setIdDesembolso(row.id);
-                                            setNombrePdfSeleccionado(
-                                              row.id + "-BUSA"
-                                            );
-                                            setForceRender(
-                                              (prevState) => !prevState
-                                            );
-                                            if (instructivoRef.current) {
-                                              instructivoRef.current.scrollIntoView(
-                                                {
-                                                  behavior: "smooth",
-                                                }
-                                              );
-                                            }
-                                          }}
-                                        ></Button>
-                                      </Tooltip>
-                                      <SubirBajarEliminarPdf
-                                        nombrepdf={row.id + "-BUSA"}
-                                        buttonAEVBUSA={
-                                          row.buttonBUSA === "1" ||
-                                          obtenerUserNivel() === 9
-                                        }
-                                        nomCarperta={row.id}
-                                      />
-                                    </ButtonGroup>
-                                  </>
-                                ) */)
-                                ) : column.format &&
-                                  typeof value === "number" ? (
-                                  column.format(value)
-                                ) : (
-                                  value
-                                )}
-                              </TableCell>
-                            </>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-                  <TableRow>
-                    {/* <TableCell></TableCell> */}
-                    {/* <TableCell></TableCell> */}
-                    {/* <TableCell></TableCell> */}
-                    {/* <TableCell></TableCell> */}
-                    <TableCell style={{ textAlign: "right" }}>
-                      <strong className="text-c500">TOTAL </strong>
-                    </TableCell>
-                    <TableCell style={{ textAlign: "center" }}>
-                      <strong className=" text-c500">= </strong>
-                      {contcodComplejaData.map((data) => {
-                        totalMulta += data.multa;
-                        if (data.monto_desembolsado) {
-                          totalMontoDesembolsado += data.monto_desembolsado;
-                        }
-                        return null;
+                    </TableCell> */}
+                    <StyledTableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{
+                        minWidth: column.minWidth,
+                        textAlign: "center",
+                      }}
+                      className={classes.tableCell}
+                    >
+                      {column.label}
+                    </StyledTableCell>
+                  </>
+                ))}
+              </TableRow>
+            </TableHead>
+            {
+              <TableBody>
+                {rows.map((row, index) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <>
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{ textAlign: "center" }}
+                              className={classes.tableCell}
+                            >
+                              {column.id === "monto_desembolsado" ||
+                              column.id === "multa" ? (
+                                formatearNumero(
+                                  value !== null && value !== undefined
+                                    ? value
+                                    : 0
+                                )
+                              ) : column.id === "mandarAnexInstr" ? (
+                                <>
+                                  <Button
+                                    onClick={() => {
+                                      setMandarIDdesem(row.id);
+                                      setIdDesembolso(row.id);
+                                      setMostrarAnexos(true);
+                                    }}
+                                    variant="outlined"
+                                    size="small"
+                                  >
+                                    PROCESAR: {row.id}
+                                  </Button>
+                                </>
+                              ) : column.format && typeof value === "number" ? (
+                                column.format(value)
+                              ) : (
+                                value
+                              )}
+                            </TableCell>
+                          </>
+                        );
                       })}
-                      {formatearNumero(totalMulta)}
-                    </TableCell>
-                    <TableCell style={{ textAlign: "center" }}>
-                      <strong className="text-c500">= </strong>
-                      {formatearNumero(totalMontoDesembolsado)}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              }
-            </Table>
-          </TableContainer>
-        </Paper>
-        <br />
-        {respuestasError && (
-          <p className="text-red-700 text-center p-5">{respuestasError}</p>
-        )}
-        {respuestas === false && nombrePdfSeleccionado && (
-          <div ref={instructivoRef}>
-            <Instructivo
-              key={forceRender}
-              nombrepdf={nombrePdfSeleccionado}
-              codigoProyecto={codigoProyecto}
-              idDesembolso={idDesembolso}
-              selectVContCodPCodid={selectedCodid}
-              esVivienda={esVivienda}
-              esPemar={esPemar}
-            />
-          </div>
-        )}
-        {respuestas && (
-          <Dialog
-            open={open || respuestas}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogContent>
-              {respuestas && (
-                <h1 className="text-center m-2 text-red-500">
-                  El archivo ya se subio al servidor puede eliminar, para subir
-                  un nuevo INSTRUCTIVO
-                </h1>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cerrar</Button>
-            </DialogActions>
-          </Dialog>
-        )}
-      </div>
+                    </TableRow>
+                  );
+                })}
+                <TableRow>
+                  {/* <TableCell></TableCell> */}
+                  <TableCell style={{ textAlign: "right" }}>
+                    <strong className="text-c500">TOTAL </strong>
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
+                    <strong className=" text-c500">= </strong>
+                    {contcodComplejaData.map((data) => {
+                      totalMulta += data.multa;
+                      if (data.monto_desembolsado) {
+                        totalMontoDesembolsado += data.monto_desembolsado;
+                      }
+                      return null;
+                    })}
+                    {formatearNumero(totalMulta)}
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
+                    <strong className="text-c500">= </strong>
+                    {formatearNumero(totalMontoDesembolsado)}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            }
+          </Table>
+        </TableContainer>
+      </Paper>
+      <br />
+      {/* </div> */}
       {mostrarAnexos && (
-        <AnexsosPdf
-          nombrepdf={mandarIDdesem}
-          codigoProyecto={codigoProyecto}
-          idDesembolso={idDesembolso}
-          selectVContCodPCodid={selectedCodid}
-          esVivienda={esVivienda}
-          esPemar={esPemar}
-        />
+        <>
+          <AnexsosPdf
+            // key={updateComponent}
+            nombrepdf={mandarIDdesem}
+            codigoProyecto={codigoProyecto}
+            idDesembolso={idDesembolso}
+            selectVContCodPCodid={selectedCodid}
+            esVivienda={esVivienda}
+            esPemar={esPemar}
+          />
+        </>
       )}
       {/* <AnexsosPdf nombrepdf={mandarIDdesem} /> */}
     </>

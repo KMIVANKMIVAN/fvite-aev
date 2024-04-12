@@ -106,7 +106,6 @@ export function SubirBajarEliminarAnexos({ iddesem, tiporesid, referencias }) {
         TransitionComponent={Transition}
         keepMounted
         onClose={cerrarGuardarPdf}
-        disableBackdropClick={true}
       >
         {/* <DialogTitle className="text-center">
           {"Subir Instructivo PDF"}

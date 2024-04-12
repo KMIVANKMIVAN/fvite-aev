@@ -1,8 +1,25 @@
+import { useState } from "react";
 import { MostrarDerivacion } from "../../components/verificarBuson/MostrarDerivacion";
 
 import Typography from "@mui/material/Typography";
 
+import {
+  notifySuccess,
+  notifyFirmadoError,
+  notifyFirmadoSuccess,
+} from "../../notificaciones/notifications";
+
+import { toast } from "react-toastify";
+import Button from "@mui/material/Button";
 export function BusonDeriv() {
+  const [showToast, setShowToast] = useState(false);
+  const handleButtonClick = () => {
+    // Mostrar la notificación de toast cuando se hace clic en el botón
+    // toast.info("¡Has lanzado el toastik!");
+    // toast.success('Mensaje de éxito', { position: toast.POSITION.TOP_CENTER });
+    notifySuccess(`exito`, "global-container");
+    notifyFirmadoSuccess(`exito 2`, "global-container");
+  };
   return (
     <>
       <Typography
@@ -23,6 +40,9 @@ export function BusonDeriv() {
         BUSON DERIVACION
       </Typography>
       <MostrarDerivacion />
+      {/* <Button variant="contained" onClick={handleButtonClick}>
+        Lanzar Toastik
+      </Button> */}
     </>
   );
 }
