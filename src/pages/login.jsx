@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { guardarToken } from "../utils/auth";
+
+import { jwtDecode } from "jwt-decode";
+
 import {
   guardarUserId,
   guardarUserNivel,
@@ -27,26 +30,12 @@ import { CardActionArea } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import {
-  c50,
-  c100,
-  c200,
-  c300,
-  c400,
-  c500,
-  c600,
-  c700,
-  c800,
-  c900,
-  c950,
-} from "../components/Temas";
-import { g1, g2, g3, g4, g5, g6, g7 } from "../components/TemasGradiantes";
-
 export function Login() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
   const navigate = useNavigate();
 
   const loginUrl = `${apiKey}/auth/login`;
+  const loginUrlBusa = `${apiKey}/authbusa/login`;
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -63,26 +52,69 @@ export function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(loginUrl, formData);
+      if (formData.username.match(/^[a-z]+\.[a-z]+$/)) {
+        const response = await axios.post(loginUrl, formData);
+
+        if (response.status === 200) {
+          setLoginError(null);
+          const { user, access_token } = response.data;
+          if (user.prioridad === 0) {
+            navigate("updatepassword");
+          } else if (user.prioridad === 1) {
+            if (user.nivel === 1) {
+              navigate("dashboard/userstablas");
+            } else if (user.nivel === 40) {
+              navigate("dashboardclient/busafirmar");
+            } else if (user.nivel === 9) {
+              navigate("dashboardclient/proyectos");
+            }
+          }
+          guardarUserId(user.id);
+          guardarUserNivel(user.nivel);
+          guardarIdOficina(user.id_oficina);
+          guardarToken(access_token);
+        }
+      } else {
+        // Si no coincide con el formato, ejecutar la petición para el otro caso
+        await handleSubmitBusa(e, formData.username, formData.password);
+      }
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setLoginError(`RS: ${data.message}`);
+          setLoginErrorMensaje(`RS: ${data.error}`);
+        } else if (status === 401) {
+          setLoginError(`RS: ${data.message}`);
+          setLoginErrorMensaje(`RS: ${data.error}`);
+        } else if (status === 500) {
+          setLoginError(`RS: ${data.message}`);
+          setLoginErrorMensaje(`RS: ${data.error}`);
+        }
+      } else if (error.request) {
+        setLoginError("RF: No se pudo obtener respuesta del servidor");
+      } else {
+        setLoginError("RF: Error al enviar la solicitud");
+      }
+    }
+  };
+
+  const handleSubmitBusa = async (e, ci, contrasenia) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(loginUrlBusa, {
+        ci: ci,
+        contrasenia: contrasenia,
+      });
 
       if (response.status === 200) {
         setLoginError(null);
-        const { user, access_token } = response.data;
-        if (user.prioridad === 0) {
-          navigate("updatepassword");
-        } else if (user.prioridad === 1) {
-          if (user.nivel === 1) {
-            navigate("dashboard/userstablas");
-          } else if (user.nivel === 40) {
-            navigate("dashboardclient/busafirmar");
-          } else if (user.nivel === 9) {
-            navigate("dashboardclient/proyectos");
-          }
-        }
-        guardarUserId(user.id);
-        guardarUserNivel(user.nivel);
-        guardarIdOficina(user.id_oficina);
+        const { access_token } = response.data;
         guardarToken(access_token);
+        const { sub, username, camb_contra } = jwtDecode(access_token);
+        const user = { sub, username, camb_contra };
+        console.log("hola");
+        navigate("dashboardclient/busafirmar");
       }
     } catch (error) {
       if (error.response) {
