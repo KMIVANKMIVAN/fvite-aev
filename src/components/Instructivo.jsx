@@ -94,8 +94,9 @@ import Alert from "@mui/material/Alert";
 // import { SelecUsuario } from "./SelecUsuario";
 
 import { eliminarToken } from "../utils/auth";
-import { obtenerUserId } from "../utils/userdata";
+import { obtenerUserId, obtenerFirmadorUserId } from "../utils/userdata";
 import { SelecUsuario } from "./formulario/SelecUsuario";
+import { SelecUsuarioBanco } from "./formulario/SelecUsuarioBanco.jsx";
 
 export function Instructivo({
   idDesembolso,
@@ -104,6 +105,7 @@ export function Instructivo({
   esVivienda,
   esPemar,
   selectVContCodPCodid,
+  proyecMostrarCod,
 }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -178,6 +180,10 @@ export function Instructivo({
   const [mostrarDeriv, setMostrarDeriv] = useState(false);
 
   const [openNotificar, setOpenNotificar] = useState(false);
+
+  const [ocultar, setOcultar] = useState(false);
+  const [ocultarError, setErrorOcultar] = useState(false);
+  const [textoOcultar, setTextoOcultar] = useState(null);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -564,10 +570,44 @@ export function Instructivo({
     enqueueSnackbar("This is a success message!", { variant });
   };
 
+  useEffect(() => {
+    const ocultarDerivar = async () => {
+      try {
+        const url = `${apiKey}/derivacion/ocultarderivar/${obtenerUserId()}/${codigoProyecto}/${idDesembolso}/`;
+        const response = await axios.get(url, { headers });
+
+        if (response.status === 200) {
+          setErrorOcultar(null);
+          setOcultar(response.data);
+          if (response.data === true) {
+            setTextoOcultar("Usted Ya envio el Instructivo");
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const { status, data } = error.response;
+          if (status === 400 || status === 500) {
+            setErrorOcultar(`RS: ${data.error}`);
+          }
+        } else if (error.request) {
+          setErrorOcultar("RF: No se pudo obtener respuesta del servidor");
+        } else {
+          setErrorOcultar("RF: Error al enviar la solicitud");
+        }
+      }
+    };
+    ocultarDerivar();
+  }, []);
+
+  console.log("00000000000000000000000000000000000", ocultar);
+
   return (
     <>
       <br />
-      <div className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4">
+      <div
+        className="ml-1 rounded-tl-lg rounded-br-lg"
+        style={{ borderLeft: "10px solid #52B69A" }}
+      >
         {/* <Card
           elevation={3}
           sx={{
@@ -580,27 +620,14 @@ export function Instructivo({
             border: "2px solid #0eace9",
           }}
         > */}
-        <Card
-          sx={{
-            bgcolor: "background.paper",
-            bgcolor: "#e0f3fe",
-            // paddingTop "15px",
-            // p: 2, // Padding en todas las direcciones, puedes ajustar a tus necesidades
-            borderRadius: "8px", // Bordes redondeados, ajusta el valor según tus preferencias
-            // m: 2, // Margen en todas las direcciones, ajusta según tus necesidades
-            border: "2px solid #0eace9",
-          }}
+        <Typography
+          textAlign="center"
+          variant="h6"
+          gutterBottom
+          className=" py-5"
         >
-          <Typography
-            textAlign="center"
-            variant="h6"
-            gutterBottom
-            className="text-c400 py-5"
-          >
-            PRIMER PASO
-          </Typography>
-        </Card>
-        <br />
+          PRIMER PASO
+        </Typography>
         <Grid container>
           <Grid
             item
@@ -613,19 +640,27 @@ export function Instructivo({
             {/* <Card elevation={3}>
                 <CardContent style={styles.card}> */}
             <Typography
-              className=" text-c500"
-              variant="h6"
+              variant="button"
+              display="block"
               gutterBottom
+              className=" text-c500"
               style={{ textAlign: "center", display: "block" }}
             >
               Se Firmara el Documento PDF {""}
+              {/* <Typography
+                variant="h6"
+                gutterBottom
+                className="text-red-500"
+                style={{ display: "inline-block" }}
+              > */}
               <Typography
-                variant="h5"
+                variant="button"
+                display="block"
                 gutterBottom
                 className="text-red-500"
                 style={{ display: "inline-block" }}
               >
-                {nombrepdf}
+                {proyecMostrarCod}
               </Typography>
             </Typography>
             <Typography className="text-c500" variant="subtitle1" gutterBottom>
@@ -755,19 +790,21 @@ export function Instructivo({
             {/* <Card elevation={3}>
                 <CardContent style={styles.card}> */}
             <Typography
-              className=" text-c500"
-              variant="h6"
+              variant="button"
+              display="block"
               gutterBottom
+              className=" text-c500"
               style={{ textAlign: "center", display: "block" }}
             >
               Firmas de {""}
               <Typography
-                variant="h5"
+                variant="button"
+                display="block"
                 gutterBottom
                 className="text-red-500"
                 style={{ display: "inline-block" }}
               >
-                {nombrepdf}
+                {proyecMostrarCod}
               </Typography>
             </Typography>
             <Typography className="text-c500" variant="subtitle1" gutterBottom>
@@ -991,130 +1028,121 @@ export function Instructivo({
             esPemar={esPemar}
           /> */}
         <br />
-        {mostrarDeriv && (
+        {textoOcultar && (
+          <Typography
+            variant="h6"
+            gutterBottom
+            // className="text-c400"
+          >
+            {textoOcultar}
+          </Typography>
+        )}
+        {/* {mostrarDeriv && ocultarDerivar === false && ( */}
+        {mostrarDeriv && !ocultar && (
           <>
-            <Card
-              elevation={3}
-              sx={{
-                bgcolor: "background.paper",
-                bgcolor: "#e0f3fe",
-                // paddingTop "15px",
-                // p: 2, // Padding en todas las direcciones, puedes ajustar a tus necesidades
-                borderRadius: "8px", // Bordes redondeados, ajusta el valor según tus preferencias
-                // m: 2, // Margen en todas las direcciones, ajusta según tus necesidades
-                border: "2px solid #0eace9",
-              }}
+            <div
+              className="ml-1 rounded-tl-lg rounded-br-lg mt-5"
+              style={{ borderLeft: "10px solid #34A0A4" }}
             >
-              <div style={{ padding: "10px" }}>
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} textAlign="center">
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        // className="text-c400"
-                      >
-                        SEGUNDO PASO
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        // className="text-c400"
-                      >
-                        Enviar al Siguiente Firmante
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <FormControl fullWidth>
-                        <Select
-                          label="Estado"
-                          name="estado"
-                          value={formValues.estado}
-                          onChange={handleChange}
-                          displayEmpty
-                          fullWidth
-                          required
-                        >
-                          <MenuItem value="" disabled>
-                            Seleccione el Estado
-                          </MenuItem>
-                          <MenuItem value={estadoOptions.id}>
-                            {estadoOptions.estado}
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} md={2}>
-                      <TextField
-                        label="Documento"
-                        value={nombrepdf}
+              <form onSubmit={handleSubmit} className="ml-3">
+                <Grid container spacing={2}>
+                  <Grid item xs={12} textAlign="center">
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      // className="text-c400"
+                    >
+                      SEGUNDO PASO
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      // className="text-c400"
+                    >
+                      Enviar al Siguiente Firmante
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <FormControl fullWidth>
+                      <Select
+                        label="Estado"
+                        name="estado"
+                        value={formValues.estado}
+                        onChange={handleChange}
+                        displayEmpty
                         fullWidth
-                        InputProps={{
-                          readOnly: true,
-                        }}
                         required
+                      >
+                        <MenuItem value="" disabled>
+                          Seleccione el Estado
+                        </MenuItem>
+                        <MenuItem value={estadoOptions.id}>
+                          {estadoOptions.estado}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <TextField
+                      label="Documento"
+                      value={nombrepdf}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    {obtenerFirmadorUserId() === 4 && (
+                      <SelecUsuarioBanco
+                        pasar={setSelectedId}
+                        nombresPasar={selectedId}
                       />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
+                    )}
+                    {obtenerFirmadorUserId() != 4 && (
                       <SelecUsuario
                         pasar={setSelectedId}
                         nombresPasar={selectedId}
                       />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <input
-                        label="ID Desembolso"
-                        value={idDesembolso}
-                        fullWidth
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                        type="hidden"
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <input
-                        label="ID Enviador"
-                        value={obtenerUserId()}
-                        fullWidth
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                        type="hidden"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      {/* <Button type="submit" variant="contained" color="primary">
-                      Enviar
-                    </Button> */}
-                    </Grid>
-                    {/* <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      endIcon={<DoubleArrowIcon />}
-                      onClick={() => rederizarInstructivo(true)}
-                      disabled={!todosLosCamposEstanLlenos()}
-                    >
-                      Continuar
-                    </Button>
-                  </Grid> */}
+                    )}
                   </Grid>
-                </form>
-                {errorderivacion && (
-                  <p className="text-red-700 text-center">{errorderivacion}</p>
-                )}
-                {messagederivacion && (
-                  <p className="text-red-700 text-center ">
-                    {messagederivacion}
-                  </p>
-                )}
-                {errorEstado && (
-                  <p className="text-red-700 text-center ">{errorEstado}</p>
-                )}
-              </div>
+                  <Grid item xs={6}>
+                    <input
+                      label="ID Desembolso"
+                      value={idDesembolso}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      type="hidden"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <input
+                      label="ID Enviador"
+                      value={obtenerUserId()}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      type="hidden"
+                    />
+                  </Grid>
+                  <Grid item xs={12}></Grid>
+                </Grid>
+              </form>
+              {errorderivacion && (
+                <p className="text-red-700 text-center">{errorderivacion}</p>
+              )}
+              {messagederivacion && (
+                <p className="text-red-700 text-center ">{messagederivacion}</p>
+              )}
+              {errorEstado && (
+                <p className="text-red-700 text-center ">{errorEstado}</p>
+              )}
               <Grid container className="pb-5">
                 <Grid
                   xs={12}
@@ -1139,10 +1167,9 @@ export function Instructivo({
                   </Button>
                 </Grid>
               </Grid>
-            </Card>
+            </div>
           </>
         )}
-        {/* </Card> */}
       </div>
       <br />
       <Dialog
@@ -1184,22 +1211,6 @@ export function Instructivo({
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <Button onClick={abrirNotifi}>Open Snackbar</Button> */}
-      {/* <Snackbar
-        open={openNotificar}
-        autoHideDuration={6000}
-        onClose={cerrarNotifi}
-      >
-        <Alert
-          onClose={cerrarNotifi}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {notificar}
-          {notiCambiarEsta && { notiCambiarEsta }}
-        </Alert>
-      </Snackbar> */}
       {notiFirmado && (
         <>
           <Snackbar
@@ -1254,8 +1265,6 @@ export function Instructivo({
           </Snackbar>
         </>
       )}
-      {/* <button onClick={handleSomeAction}>Haz clic en mí</button> */}
-      {/* {&&(<></>)} */}
     </>
   );
 }

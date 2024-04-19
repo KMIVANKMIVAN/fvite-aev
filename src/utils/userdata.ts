@@ -33,6 +33,41 @@ export const eliminarUserId = () => {
     console.error("Error al eliminar el userid:", error);
   }
 };
+export const guardarFirmadorUserId = (id: number) => {
+  if (typeof id !== "number") {
+    console.error("Token no válido");
+    return;
+  }
+
+  try {
+    localStorage.setItem("firmadoruserid", id.toString());
+  } catch (error) {
+    console.error("Error al guardar el user id:", error);
+  }
+};
+export const obtenerFirmadorUserId = () => {
+  try {
+    const firmadorUserid = localStorage.getItem("firmadoruserid");
+    if (firmadorUserid === null) {
+      console.error("No se encontró el ID de usuario en el localStorage");
+      return null; // o puedes devolver un valor predeterminado si lo deseas
+    }
+
+    return parseInt(firmadorUserid, 10); // Convierte la cadena de ID a un número
+  } catch (error) {
+    console.error("Error al obtener el ID de usuario:", error);
+    return null; // o un valor predeterminado en caso de error
+  }
+};
+export const eliminarFirmadorUserId = () => {
+  try {
+    console.log("se elimino el userid");
+
+    localStorage.removeItem("firmadoruserid");
+  } catch (error) {
+    console.error("Error al eliminar el firmadoruserid:", error);
+  }
+};
 export const guardarUserNivel = (nivel: number) => {
   if (typeof nivel !== "number") {
     console.error("Nivel no válido");

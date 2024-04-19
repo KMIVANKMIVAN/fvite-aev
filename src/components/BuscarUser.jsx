@@ -24,6 +24,7 @@ import { HabilitarDes } from "./HabilitarDes";
 import { ActualizarUser } from "./ActualizarUser";
 
 import { useSelector } from "react-redux";
+import { AsignarFirmadorUser } from "./AsignarFirmadorUser";
 
 export function BuscarUser({ urltable }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
@@ -91,6 +92,12 @@ export function BuscarUser({ urltable }) {
   };
   const columns = [
     { id: "id", label: "ID", minWidth: 50, align: "center" },
+    {
+      id: "asignarfirmante",
+      label: "ASIGNAR FIRMANTE",
+      minWidth: 300,
+      align: "center",
+    },
     { id: "actualizar", label: "ACTUALIZAR", minWidth: 100, align: "center" },
     {
       id: "habilitardes",
@@ -104,6 +111,7 @@ export function BuscarUser({ urltable }) {
       minWidth: 100,
       align: "center",
     },
+    // { id: "firmador", label: "TIPO FIRMANTE", minWidth: 50, align: "center" },
     { id: "habilitado", label: "HABILITADO", minWidth: 50, align: "center" },
     { id: "username", label: "USUARIO", minWidth: 150, align: "center" },
     { id: "superior", label: "SUPERIOR", minWidth: 50, align: "center" },
@@ -265,6 +273,15 @@ export function BuscarUser({ urltable }) {
                                 }}
                               >
                                 <ResetearPassword userId={row.id} />
+                              </div>
+                            ) : column.id === "asignarfirmante" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <AsignarFirmadorUser userId={row.id} />
                               </div>
                             ) : (
                               value

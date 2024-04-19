@@ -18,6 +18,33 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import StepContent from "@mui/material/StepContent";
+import Paper from "@mui/material/Paper";
+
+const steps = [
+  {
+    label: "Select campaign settings",
+    description: `For each ad campaign that you create, you can control how much
+              you're willing to spend on clicks and conversions, which networks
+              and geographical locations you want your ads to show on, and more.`,
+  },
+  {
+    label: "Create an ad group",
+    description:
+      "An ad group contains one or more ads which target a shared set of keywords.",
+  },
+  {
+    label: "Create an ad",
+    description: `Try out different ad text to see what brings in the most customers,
+              and learn how to enhance your ads using features like ad extensions.
+              If you run into any problems with your ads, find out how to tell if
+              they're running and how to resolve approval issues.`,
+  },
+];
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -91,6 +118,20 @@ export function BuscarPemar({ codigoProyecto, esVivienda, esPemar }) {
 
   const updateComponent2 = useSelector((state) => state.pemar.updateComponent);
 
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
   const handleChange = (index) => (isExpanded) => {
     setExpandedPanels({
       ...expandedPanels,
@@ -162,140 +203,275 @@ export function BuscarPemar({ codigoProyecto, esVivienda, esPemar }) {
 
   return (
     <>
-      <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
-        INFORMACION DEL PROYECTO:
-      </Typography>
-      <div className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4">
+      {/* <Box sx={{ maxWidth: 400 }}>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          <Step>
+            <StepLabel>Select campaign settings</StepLabel>
+            <StepContent>
+              <Typography>
+                For each ad campaign that you create, you can control how much
+                you're willing to spend on clicks and conversions, which
+                networks and geographical locations you want your ads to show
+                on, and more.
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                <div>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </Box>
+            </StepContent>
+          </Step>
+          <Step>
+            <StepLabel>Create an ad group</StepLabel>
+            <StepContent>
+              <Typography>
+                An ad group contains one or more ads which target a shared set
+                of keywords.
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                <div>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Continue
+                  </Button>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                </div>
+              </Box>
+            </StepContent>
+          </Step>
+          <Step>
+            <StepLabel>Create an ad group</StepLabel>
+            <StepContent>
+              <Typography>
+                An ad group contains one or more ads which target a shared set
+                of keywords.
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                <div>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Continue
+                  </Button>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                </div>
+              </Box>
+            </StepContent>
+          </Step>
+          <Step>
+            <StepLabel>Create an ad</StepLabel>
+            <StepContent>
+              <Typography>
+                Try out different ad text to see what brings in the most
+                customers, and learn how to enhance your ads using features like
+                ad extensions. If you run into any problems with your ads, find
+                out how to tell if they're running and how to resolve approval
+                issues.
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                <div>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Finish
+                  </Button>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                </div>
+              </Box>
+            </StepContent>
+          </Step>
+        </Stepper>
+        {activeStep === 3 && (
+          <Paper square elevation={0} sx={{ p: 3 }}>
+            <Typography>All steps completed - you&apos;re finished</Typography>
+            <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+              Reset
+            </Button>
+          </Paper>
+        )}
+      </Box> */}
+      <div
+        className="ml-1 rounded-tl-lg rounded-br-lg"
+        style={{ borderLeft: "10px solid #D9ED92" }}
+      >
+        <Typography
+          className="p-3 text-c600 text-2xl"
+          variant="h5"
+          gutterBottom
+        >
+          INFORMACION DEL PROYECTO:
+        </Typography>
         {errorSearch && (
           <p className="text-red-700 text-center p-5">{errorSearch}</p>
         )}
-        <Box
-          component={"div"}
-          sx={{
-            flexGrow: 1,
-            bgcolor: "background.paper",
-            display: { md: "flex" },
-            bgcolor: "#e0f3fe",
-            // paddingTop "15px",
-            // p: 2, // Padding en todas las direcciones, puedes ajustar a tus necesidades
-            borderRadius: "8px", // Bordes redondeados, ajusta el valor según tus preferencias
-            // m: 2, // Margen en todas las direcciones, ajusta según tus necesidades
-            border: "2px solid #0eace9",
-          }}
+        <div
+          className="ml-1 rounded-tl-lg rounded-br-lg"
+          style={{ borderLeft: "10px solid #B5E48C" }}
         >
-          <Tabs
+          <Box
+            component={"div"}
             sx={{
-              borderRight: 1,
-              borderColor: "divider",
-              minWidth: 200,
-              height: { md: 160 },
-              paddingTop: 2,
+              flexGrow: 1,
+              bgcolor: "background.paper",
+              display: { md: "flex" },
+              // style={{ borderLeft: "10px solid #D9ED92" }}
             }}
-            orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
-            variant="scrollable"
-            value={value}
-            onChange={handleChange2}
-            aria-label="Vertical tabs example"
           >
-            {datoscontratoData.map((item, index) => (
-              <Tab key={index} label={item.num} {...a11yProps(index)} />
-            ))}
-          </Tabs>
-          {datoscontratoData.map((item, index) => (
-            <TabPanel
-              key={index}
-              value={value}
-              index={index}
+            <Tabs
               sx={{
-                paddingTop: 50,
+                borderRight: 1,
+                borderColor: "divider",
+                minWidth: 200,
+                height: { md: 160 },
+                paddingTop: 2,
               }}
+              orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
+              variant="scrollable"
+              value={value}
+              onChange={handleChange2}
+              aria-label="Vertical tabs example"
             >
-              <Box sx={{ flexGrow: 1, paddingTop: 2 }}>
-                <Grid container spacing={2}>
-                  <Grid xs={12} md={2}>
-                    <Button
-                      size="small"
-                      color="success"
-                      variant="outlined"
-                      onClick={() => handleUploadPDFs(item.id)}
-                    >
-                      Seleccionar
-                    </Button>
+              {datoscontratoData.map((item, index) => (
+                <Tab key={index} label={item.num} {...a11yProps(index)} />
+              ))}
+            </Tabs>
+            {datoscontratoData.map((item, index) => (
+              <TabPanel
+                key={index}
+                value={value}
+                index={index}
+                sx={{
+                  paddingTop: 50,
+                }}
+              >
+                <Box sx={{ flexGrow: 1, paddingTop: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid xs={12} md={2}>
+                      <Button
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                        onClick={() => handleUploadPDFs(item.id)}
+                      >
+                        Seleccionar
+                      </Button>
+                    </Grid>
+                    <Grid xs={12} md={10}>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        gutterBottom
+                      >
+                        PROYECTO: {item.proyecto_nombre}
+                      </Typography>
+                      <br />
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        gutterBottom
+                      >
+                        {item.uh_proy ? (
+                          <>
+                            UH: {item.uh_proy} <br />
+                          </>
+                        ) : null}
+                        {item.gestion ? (
+                          <>
+                            GESTION: {item.gestion} <br />
+                          </>
+                        ) : null}
+                        {item.departamento ? (
+                          <>
+                            DEPARTAMENTO: {item.departamento} <br />
+                          </>
+                        ) : null}
+                        {item.municipio ? (
+                          <>
+                            MUNICIPIO: {item.municipio} <br />
+                          </>
+                        ) : null}
+                      </Typography>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        gutterBottom
+                      >
+                        {item.monto_contrato_aevivienda ? (
+                          <>
+                            CONTRATO INICIAL Bs:{" "}
+                            {formatearNumero(item.monto_contrato_aevivienda)}{" "}
+                            <br />
+                          </>
+                        ) : null}
+                        {item.monto_cont_modificatorio ? (
+                          <>
+                            MODIFICATORIO Bs:{" "}
+                            {formatearNumero(item.monto_cont_modificatorio)}{" "}
+                            <br />
+                          </>
+                        ) : null}
+                        {item.estado ? (
+                          <>
+                            ESTADO: {item.estado} <br />
+                          </>
+                        ) : null}
+                        {item.id ? (
+                          <>
+                            ID: {item.id} <br />
+                          </>
+                        ) : null}
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid xs={12} md={10}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      PROYECTO: {item.proyecto_nombre}
-                    </Typography>
-                    <br />
-                  </Grid>
-                  <Grid xs={12} md={6}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      {item.uh_proy ? (
-                        <>
-                          UH: {item.uh_proy} <br />
-                        </>
-                      ) : null}
-                      {item.gestion ? (
-                        <>
-                          GESTION: {item.gestion} <br />
-                        </>
-                      ) : null}
-                      {item.departamento ? (
-                        <>
-                          DEPARTAMENTO: {item.departamento} <br />
-                        </>
-                      ) : null}
-                      {item.municipio ? (
-                        <>
-                          MUNICIPIO: {item.municipio} <br />
-                        </>
-                      ) : null}
-                    </Typography>
-                  </Grid>
-                  <Grid xs={12} md={6}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      {item.monto_contrato_aevivienda ? (
-                        <>
-                          CONTRATO INICIAL Bs:{" "}
-                          {formatearNumero(item.monto_contrato_aevivienda)}{" "}
-                          <br />
-                        </>
-                      ) : null}
-                      {item.monto_cont_modificatorio ? (
-                        <>
-                          MODIFICATORIO Bs:{" "}
-                          {formatearNumero(item.monto_cont_modificatorio)}{" "}
-                          <br />
-                        </>
-                      ) : null}
-                      {item.estado ? (
-                        <>
-                          ESTADO: {item.estado} <br />
-                        </>
-                      ) : null}
-                      {item.id ? (
-                        <>
-                          ID: {item.id} <br />
-                        </>
-                      ) : null}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-              <br />
-            </TabPanel>
-          ))}
-        </Box>
-        <br />
-        <DatosPemar
-          // key={updateComponent2}
-          selectedCodid={selectedCodid}
-          titulo={titulo}
-          codigoProyecto={codigoProyecto}
-          esPemar={esPemar}
-          esVivienda={esVivienda}
-        />
-        <br />
+                </Box>
+                <br />
+              </TabPanel>
+            ))}
+          </Box>
+          <DatosPemar
+            // key={updateComponent2}
+            selectedCodid={selectedCodid}
+            titulo={titulo}
+            codigoProyecto={codigoProyecto}
+            esPemar={esPemar}
+            esVivienda={esVivienda}
+          />
+        </div>
       </div>
     </>
   );

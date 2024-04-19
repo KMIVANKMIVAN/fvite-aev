@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
-import { obtenerUserId } from "../utils/userdata";
+import { obtenerUserId, obtenerFirmadorUserId } from "../utils/userdata";
 
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";

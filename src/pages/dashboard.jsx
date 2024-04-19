@@ -8,6 +8,7 @@ import {
   obtenerUserNivel,
   eliminarUserNivel,
   eliminarUserId,
+  eliminarFirmadorUserId,
 } from "../utils/userdata";
 
 import Drawer from "@mui/material/Drawer";
@@ -231,6 +232,7 @@ export function Dashboard() {
                         eliminarToken();
                         eliminarUserNivel();
                         eliminarUserId();
+                        eliminarFirmadorUserId();
                         window.location.href = "/";
                       }}
                     >

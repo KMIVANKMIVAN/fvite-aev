@@ -8,6 +8,7 @@ import {
   obtenerUserNivel,
   eliminarUserNivel,
   eliminarUserId,
+  eliminarFirmadorUserId,
 } from "../utils/userdata";
 
 import { styled } from "@mui/material/styles";
@@ -199,6 +200,7 @@ export function DashboardClient() {
                         eliminarToken();
                         eliminarUserNivel();
                         eliminarUserId();
+                        eliminarFirmadorUserId();
                         window.location.href = "/";
                       }}
                     >

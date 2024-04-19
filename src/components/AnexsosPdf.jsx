@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import { obtenerUserId, obtenerFirmadorUserId } from "../utils/userdata";
+
 import Typography from "@mui/material/Typography";
 import { obtenerToken } from "../utils/auth";
 
@@ -40,6 +42,7 @@ export function AnexsosPdf({
   selectVContCodPCodid,
   esPemar,
   esVivienda,
+  proyecMostrarCod,
 }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -120,88 +123,29 @@ export function AnexsosPdf({
 
   return (
     <>
-      <Typography className="p-3 text-c600 text-2xl" variant="h5" gutterBottom>
-        PROCESAR EL INSTRUCTIVO:
-      </Typography>
-      <div className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4">
-        {/* <Grid container spacing={2}>
-        <Grid xs={12}>
-          <Button
-            // disabled={buttonAEV}
-            // onClick={handleClickOpen}
-            endIcon={<AddIcon size="large" />}
-          >
-            Crear Anexos de {nombrepdf}
-          </Button>
-        </Grid>
-        <Grid xs={6} md={4}> */}
-        {/* <InputLabel htmlFor="demo-dialog-native">Seleccionar</InputLabel> */}
-        {/* <Select
-        native
-        value={selectedValue}
-        onChange={handleChange}
-        input={<OutlinedInput label="Seleccionar" id="demo-dialog-native" />}
+      <div
+        className="ml-1 rounded-tl-lg rounded-br-lg mt-5"
+        style={{ borderLeft: "10px solid #76C893" }}
       >
-        <option aria-label="None" value="" />
-        {tipoRespaldoData.map((option) => (
-          <option key={option.id} value={option.detalle}>
-            {option.detalle}
-          </option>
-        ))}
-      </Select> */}
-        {/* <Select
-            size="small"
-            native
-            value={selectedValue}
-            onChange={handleChange}
-            input={
-              <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
-            }
-          >
-            <option aria-label="None" value="">
-              Seleccionar
-            </option>
-            {tipoRespaldoData.map((option) => (
-              <option key={option.id} value={option.detalle}>
-                {option.detalle}
-              </option>
-            ))}
-          </Select>
-        </Grid>
-        {selectedValue && (
-          <>
-            <Grid xs={4}>
-              <SubirBajarEliminarAnexos
-                iddesem={nombrepdf}
-                tiporesid={nomPDFAnex}
-                referencias={referencias}
-              />
-            </Grid>
-            <Grid xs={4}>
-              <TextField
-                size="small"
-                // id="standard-basic"
-                label="Referencias"
-                variant="outlined"
-                value={referencias}
-                onChange={handleReferenciasChange}
-              />
-            </Grid>
-          </>
-        )}
-        <Grid xs={12}></Grid>
-      </Grid>
-      <AnexosInstruc nombrepdf={nombrepdf} /> */}
-
-        <Button
-          disabled={buttonAEV}
-          onClick={handleClickOpen}
-          endIcon={<AddIcon size="large" />}
-          variant="outlined"
-          style={{ width: "fit-content" }}
+        <Typography
+          className="pl-3 text-c600 text-2xl"
+          variant="h5"
+          gutterBottom
         >
-          CARGAR Anexos
-        </Button>
+          PROCESAR EL INSTRUCTIVO:
+        </Typography>
+        <div className="pl-3">
+          <Button
+            disabled={obtenerFirmadorUserId() !== 1}
+            onClick={handleClickOpen}
+            endIcon={<AddIcon size="large" />}
+            variant="outlined"
+            style={{ width: "fit-content" }}
+          >
+            CARGAR ANEXOS
+          </Button>
+        </div>
+        <br />
         <Dialog
           disableEscapeKeyDown
           open={open}
@@ -227,12 +171,6 @@ export function AnexsosPdf({
                 <OutlinedInput label="Seleccionar" id="demo-dialog-native" />
               }
             >
-              {/* <option aria-label="None" value="" />
-            {tipoRespaldoData.map((option) => (
-              <option key={option.id} value={option.detalle}>
-                {option.detalle}
-              </option>
-            ))} */}
               <option aria-label="None" value="">
                 Seleccionar
               </option>
@@ -276,17 +214,17 @@ export function AnexsosPdf({
             </Button>
           </DialogActions>
         </Dialog>
+        <BajarEliminarAnexos
+          key={reloadBajarEliminar}
+          nombrepdf={nombrepdf}
+          codigoProyecto={codigoProyecto}
+          idDesembolso={idDesembolso}
+          selectVContCodPCodid={selectVContCodPCodid}
+          esPemar={esPemar}
+          esVivienda={esVivienda}
+          proyecMostrarCod={proyecMostrarCod}
+        />
       </div>
-      
-      <BajarEliminarAnexos
-        key={reloadBajarEliminar}
-        nombrepdf={nombrepdf}
-        codigoProyecto={codigoProyecto}
-        idDesembolso={idDesembolso}
-        selectVContCodPCodid={selectVContCodPCodid}
-        esPemar={esPemar}
-        esVivienda={esVivienda}
-      />
     </>
   );
 }

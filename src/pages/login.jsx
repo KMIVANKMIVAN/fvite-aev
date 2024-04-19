@@ -9,6 +9,7 @@ import {
   guardarUserId,
   guardarUserNivel,
   guardarIdOficina,
+  guardarFirmadorUserId,
 } from "../utils/userdata";
 
 import Card from "@mui/material/Card";
@@ -72,6 +73,7 @@ export function Login() {
           guardarUserId(user.id);
           guardarUserNivel(user.nivel);
           guardarIdOficina(user.id_oficina);
+          guardarFirmadorUserId(user.firmador);
           guardarToken(access_token);
         }
       } else {

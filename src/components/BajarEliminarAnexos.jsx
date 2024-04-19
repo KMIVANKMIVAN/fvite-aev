@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
+import { obtenerUserId, obtenerFirmadorUserId } from "../utils/userdata";
+
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
@@ -57,6 +59,7 @@ export function BajarEliminarAnexos({
   selectVContCodPCodid,
   esPemar,
   esVivienda,
+  proyecMostrarCod,
 }) {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
@@ -178,6 +181,8 @@ export function BajarEliminarAnexos({
         setErrorEliminar(null);
         setRespuestaEliminar(`RS: ${response.data}`);
         setAbrirEliminar(true);
+        setRespuestaFindallone([]);
+        // obtenerDatosFindAllOne();
       }
     } catch (error) {
       if (error.response) {
@@ -228,6 +233,12 @@ export function BajarEliminarAnexos({
     ...row,
     fecha_insert: formatearFecha(row.fecha_insert), // Formatear la fecha para cada fila
   }));
+  /* const rows =
+    respuestaFindallone?.map((row) => ({
+      ...row,
+      fecha_insert: formatearFecha(row.fecha_insert),
+    })) || []; */
+
   return (
     <>
       {errorRespuestaFindallone && (
@@ -295,141 +306,133 @@ export function BajarEliminarAnexos({
           </DialogActions>
         </Dialog>
       )}
-      {respuestaFindallone && (
+      {respuestaFindallone.length > 0 && (
         // respuestaFindallone.map((item) => (
         <>
-          <div
-            // key={reloadComponents}
-            className="flex min-h-full flex-col justify-center px-5 py-1 lg:px-4"
-          >
-            <Paper sx={{ width: "100%", overflow: "hidden" }}>
-              <TableContainer sx={{ maxHeight: 500 }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((column) => (
-                        <>
-                          {/* <TableCell
+          <Paper sx={{ width: "100%", overflow: "hidden" }}>
+            <TableContainer sx={{ maxHeight: 500 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <>
+                        {/* <TableCell
                           key={column.id}
                           align={column.align}
                           style={{ minWidth: column.minWidth }}
                         >
                           {column.label}
                         </TableCell> */}
-                          <StyledTableCell
+                        <StyledTableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{
+                            minWidth: column.minWidth,
+                            textAlign: "center",
+                          }}
+                          // className={classes.tableCell}
+                        >
+                          {column.label}
+                        </StyledTableCell>
+                      </>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, index) => (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell
                             key={column.id}
-                            align={column.align}
-                            style={{
-                              minWidth: column.minWidth,
-                              textAlign: "center",
-                            }}
-                            // className={classes.tableCell}
+                            align="center"
+                            style={{ textAlign: "center" }}
                           >
-                            {column.label}
-                          </StyledTableCell>
-                        </>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row, index) => (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.id}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell
-                              key={column.id}
-                              align="center"
-                              style={{ textAlign: "center" }}
-                            >
-                              {column.id === "bajarelimi" ? (
+                            {column.id === "bajarelimi" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
                                 <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                  }}
+                                  // key={item.id}
+                                  className="grid grid-cols-1 "
                                 >
-                                  <div
-                                    // key={item.id}
-                                    className="grid grid-cols-1 "
-                                  >
-                                    <div>
-                                      {/* <p className="">{item.detalle}</p> */}
-                                    </div>
-                                    <div>
-                                      <ButtonGroup
-                                        variant="text"
-                                        aria-label="text button group"
+                                  <div>
+                                    {/* <p className="">{item.detalle}</p> */}
+                                  </div>
+                                  <div>
+                                    <ButtonGroup
+                                      variant="text"
+                                      aria-label="text button group"
+                                    >
+                                      <Tooltip
+                                        title="Descargar PDF"
+                                        placement="top"
                                       >
-                                        <Tooltip
-                                          title="Descargar PDF"
-                                          placement="top"
-                                        >
-                                          <Button
-                                            size="small"
-                                            color="error"
-                                            onClick={() => {
-                                              descargarPdf(
-                                                row.desembolsos_id,
-                                                row.archivo
-                                              );
-                                            }}
-                                            endIcon={
-                                              <PictureAsPdfRoundedIcon size="large" />
-                                            }
-                                          ></Button>
-                                        </Tooltip>
-                                        <Tooltip
-                                          title="Eliminar PDF"
-                                          placement="right-start"
-                                        >
-                                          <Button
-                                            disabled={buttonAEV}
-                                            size="small"
-                                            color="error"
-                                            onClick={() => {
-                                              eliminarPdf(
-                                                row.desembolsos_id,
-                                                row.archivo
-                                              );
-                                            }}
-                                            endIcon={
-                                              <DeleteRoundedIcon size="large" />
-                                            }
-                                          ></Button>
-                                        </Tooltip>
-                                      </ButtonGroup>
-                                    </div>
+                                        <Button
+                                          size="small"
+                                          color="error"
+                                          onClick={() => {
+                                            descargarPdf(
+                                              row.desembolsos_id,
+                                              row.archivo
+                                            );
+                                          }}
+                                          endIcon={
+                                            <PictureAsPdfRoundedIcon size="large" />
+                                          }
+                                        ></Button>
+                                      </Tooltip>
+                                      <Tooltip
+                                        title="Eliminar PDF"
+                                        placement="right-start"
+                                      >
+                                        <Button
+                                          disabled={
+                                            obtenerFirmadorUserId() !== 1
+                                          }
+                                          size="small"
+                                          color="error"
+                                          onClick={() => {
+                                            eliminarPdf(
+                                              row.desembolsos_id,
+                                              row.archivo
+                                            );
+                                          }}
+                                          endIcon={
+                                            <DeleteRoundedIcon size="large" />
+                                          }
+                                        ></Button>
+                                      </Tooltip>
+                                    </ButtonGroup>
                                   </div>
                                 </div>
-                              ) : column.id === "respaldo" ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                  }}
-                                >
-                                  <p className="">{row.detalle}</p>
-                                  {/* <ActualizarUser idActualizarUser={row.id} /> */}
-                                </div>
-                              ) : (
-                                value
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </div>
+                              </div>
+                            ) : column.id === "respaldo" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <p className="">{row.detalle}</p>
+                                {/* <ActualizarUser idActualizarUser={row.id} /> */}
+                              </div>
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
           <Instructivo
             nombrepdf={nombrepdf}
             codigoProyecto={codigoProyecto}
@@ -437,6 +440,7 @@ export function BajarEliminarAnexos({
             selectVContCodPCodid={selectVContCodPCodid}
             esVivienda={esVivienda}
             esPemar={esPemar}
+            proyecMostrarCod={proyecMostrarCod}
           />
         </>
       )}
