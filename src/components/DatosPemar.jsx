@@ -74,19 +74,14 @@ export function DatosPemar({
 
   const [errorcontcodComplejaData, setErrorContcodComplejaData] = useState([]);
 
-  const [nombrePdfSeleccionado, setNombrePdfSeleccionado] = useState(null);
   const [idDesembolso, setIdDesembolso] = useState(null);
 
   const [mandarIDdesem, setMandarIDdesem] = useState(null);
   const [mostrarAnexos, setMostrarAnexos] = useState(false);
 
-  const [verdeTerminado, setVerdeTerminado] = useState(false);
-  const [amarrilloProcesar, setAmarrilloProcesar] = useState(false);
-
   const [proyecMostrarCod, setProyecMostrarCod] = useState(null);
 
-  const [color, setColor] = useState(null);
-  const [texto, settexto] = useState(null);
+  const [pdfKey, setPdfKey] = useState(0);
 
   const classes = useStyles();
 
@@ -142,7 +137,8 @@ export function DatosPemar({
   let totalMontoDesembolsado = 0;
 
   const columns = [
-    { id: "mandarAnexInstr", label: "PROCESAR", minWidth: 200 },
+    { id: "mandarAnexInstr", label: "ESTADO", minWidth: 200 },
+    { id: "cite", label: "CITE", minWidth: 200 },
     { id: "multa", label: "MULTA", minWidth: 150 },
     { id: "monto_desembolsado", label: "DESEMBOLSADO Bs.", minWidth: 150 },
     { id: "detalle", label: "TIPO", minWidth: 300 },
@@ -252,6 +248,7 @@ export function DatosPemar({
                                         setIdDesembolso(row.id);
                                         setMostrarAnexos(true);
                                         setProyecMostrarCod(row.cite);
+                                        setPdfKey((prevKey) => prevKey + 1);
                                       }}
                                       variant="outlined"
                                       size="small"
@@ -260,7 +257,7 @@ export function DatosPemar({
                                         color: "white",
                                       }}
                                     >
-                                      {rowText}: {row.cite}
+                                      {rowText}
                                     </Button>
                                   </>
                                 ) : column.format &&
@@ -277,7 +274,7 @@ export function DatosPemar({
                     );
                   })}
                   <TableRow>
-                    {/* <TableCell></TableCell> */}
+                    <TableCell></TableCell>
                     <TableCell style={{ textAlign: "right" }}>
                       <strong className="text-c500">TOTAL </strong>
                     </TableCell>
@@ -305,7 +302,7 @@ export function DatosPemar({
         {mostrarAnexos && (
           <>
             <AnexsosPdf
-              // key={updateComponent}
+              key={pdfKey}
               nombrepdf={mandarIDdesem}
               codigoProyecto={codigoProyecto}
               idDesembolso={idDesembolso}

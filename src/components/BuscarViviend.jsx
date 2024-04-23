@@ -82,6 +82,8 @@ export function BuscarViviend({ codigoProyecto, esVivienda, esPemar }) {
   const [expandedPanels, setExpandedPanels] = useState({});
   const [desabilitarAEV, setDesabilitarAEV] = useState(true);
 
+  const [pdfKey, setPdfKey] = useState(0);
+
   const [value, setValue] = useState(0);
 
   const handleChange = (index) => (event, isExpanded) => {
@@ -145,104 +147,142 @@ export function BuscarViviend({ codigoProyecto, esVivienda, esPemar }) {
 
   return (
     <>
-      {searchError && (
-        <p className="text-red-700 text-center p-5">{searchError}</p>
-      )}
-      <Box
-        component={"div"}
-        sx={{
-          flexGrow: 1,
-          bgcolor: "background.paper",
-          display: { md: "flex" },
-        }}
+      <div
+        className="ml-1 rounded-tl-lg rounded-br-lg"
+        style={{ borderLeft: "10px solid #52B69A" }}
       >
-        <Tabs
-          sx={{
-            borderRight: 1,
-            borderColor: "divider",
-            minWidth: 200,
-            height: { md: 200 },
-          }}
-          orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
-          variant="scrollable"
-          value={value}
-          onChange={handleChange2}
-          aria-label="Vertical tabs example"
+        <Typography
+          className="p-3 text-c600 text-2xl"
+          variant="h5"
+          gutterBottom
         >
-          {datoscontratoData.map((item, index) => (
-            <Tab key={index} label={item.proy_cod} {...a11yProps(index)} />
-          ))}
-        </Tabs>
-        {datoscontratoData.map((item, index) => (
-          <TabPanel key={index} value={value} index={index}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Grid container spacing={2}>
-                <Grid xs={12} md={2}>
-                  <Button
-                    size="small"
-                    color="success"
-                    variant="outlined"
-                    onClick={() => handleUploadPDFs(item.cont_cod)}
-                  >
-                    Seleccionar
-                  </Button>
-                </Grid>
-                <Grid xs={12} md={10}>
-                  <Typography variant="caption" display="block" gutterBottom>
-                    PROYECTO: {item.cont_des}
-                  </Typography>
-                  <br />
-                </Grid>
-                <Grid xs={12} md={6}>
-                  <Typography variant="caption" display="block" gutterBottom>
-                    ESTADO SAP: {item.id}
-                    {item.montocontrato ? (
-                      <>
-                        MONTO CONTRATO Bs: {formatearNumero(item.montocontrato)}{" "}
-                        <br />
-                      </>
-                    ) : null}
-                    {item.bole_fechav ? (
-                      <>
-                        ULTIMA BOLETA: {item.bole_fechav} <br />
-                      </>
-                    ) : null}
-                    {item.etap_cod ? (
-                      <>
-                        ESTADO SAP: {item.etap_cod} <br />
-                      </>
-                    ) : null}
-                  </Typography>
-                </Grid>
-                <Grid xs={12} md={6}>
-                  <Typography variant="caption" display="block" gutterBottom>
-                    {item.inst_des ? (
-                      <>
-                        EMPRESA: {item.inst_des} <br />
-                      </>
-                    ) : null}
-                    {item.depa_des ? (
-                      <>
-                        DEPARTAMENTO: {item.depa_des} <br />
-                      </>
-                    ) : null}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Box>
-            <br />
-          </TabPanel>
-        ))}
-      </Box>
-      <br />
-      <DatosComplViviend
-        key={updateComponent}
-        selectedContCod={selectedContCod}
-        codigoProyecto={codigoProyecto}
-        esVivienda={esVivienda}
-        esPemar={esPemar}
-      />
-      <br />
+          INFORMACION DEL PROYECTO:
+        </Typography>
+        {searchError && (
+          <p className="text-red-700 text-center p-5">{searchError}</p>
+        )}
+        <div
+          className="ml-1 rounded-tl-lg rounded-br-lg"
+          style={{ borderLeft: "10px solid #34A0A4" }}
+        >
+          <Box
+            component={"div"}
+            sx={{
+              flexGrow: 1,
+              bgcolor: "background.paper",
+              display: { md: "flex" },
+            }}
+          >
+            <Tabs
+              sx={{
+                borderRight: 1,
+                borderColor: "divider",
+                minWidth: 200,
+                height: { md: 200 },
+                paddingTop: 2,
+              }}
+              orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
+              variant="scrollable"
+              value={value}
+              onChange={handleChange2}
+              aria-label="Vertical tabs example"
+            >
+              {datoscontratoData.map((item, index) => (
+                <Tab key={index} label={item.proy_cod} {...a11yProps(index)} />
+              ))}
+            </Tabs>
+            {datoscontratoData.map((item, index) => (
+              <TabPanel
+                key={index}
+                value={value}
+                index={index}
+                sx={{
+                  paddingTop: 50,
+                }}
+              >
+                <Box sx={{ flexGrow: 1, paddingTop: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid xs={12} md={2}>
+                      <Button
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                        onClick={() => {
+                          handleUploadPDFs(item.cont_cod);
+                          setPdfKey((prevKey) => prevKey + 1);
+                        }}
+                      >
+                        Seleccionar
+                      </Button>
+                    </Grid>
+                    <Grid xs={12} md={10}>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        gutterBottom
+                      >
+                        PROYECTO: {item.cont_des}
+                      </Typography>
+                      <br />
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        gutterBottom
+                      >
+                        ESTADO SAP: {item.id}
+                        {item.montocontrato ? (
+                          <>
+                            MONTO CONTRATO Bs:{" "}
+                            {formatearNumero(item.montocontrato)} <br />
+                          </>
+                        ) : null}
+                        {item.bole_fechav ? (
+                          <>
+                            ULTIMA BOLETA: {item.bole_fechav} <br />
+                          </>
+                        ) : null}
+                        {item.etap_cod ? (
+                          <>
+                            ESTADO SAP: {item.etap_cod} <br />
+                          </>
+                        ) : null}
+                      </Typography>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        gutterBottom
+                      >
+                        {item.inst_des ? (
+                          <>
+                            EMPRESA: {item.inst_des} <br />
+                          </>
+                        ) : null}
+                        {item.depa_des ? (
+                          <>
+                            DEPARTAMENTO: {item.depa_des} <br />
+                          </>
+                        ) : null}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <br />
+              </TabPanel>
+            ))}
+          </Box>
+          <DatosComplViviend
+            key={pdfKey}
+            selectedContCod={selectedContCod}
+            codigoProyecto={codigoProyecto}
+            esVivienda={esVivienda}
+            esPemar={esPemar}
+          />
+        </div>
+      </div>
     </>
   );
 }

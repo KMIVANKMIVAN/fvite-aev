@@ -120,6 +120,8 @@ export function BuscarPemar({ codigoProyecto, esVivienda, esPemar }) {
 
   const [activeStep, setActiveStep] = useState(0);
 
+  const [pdfKey, setPdfKey] = useState(0);
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -382,7 +384,10 @@ export function BuscarPemar({ codigoProyecto, esVivienda, esPemar }) {
                         size="small"
                         color="success"
                         variant="outlined"
-                        onClick={() => handleUploadPDFs(item.id)}
+                        onClick={() => {
+                          handleUploadPDFs(item.id);
+                          setPdfKey((prevKey) => prevKey + 1);
+                        }}
                       >
                         Seleccionar
                       </Button>
@@ -464,7 +469,7 @@ export function BuscarPemar({ codigoProyecto, esVivienda, esPemar }) {
             ))}
           </Box>
           <DatosPemar
-            // key={updateComponent2}
+            key={pdfKey}
             selectedCodid={selectedCodid}
             titulo={titulo}
             codigoProyecto={codigoProyecto}

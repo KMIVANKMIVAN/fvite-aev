@@ -1,55 +1,25 @@
-import { useRef, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-
-import { useTheme } from "@mui/material/styles";
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
-}
-
-import TextField from "@mui/material/TextField";
-
-import Button from "@mui/material/Button";
+import { useState, useEffect } from "react";
 
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
-import Typography from "@mui/material/Typography";
-
 import { DatosComplViviend } from "./DatosComplViviend";
 import { DatosPemar } from "./DatosPemar";
+
+import { makeStyles } from "@mui/styles";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Button from "@mui/material/Button";
+import Slide from "@mui/material/Slide";
+
+import Typography from "@mui/material/Typography";
+
+import StyledTableCell from "./stilostablas/EtilosTable";
 
 function formatearNumero(numero) {
   if (numero == null || numero == undefined) {
@@ -66,65 +36,33 @@ function formatearNumero(numero) {
   return `${numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},00`;
 }
 
-function formatearFecha(fecha) {
-  // Convierte la cadena de fecha en un objeto de fecha
-  const fechaObjeto = new Date(fecha);
+const formatearFecha = (fecha) => {
+  const fechaObj = new Date(fecha);
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  };
 
-  // Obtiene los componentes de la fecha
-  const dia = fechaObjeto.getUTCDate().toString().padStart(2, "0");
-  const mes = (fechaObjeto.getUTCMonth() + 1).toString().padStart(2, "0");
-  const año = fechaObjeto.getUTCFullYear();
-  const horas = fechaObjeto.getUTCHours().toString().padStart(2, "0");
-  const minutos = fechaObjeto.getUTCMinutes().toString().padStart(2, "0");
-  const segundos = fechaObjeto.getUTCSeconds().toString().padStart(2, "0");
+  return fechaObj.toLocaleDateString("es-ES", options);
+};
 
-  // Formatea la fecha en el formato deseado
-  const fechaFormateada = `${mes}-${dia}-${año} ${horas}:${minutos}:${segundos}`;
+const columns = [
+  { id: "mandarAnexInstr", label: "ESTADO", minWidth: 200 },
+  { id: "cite", label: "CITE", minWidth: 200 },
+  {
+    id: "fecha_banco",
+    label: "FECHA EMISION",
+    minWidth: 150,
+    format: (value) => formatearFecha(value),
+  },
+];
 
-  return fechaFormateada;
-}
-
-import { useSelector } from "react-redux";
-
-import Grid from "@mui/material/Unstable_Grid2";
 export function BuscarFirmar() {
   const apiKey = import.meta.env.VITE_BASE_URL_BACKEND;
 
-  const count = useSelector((state) => state.counter.value);
-
-  const [selectedContCod, setSelectedContCod] = useState(null);
-
-  const [titulo, setTitulo] = useState(null);
-  const [selectedCodid, setSelectedCodid] = useState(null);
-
-  const [tipoPemar, setTipoPemar] = useState(false);
-  const [tipoVivien, setTipoVivien] = useState(false);
-
-  const [updateComponent, setUpdateComponent] = useState(0);
-
-  const [datosBusa, setDatosBusa] = useState([]);
-  const [errorDatosBusa, setErrorDatosBusa] = useState(null);
-
-  const [expandedPanels, setExpandedPanels] = useState({});
-  const [desabilitarBUSA, setDesabilitarBUSA] = useState(true);
-
-  const [value, setValue] = useState(0);
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredDatosBusa, setFilteredDatosBusa] = useState([]);
-
-  const [codigoProyecto, setCodigoProyecto] = useState(null);
-
-  const scrollRef = useRef(null);
-
-  const theme = useTheme();
-
-  const handleChange2 = (event, newValue) => {
-    // setUpdateComponent(0);
-    setTipoPemar(false);
-    setTipoVivien(false);
-    setValue(newValue);
-  };
+  const [datostrinsbu, setDatostrinsbu] = useState([]);
+  const [errorDatostrinsbu, setErrorDatostrinsbu] = useState(null);
 
   const token = obtenerToken();
   const headers = {
@@ -134,24 +72,25 @@ export function BuscarFirmar() {
   useEffect(() => {
     const datosparabusa = async () => {
       try {
-        const urlTipoRespaldo = `${apiKey}/cuadro/consultabusa`;
+        const urlTipoRespaldo = `${apiKey}/cuadro/trinsbu`;
         const response = await axios.get(urlTipoRespaldo, { headers });
         if (response.status === 200) {
-          setErrorDatosBusa(null);
-          setDatosBusa(response.data);
+          setErrorDatostrinsbu(null); // Corrige esto, reemplazando setErrorDatosBusa por setErrorDatostrinsbu
+          setDatostrinsbu(response.data);
         }
       } catch (error) {
+        setDatostrinsbu([]);
         if (error.response) {
           const { status, data } = error.response;
           if (status === 400) {
-            setErrorDatosBusa(`RS: ${data.message}`);
+            setErrorDatostrinsbu(`RS: ${data.message}`);
           } else if (status === 500) {
-            setErrorDatosBusa(`RS: ${data.message}`);
+            setErrorDatostrinsbu(`RS: ${data.message}`);
           }
         } else if (error.request) {
-          setErrorDatosBusa("RF: No se pudo obtener respuesta del servidor");
+          setErrorDatostrinsbu("RF: No se pudo obtener respuesta del servidor");
         } else {
-          setErrorDatosBusa("RF: Error al enviar la solicitud");
+          setErrorDatostrinsbu("RF: Error al enviar la solicitud");
         }
       }
     };
@@ -159,275 +98,158 @@ export function BuscarFirmar() {
     datosparabusa();
   }, []);
 
-  useEffect(() => {
-    // Filter data based on inputValue
-    const filteredData = datosBusa.filter((item) =>
-      item.codigo.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setFilteredDatosBusa(filteredData);
-  }, [inputValue, datosBusa]);
+  let totalMulta = 0;
+  let totalMontoDesembolsado = 0;
 
-  const handleUploadPDFs = (dataContCod) => {
-    setUpdateComponent(0);
-    setSelectedContCod(dataContCod);
-
-    if (Array.isArray(datosBusa) && datosBusa.length > 0) {
-      const selectedData = datosBusa.find(
-        (data) => data.cont_cod === dataContCod
-      );
-
-      const esPemar = selectedData && selectedData.tipo.includes("P.M.A.R.");
-      const esViviendaNueva =
-        selectedData && selectedData.tipo.includes("Vivienda Nueva");
-      if (esPemar) {
-        console.log("entro a qui pemar");
-        setTipoPemar(true);
-        setTipoVivien(false);
-        setTitulo(selectedData.nombre_proyecto);
-        setSelectedCodid(selectedData.id_proyecto);
-      } else if (esViviendaNueva) {
-        setTipoPemar(false);
-        setTipoVivien(true);
-      }
-    }
-
-    setUpdateComponent((prev) => prev + 1);
-
-    /* setTimeout(() => {
-      scrollRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 500); */
-    setTimeout(() => {
-      if (tipoPemar) {
-        scrollRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      } else if (tipoVivien) {
-        scrollRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 300);
-  };
-
-  /* useEffect(() => {
-    handleUploadPDFs(selectedContCod);
-  }, [count]); */
-  useEffect(() => {
-    handleUploadPDFs(selectedContCod);
-  }, [count, filteredDatosBusa, selectedContCod]);
-
-  const elementosPorConjunto = 2;
-
-  const conjuntosDatos = [];
-  for (let i = 0; i < datosBusa.length; i += elementosPorConjunto) {
-    conjuntosDatos.push(datosBusa.slice(i, i + elementosPorConjunto));
-  }
-
-  // console.log("holanda", idDesembolso);
+  // const rows = contcodComplejaData;
+  const rows = datostrinsbu.map((row) => ({
+    ...row,
+    fecha_banco: formatearFecha(row.fecha_banco), // Formatear la fecha para cada fila
+    // fechagenerado: formatearFecha(row.fechagenerado), // Formatear la fecha para cada fila
+  }));
 
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-1 py-1 lg:px-4">
-        {errorDatosBusa && (
-          <p className="text-red-700 text-center p-5">{errorDatosBusa}</p>
+        {errorDatostrinsbu && (
+          <p className="text-red-700 text-center p-5">{errorDatostrinsbu}</p>
         )}
-        <Box
-          component="form"
-          sx={{
-            "& > :not(style)": { m: 1, width: "18ch" },
-          }}
-          noValidate
-          autoComplete="off"
+        <Typography
+          className="p-3 text-c600 text-2xl"
+          variant="h5"
+          gutterBottom
         >
-          <TextField
-            label="Buscar"
-            variant="standard"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-        </Box>
-        <Box
-          component={"div"}
-          sx={{
-            flexGrow: 1,
-            bgcolor: "background.paper",
-            display: { md: "flex" },
-          }}
-        >
-          <Tabs
-            // orientation={{ md: "column", xs: "row" }}
-            sx={{
-              // display: "flex",
-              // flexDirection: { xs: "column", md: "row" },
-              borderRight: 1,
-              borderColor: "divider",
-              minWidth: 190,
-              height: { md: 300 },
-            }}
-            /* orientation={
-              theme.breakpoints.down("sm") ? "horizontal" : "vertical"
-            } */
-            orientation={window.innerWidth < 600 ? "horizontal" : "vertical"}
-            // orientation={{ xs: "horizontal", md: "vertical" }[breakpoint]}
-            variant="scrollable"
-            value={value}
-            onChange={handleChange2}
-            aria-label="Vertical tabs example"
-          >
-            {filteredDatosBusa.map((item, index) => (
-              <Tab key={index} label={item.codigo} {...a11yProps(index)} />
-            ))}
-          </Tabs>
-          {filteredDatosBusa.map((item, index) => (
-            <TabPanel key={index} value={value} index={index}>
-              <Box ref={scrollRef} sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>
-                  <Grid xs={12} md={2}>
-                    <Button
-                      size="small"
-                      color="success"
-                      variant="outlined"
-                      onClick={() => {
-                        handleUploadPDFs(item.cont_cod);
-                        setCodigoProyecto(item.cont_cod);
-                      }}
-                    >
-                      Seleccionar
-                    </Button>
-                  </Grid>
-                  <Grid xs={12} md={10}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      PROYECTO: {item.nombre_proyecto}
-                    </Typography>
-                  </Grid>
-                  <Grid xs={12} md={6}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      {item.tipo ? (
-                        <>
-                          TIPO: {item.tipo} <br />
-                        </>
-                      ) : null}
-                      {item.descuento_anti_reten ? (
-                        <>
-                          DESCUENTO ANTICIPO RETENCION:
-                          {formatearNumero(item.descuento_anti_reten)} <br />
-                        </>
-                      ) : null}
-                      {item.idcuenta ? (
-                        <>
-                          ID DE CUENTA: {item.idcuenta} <br />
-                        </>
-                      ) : null}
-                      {item.fecha_insert ? (
-                        <>
-                          FECHA DE INSERT: {formatearFecha(item.fecha_insert)}{" "}
-                          <br />
-                        </>
-                      ) : null}
-                      {item.fecha_busa ? (
-                        <>
-                          FECHA BUSA: {formatearFecha(item.fecha_busa)} <br />
-                        </>
-                      ) : null}
-                      {item.cont_cod ? (
-                        <>
-                          CONT CODIGO: {item.cont_cod} <br />
-                        </>
-                      ) : null}
-                      {item.multa ? (
-                        <>
-                          MULTA: {formatearNumero(item.multa)} <br />
-                        </>
-                      ) : null}
-                      {item.estado ? (
-                        <>
-                          ESTADO: {item.estado} <br />
-                        </>
-                      ) : null}
-                      {item.archivo ? (
-                        <>
-                          ARCHIVO: {item.archivo} <br />
-                        </>
-                      ) : null}
-                      {item.archivo_busa ? (
-                        <>
-                          ARCHIVO BUSA: {item.archivo_busa} <br />
-                        </>
-                      ) : null}
-                      {/* {item. && <> {item.}</>} */}
-                    </Typography>
-                  </Grid>
-                  <Grid xs={12} md={6}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      {item.id_desembolso ? (
-                        <>
-                          ID DESEMBOLSO: {item.id_desembolso} <br />
-                        </>
-                      ) : null}
-                      {item.titular ? (
-                        <>
-                          TITULAR: {item.titular} <br />
-                        </>
-                      ) : null}
-                      {item.numero_inst ? (
-                        <>
-                          NUMERO DE INST: {item.numero_inst} <br />
-                        </>
-                      ) : null}
-                      {item.fecha_banco ? (
-                        <>
-                          FECHA BANCO: {formatearFecha(item.fecha_banco)} <br />
-                        </>
-                      ) : null}
-                      {item.id_proyecto ? (
-                        <>
-                          ID: {item.id_proyecto} <br />
-                        </>
-                      ) : null}
-                      {item.monto_fisico ? (
-                        <>
-                          MONTO FISICO: {formatearNumero(item.monto_fisico)}{" "}
-                          <br />
-                        </>
-                      ) : null}
-                      {item.cuentatitular ? (
-                        <>
-                          CUENTA TITULAR: {item.cuentatitular} <br />
-                        </>
-                      ) : null}
-                      {item.numero_factura ? (
-                        <>
-                          NUMERO DE FACTURA: {item.numero_factura} <br />
-                        </>
-                      ) : null}
-                      {item.fecha_abono ? (
-                        <>
-                          FECHA ABONO:{" "}
-                          {formatearFecha(item.fecha_bufecha_abonosa)} <br />
-                        </>
-                      ) : null}
-
-                      {/* {item. && <> {item.}</>} */}
-                    </Typography>
-                  </Grid>
-                  <Grid xs={12}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      {item.objeto ? <>OBJETO: {item.objeto}</> : null}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-              <br />
-            </TabPanel>
-          ))}
-        </Box>
+          INSTRUCTIVOS:
+        </Typography>
+        <Paper>
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <>
+                      <StyledTableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{
+                          minWidth: column.minWidth,
+                          textAlign: "center",
+                        }}
+                        // className={classes.tableCell}
+                      >
+                        {column.label}
+                      </StyledTableCell>
+                    </>
+                  ))}
+                </TableRow>
+              </TableHead>
+              {
+                <TableBody>
+                  {rows.map((row, index) => {
+                    let rowColor = ""; // Variable para almacenar el color de la fila
+                    let rowText = ""; // Variable para almacenar el texto de la fila
+                    if (row.fecha_banco && row.fecha_busa) {
+                      rowColor = "#2ECC71"; // Color verde si ambas fechas están presentes
+                      rowText = "Completado";
+                    } else if (!row.fecha_busa) {
+                      rowColor = "#EC7063"; // Color amarillo si fecha_busa está ausente
+                      rowText = "Por Procesar";
+                    }
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <>
+                              <TableCell
+                                key={column.id}
+                                align={column.align}
+                                style={{ textAlign: "center" }}
+                                // className={classes.tableCell}
+                              >
+                                {column.id === "monto_desembolsado" ||
+                                column.id === "multa" ? (
+                                  formatearNumero(
+                                    value !== null && value !== undefined
+                                      ? value
+                                      : 0
+                                  )
+                                ) : column.id === "mandarAnexInstr" ? (
+                                  <>
+                                    {/* a{rowText} */}
+                                    <Button
+                                      onClick={() => {
+                                        setMandarIDdesem(row.id);
+                                        setIdDesembolso(row.id);
+                                        setMostrarAnexos(true);
+                                        setProyecMostrarCod(row.cite);
+                                        setPdfKey((prevKey) => prevKey + 1);
+                                      }}
+                                      variant="outlined"
+                                      size="small"
+                                      style={{
+                                        backgroundColor: rowColor,
+                                        color: "white",
+                                      }}
+                                    >
+                                      {rowText}
+                                    </Button>
+                                  </>
+                                ) : column.format &&
+                                  typeof value === "number" ? (
+                                  column.format(value)
+                                ) : (
+                                  value
+                                )}
+                              </TableCell>
+                            </>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+                  {/* <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell style={{ textAlign: "right" }}>
+                      <strong className="text-c500">TOTAL </strong>
+                    </TableCell>
+                    <TableCell style={{ textAlign: "center" }}>
+                      <strong className=" text-c500">= </strong>
+                      {contcodComplejaData.map((data) => {
+                        totalMulta += data.multa;
+                        if (data.monto_desembolsado) {
+                          totalMontoDesembolsado += data.monto_desembolsado;
+                        }
+                        return null;
+                      })}
+                      {formatearNumero(totalMulta)}
+                    </TableCell>
+                    <TableCell style={{ textAlign: "center" }}>
+                      <strong className="text-c500">= </strong>
+                      {formatearNumero(totalMontoDesembolsado)}
+                    </TableCell>
+                  </TableRow> */}
+                </TableBody>
+              }
+            </Table>
+          </TableContainer>
+        </Paper>
+        {/* {mostrarAnexos && (
+          <>
+            <AnexsosPdf
+              key={pdfKey}
+              nombrepdf={mandarIDdesem}
+              codigoProyecto={codigoProyecto}
+              idDesembolso={idDesembolso}
+              selectVContCodPCodid={selectedCodid}
+              esVivienda={esVivienda}
+              esPemar={esPemar}
+              proyecMostrarCod={proyecMostrarCod}
+            />
+          </>
+        )} */}
       </div>
-      {tipoPemar && (
+      {/* {tipoPemar && (
         <DatosPemar
           codigoProyecto={codigoProyecto}
           key={updateComponent}
@@ -443,7 +265,7 @@ export function BuscarFirmar() {
           selectedContCod={selectedContCod}
           desabilitarBUSA={desabilitarBUSA}
         />
-      )}
+      )} */}
       <br />
     </>
   );

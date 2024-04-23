@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { obtenerToken } from "../utils/auth";
 
+import Box from "@mui/material/Box";
+
 import {
   notifyFirmadoSuccess,
   notifyFirmadoError,
@@ -209,7 +211,7 @@ export function Instructivo({
     }, 3000);
   };
 
-  const fetchPdfBase64 = async () => {
+  /* const fetchPdfBase64 = async () => {
     const url = `${apiKey}/recibirpdfsenviar/firmarbasenomcompl/${idDesembolso}`;
     // const url = `${apiKey}/recibirpdfsenviar/firmarbasenomcompl/${nombrepdf}`;
 
@@ -230,7 +232,32 @@ export function Instructivo({
         setErrorPdfBase64("Error al recibir el archivo en B64");
       }
     }
-  };
+  }; */
+  useEffect(() => {
+    const fetchPdfBase64 = async () => {
+      const url = `${apiKey}/recibirpdfsenviar/firmarbasenomcompl/${idDesembolso}`;
+      // const url = `${apiKey}/recibirpdfsenviar/firmarbasenomcompl/${nombrepdf}`;
+
+      try {
+        const response = await axios.get(url);
+        setNombrePdf(response.data.nombrePdf);
+        setPdfBase64(response.data.pdfBase64);
+        setArchivo(response.data.pdfBase64);
+      } catch (error) {
+        if (error.response) {
+          const { status, data } = error.response;
+          setErrorArchivo(`RS: ${data.error}`);
+          setErrorNombrePdf(`RS: ${data.error}`);
+          setErrorPdfBase64(`RS: ${data.error}`);
+        } else {
+          setErrorArchivo("Error al recibir el archivo");
+          setErrorNombrePdf("Error al recibir el nombre del archivo");
+          setErrorPdfBase64("Error al recibir el archivo en B64");
+        }
+      }
+    };
+    fetchPdfBase64();
+  }, []);
 
   const obtenerBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -606,443 +633,233 @@ export function Instructivo({
       <br />
       <div
         className="ml-1 rounded-tl-lg rounded-br-lg"
-        style={{ borderLeft: "10px solid #52B69A" }}
+        style={{ borderLeft: "10px solid #1E6091" }}
       >
-        {/* <Card
-          elevation={3}
-          sx={{
-            bgcolor: "background.paper",
-            bgcolor: "#e0f3fe",
-            // paddingTop "15px",
-            // p: 2, // Padding en todas las direcciones, puedes ajustar a tus necesidades
-            borderRadius: "8px", // Bordes redondeados, ajusta el valor según tus preferencias
-            // m: 2, // Margen en todas las direcciones, ajusta según tus necesidades
-            border: "2px solid #0eace9",
-          }}
-        > */}
         <Typography
           textAlign="center"
-          variant="h6"
+          variant="h5"
           gutterBottom
-          className=" py-5"
+          className="text-c500 pt-5"
         >
           PRIMER PASO
         </Typography>
         <Grid container>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              bgcolor: "background.paper",
-            }}
-          >
-            {/* <Card elevation={3}>
-                <CardContent style={styles.card}> */}
+          <Grid xs={12}>
             <Typography
               variant="button"
               display="block"
               gutterBottom
               className=" text-c500"
+              variant="h6"
               style={{ textAlign: "center", display: "block" }}
             >
               Se Firmara el Documento PDF {""}
-              {/* <Typography
+              <Typography
+                variant="button"
+                display="block"
+                gutterBottom
                 variant="h6"
-                gutterBottom
-                className="text-red-500"
-                style={{ display: "inline-block" }}
-              > */}
-              <Typography
-                variant="button"
-                display="block"
-                gutterBottom
                 className="text-red-500"
                 style={{ display: "inline-block" }}
               >
                 {proyecMostrarCod}
               </Typography>
-            </Typography>
-            <Typography className="text-c500" variant="subtitle1" gutterBottom>
-              Firma de documentos con el Jacobitus Total
-            </Typography>
-            <Typography className="text-c500" variant="subtitle1" gutterBottom>
-              Seleccione el documento PDF que desea firmar
-            </Typography>
-            {/* {respuestasError && (
-                    <Typography
-                      variant="subtitle1"
-                      gutterBottom
-                      className="text-center m-2 text-red-500"
-                    >
-                      {respuestasError}
-                    </Typography>
-                  )}
-                  {respuestas && (
-                    <Typography
-                      variant="subtitle1"
-                      gutterBottom
-                      className="text-center m-2 text-green-500"
-                    >
-                      {respuestas}
-                    </Typography>
-                  )} */}
-            <div className="flex justify-center items-center flex-col">
-              <Grid
-                container
-                spacing={2}
-                justifyContent="center"
-                alignItems="center"
-                style={{ flexWrap: "wrap" }}
+              <Typography
+                className="text-c500"
+                variant="subtitle1"
+                gutterBottom
               >
-                <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
-                  <Button
-                    size="small"
-                    component="label"
-                    variant="contained"
-                    startIcon={<CloudUploadIcon />}
-                    onClick={fetchPdfBase64}
-                  >
-                    Obtener PDF
-                  </Button>
-                </Grid>
-                <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
-                  <ButtonGroup size="large" aria-label="large button group">
-                    <Button
-                      size="small"
-                      onClick={() => firmarPdf()}
-                      value="Firmar"
-                    >
-                      Firmar
-                    </Button>
-                    {/* <Button
-                            size="small"
-                            variant="contained"
-                            color="error"
-                            endIcon={<SaveIcon />}
-                            style={{
-                              display: firmado ? "inline-block" : "none",
-                            }}
-                            onClick={base64ToPdf}
-                          >
-                            Subir al Servidor
-                          </Button> */}
-                    {/* <Button
-                            size="small"
-                            onClick={() => enviarDatosAceptacion(2)}
-                            // value="Firmar"
-                          >
-                            Rechazar
-                          </Button> */}
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={handleClickOpen}
-                    >
-                      Rechazar
-                    </Button>
-                    <Button
-                      size="small"
-                      endIcon={<RestartAltIcon />}
-                      onClick={limpiarComponente}
-                    >
-                      Limpiar
-                    </Button>
-                  </ButtonGroup>
-                </Grid>
-              </Grid>
-            </div>
-            <br />
-            <div className="grid grid-cols-12">
-              <div className="col-span-12" style={{ height: "710px" }}>
-                {pdfBase64 && (
-                  <embed
-                    className="form-control"
-                    id="archivoPdf"
-                    style={{ height: "100%", width: "100%" }}
-                    src={`data:application/pdf;base64,${pdfBase64}`} // Utiliza pdfBase64 aquí en lugar de archivo
-                  />
-                )}
-                {archivoCargado && (
-                  <>
-                    <embed
-                      className="form-control"
-                      id="archivoPdf"
-                      style={{ height: "100%", width: "100%" }}
-                      src={`data:application/pdf;base64,${pdfBase64}`} // Utiliza pdfBase64 aquí en lugar de archivo
-                    />
-                  </>
-                )}
-              </div>
-            </div>
-            {/* </CardContent>
-              </Card> */}
+                Firma de documentos con el Jacobitus Total
+              </Typography>
+            </Typography>
           </Grid>
-          {/* a qui */}
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              bgcolor: "background.paper",
-            }}
-          >
-            {/* <Card elevation={3}>
-                <CardContent style={styles.card}> */}
-            <Typography
-              variant="button"
-              display="block"
-              gutterBottom
-              className=" text-c500"
-              style={{ textAlign: "center", display: "block" }}
+          {/* <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
+            <Button
+              size="small"
+              component="label"
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+              onClick={fetchPdfBase64}
             >
-              Firmas de {""}
-              <Typography
-                variant="button"
-                display="block"
-                gutterBottom
-                className="text-red-500"
-                style={{ display: "inline-block" }}
+              Obtener PDF
+            </Button>
+          </Grid> */}
+          <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
+            <ButtonGroup size="large" aria-label="large button group">
+              <Button size="small" onClick={() => firmarPdf()} value="Firmar">
+                Firmar
+              </Button>
+              <Button size="small" variant="outlined" onClick={handleClickOpen}>
+                Rechazar
+              </Button>
+              <Button
+                size="small"
+                endIcon={<RestartAltIcon />}
+                onClick={limpiarComponente}
               >
-                {proyecMostrarCod}
-              </Typography>
-            </Typography>
-            <Typography className="text-c500" variant="subtitle1" gutterBottom>
-              Validación de firmas en el documento
-            </Typography>
-            <div
-              className="px-3   text-c500"
-              style={{ height: "825px", overflow: "scroll" }}
-            >
-              {firmasVasia && (
-                <>
-                  <Typography
-                    className="text-center text-red-500"
-                    variant="h6"
-                    gutterBottom
-                  >
-                    {firmasVasia}
-                  </Typography>
-                </>
-              )}
-              {firmas &&
-                firmas.map((firma, index) => (
-                  <>
-                    <Card elevation={3} key={index} className="px-5 ">
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        className="text-center text-c700"
-                      >
-                        Información del Certificado
-                      </Typography>
-                      <Typography
-                        className=" text-c700"
-                        variant="subtitle2"
-                        gutterBottom
-                      >
-                        Fecha de firma: {""}
-                        <Typography
-                          variant="subtitle1"
-                          gutterBottom
-                          className="text-c500"
-                          style={{ display: "inline-block" }}
-                        >
-                          {formatearFecha(firma.fechaFirma)}
-                        </Typography>
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        className="text-center text-c700"
-                      >
-                        Titular
-                      </Typography>
-                      <Typography
-                        className=" text-c700"
-                        variant="subtitle2"
-                        gutterBottom
-                      >
-                        Nombre del signatario: {""}
-                        <Typography
-                          variant="subtitle1"
-                          gutterBottom
-                          className="text-c500"
-                          style={{ display: "inline-block" }}
-                        >
-                          {firma.certificado.nombreSignatario}
-                        </Typography>
-                      </Typography>
-                      {/* <Typography
-                              className=" text-c700"
-                              variant="subtitle2"
-                              gutterBottom
-                            >
-                              CI: {""}
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                className="text-c500"
-                                style={{ display: "inline-block" }}
-                              >
-                                {firma.certificado.ci}
-                              </Typography>
-                            </Typography> */}
-                      <Typography
-                        className=" text-c700"
-                        variant="subtitle2"
-                        gutterBottom
-                      >
-                        Organización del signatario: {""}
-                        <Typography
-                          variant="subtitle1"
-                          gutterBottom
-                          className="text-c500"
-                          style={{ display: "inline-block" }}
-                        >
-                          {firma.certificado.organizacionSignatario}
-                        </Typography>
-                      </Typography>
-                      <Typography
-                        className=" text-c700"
-                        variant="subtitle2"
-                        gutterBottom
-                      >
-                        Cargo del signatario: {""}
-                        <Typography
-                          variant="subtitle1"
-                          gutterBottom
-                          className="text-c500"
-                          style={{ display: "inline-block" }}
-                        >
-                          {firma.certificado.cargoSignatario}
-                        </Typography>
-                      </Typography>
-                      {/* <Typography
-                              className=" text-c700"
-                              variant="subtitle2"
-                              gutterBottom
-                            >
-                              Correo del signatario: {""}
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                className="text-c500"
-                                style={{ display: "inline-block" }}
-                              >
-                                {firma.certificado.emailSignatario}
-                              </Typography>
-                            </Typography>
-                            <Typography
-                              variant="h5"
-                              gutterBottom
-                              className="text-center text-c700"
-                            >
-                              Emisor
-                            </Typography>
-                            <Typography
-                              className=" text-c700"
-                              variant="subtitle2"
-                              gutterBottom
-                            >
-                              Nombre ECA: {""}
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                className="text-c500"
-                                style={{ display: "inline-block" }}
-                              >
-                                {firma.certificado.nombreECA}
-                              </Typography>
-                            </Typography>
-                            <Typography
-                              className=" text-c700"
-                              variant="subtitle2"
-                              gutterBottom
-                            >
-                              Descripción ECA: {""}
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                className="text-c500"
-                                style={{ display: "inline-block" }}
-                              >
-                                {firma.certificado.descripcionECA}
-                              </Typography>
-                            </Typography>
-                            <Typography
-                              variant="h5"
-                              gutterBottom
-                              className="text-center text-c700"
-                            >
-                              Periodo Validez
-                            </Typography>
-                            <Typography
-                              className=" text-c700"
-                              variant="subtitle2"
-                              gutterBottom
-                            >
-                              Inicio de validez: {""}
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                className="text-c500"
-                                style={{ display: "inline-block" }}
-                              >
-                                {formatearFecha(
-                                  firma.certificado.inicioValidez
-                                )}
-                              </Typography>
-                            </Typography>
-                            <Typography
-                              className=" text-c700"
-                              variant="subtitle2"
-                              gutterBottom
-                            >
-                              Fin de validez: {""}
-                              <Typography
-                                variant="subtitle1"
-                                gutterBottom
-                                className="text-c500"
-                                style={{ display: "inline-block" }}
-                              >
-                                {formatearFecha(firma.certificado.finValidez)}
-                              </Typography>
-                            </Typography> */}
-                    </Card>
-                    <br />
-                  </>
-                ))}
-            </div>
-            {/* </CardContent>
-              </Card> */}
+                Limpiar
+              </Button>
+            </ButtonGroup>
           </Grid>
         </Grid>
-        {/* <Derivacion
-            codigoProyecto={codigoProyecto}
-            idDesembolso={idDesembolso}
-            documento={nombrepdf}
-            rederizarInstructivo={setMostrarInstruc}
-            selectVContCodPCodid={selectVContCodPCodid}
-            esVivienda={esVivienda}
-            esPemar={esPemar}
-          /> */}
-        <br />
+        <Box sx={{ width: "100%", marginTop: 3 }}>
+          <Grid container rowSpacing={1}>
+            <Grid
+              xs={12}
+              md={6}
+              // sx={{ height: "730px", width: "100%", paddingX: 1 }}
+              sx={{
+                height: "730px",
+                width: "100%",
+                paddingX: 1,
+                background:
+                  "linear-gradient(90deg, rgba(2,138,199,1) 0%, rgba(125,213,252,1) 100%)",
+                // background: "linear-gradient(90deg, #1CB5E0 0%, #000851 100%)",
+              }}
+            >
+              {/* <div
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(2,138,199,1) 0%, rgba(125,213,252,1) 100%)",
+                }}
+              > */}
+              {pdfBase64 && (
+                <embed
+                  className="form-control"
+                  id="archivoPdf"
+                  style={{ height: "100%", width: "100%" }}
+                  src={`data:application/pdf;base64,${pdfBase64}`} // Utiliza pdfBase64 aquí en lugar de archivo
+                />
+              )}
+              {/* </div> */}
+            </Grid>
+            <Grid
+              xs={12}
+              md={6}
+              // sx={{ height: "730px", width: "100%", paddingX: 1 }}
+              sx={{
+                height: "730px",
+                width: "100%",
+                paddingX: 1,
+              }}
+            >
+              <div
+                // className="px-3   text-c500"
+                style={{
+                  height: "750px",
+                  overflow: "scroll",
+                  /* background:
+                    "linear-gradient(90deg, rgba(2,138,199,1) 0%, rgba(125,213,252,1) 100%)", */
+                }}
+              >
+                {firmasVasia && (
+                  <>
+                    <Typography
+                      className="text-center text-red-500"
+                      variant="h6"
+                      gutterBottom
+                    >
+                      {firmasVasia}
+                    </Typography>
+                  </>
+                )}
+                {firmas &&
+                  firmas.map((firma, index) => (
+                    <>
+                      <Card key={index} className="px-5 ">
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                          className="text-center text-c700"
+                        >
+                          Información del Certificado
+                        </Typography>
+                        <Typography
+                          className=" text-c700"
+                          variant="subtitle2"
+                          gutterBottom
+                        >
+                          Fecha de firma: {""}
+                          <Typography
+                            variant="subtitle1"
+                            gutterBottom
+                            className="text-c500"
+                            style={{ display: "inline-block" }}
+                          >
+                            {formatearFecha(firma.fechaFirma)}
+                          </Typography>
+                        </Typography>
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                          className="text-center text-c700"
+                        >
+                          Titular
+                        </Typography>
+                        <Typography
+                          className=" text-c700"
+                          variant="subtitle2"
+                          gutterBottom
+                        >
+                          Nombre del signatario: {""}
+                          <Typography
+                            variant="subtitle1"
+                            gutterBottom
+                            className="text-c500"
+                            style={{ display: "inline-block" }}
+                          >
+                            {firma.certificado.nombreSignatario}
+                          </Typography>
+                        </Typography>
+                        <Typography
+                          className=" text-c700"
+                          variant="subtitle2"
+                          gutterBottom
+                        >
+                          Organización del signatario: {""}
+                          <Typography
+                            variant="subtitle1"
+                            gutterBottom
+                            className="text-c500"
+                            style={{ display: "inline-block" }}
+                          >
+                            {firma.certificado.organizacionSignatario}
+                          </Typography>
+                        </Typography>
+                        <Typography
+                          className=" text-c700"
+                          variant="subtitle2"
+                          gutterBottom
+                        >
+                          Cargo del signatario: {""}
+                          <Typography
+                            variant="subtitle1"
+                            gutterBottom
+                            className="text-c500"
+                            style={{ display: "inline-block" }}
+                          >
+                            {firma.certificado.cargoSignatario}
+                          </Typography>
+                        </Typography>
+                      </Card>
+                      <br />
+                    </>
+                  ))}
+              </div>
+            </Grid>
+          </Grid>
+        </Box>
+
         {textoOcultar && (
-          <Typography
-            variant="h6"
-            gutterBottom
-            // className="text-c400"
-          >
+          <Typography variant="h6" gutterBottom>
             {textoOcultar}
           </Typography>
         )}
-        {/* {mostrarDeriv && ocultarDerivar === false && ( */}
         {mostrarDeriv && !ocultar && (
           <>
             <div
               className="ml-1 rounded-tl-lg rounded-br-lg mt-5"
-              style={{ borderLeft: "10px solid #34A0A4" }}
+              style={{ borderLeft: "10px solid #184E77" }}
             >
               <form onSubmit={handleSubmit} className="ml-3">
                 <Grid container spacing={2}>
@@ -1050,17 +867,13 @@ export function Instructivo({
                     <Typography
                       variant="h6"
                       gutterBottom
-                      // className="text-c400"
+                      className="text-c500 pt-5"
                     >
                       SEGUNDO PASO
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography
-                      variant="h6"
-                      gutterBottom
-                      // className="text-c400"
-                    >
+                    <Typography variant="h6" gutterBottom className="text-c500">
                       Enviar al Siguiente Firmante
                     </Typography>
                   </Grid>
@@ -1171,7 +984,7 @@ export function Instructivo({
           </>
         )}
       </div>
-      <br />
+
       <Dialog
         open={open}
         onClose={handleClose}

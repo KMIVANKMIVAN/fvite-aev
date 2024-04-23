@@ -54,6 +54,8 @@ export function BuscarProyectos() {
   const pemarArray = [5, 11, 13, 17, 15, 18];
   const viviendaArray = [1, 2, 10, 14, 19, 3, 4, 16, 9];
 
+  const [pdfKey, setPdfKey] = useState(0);
+
   const updateComponent2 = useSelector((state) => state.pemar.updateComponent);
 
   useEffect(() => {
@@ -185,9 +187,13 @@ export function BuscarProyectos() {
                           <Button
                             size="small"
                             variant="outlined"
-                            onClick={() =>
+                            /* onClick={() =>
                               handleButtonClick(row.num, row.idTipo)
-                            }
+                            } */
+                            onClick={() => {
+                              handleButtonClick(row.num, row.idTipo);
+                              setPdfKey((prevKey) => prevKey + 1);
+                            }}
                           >
                             Seleccionar
                           </Button>
@@ -220,7 +226,7 @@ export function BuscarProyectos() {
       <br />
       {vivienda && (
         <BuscarViviend
-          key={updateComponent2}
+          key={pdfKey}
           codigoProyecto={codigoSeleccionado}
           esVivienda={vivienda}
           esPemar={pemar}
@@ -228,7 +234,7 @@ export function BuscarProyectos() {
       )}
       {pemar && (
         <BuscarPemar
-          key={updateComponent2}
+          key={pdfKey}
           codigoProyecto={codigoSeleccionado}
           esPemar={pemar}
           esVivienda={vivienda}

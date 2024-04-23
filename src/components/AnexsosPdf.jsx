@@ -125,7 +125,7 @@ export function AnexsosPdf({
     <>
       <div
         className="ml-1 rounded-tl-lg rounded-br-lg mt-5"
-        style={{ borderLeft: "10px solid #76C893" }}
+        style={{ borderLeft: "10px solid #1A759F" }}
       >
         <Typography
           className="pl-3 text-c600 text-2xl"
