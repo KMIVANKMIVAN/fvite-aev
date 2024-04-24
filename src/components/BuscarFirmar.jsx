@@ -21,6 +21,8 @@ import Typography from "@mui/material/Typography";
 
 import StyledTableCell from "./stilostablas/EtilosTable";
 
+import { AnexsosPdfBUSA } from "./busa/AnexsosPdfBUSA";
+
 function formatearNumero(numero) {
   if (numero == null || numero == undefined) {
     return "0";
@@ -63,6 +65,14 @@ export function BuscarFirmar() {
 
   const [datostrinsbu, setDatostrinsbu] = useState([]);
   const [errorDatostrinsbu, setErrorDatostrinsbu] = useState(null);
+
+  const [mostrarAnexos, setMostrarAnexos] = useState(false);
+
+  const [pdfKey, setPdfKey] = useState(0);
+
+  const [mandarIDdesem, setMandarIDdesem] = useState(null);
+
+  const [idDesembolso, setIdDesembolso] = useState(null);
 
   const token = obtenerToken();
   const headers = {
@@ -234,38 +244,16 @@ export function BuscarFirmar() {
             </Table>
           </TableContainer>
         </Paper>
-        {/* {mostrarAnexos && (
+        {mostrarAnexos && (
           <>
-            <AnexsosPdf
+            <AnexsosPdfBUSA
               key={pdfKey}
               nombrepdf={mandarIDdesem}
-              codigoProyecto={codigoProyecto}
               idDesembolso={idDesembolso}
-              selectVContCodPCodid={selectedCodid}
-              esVivienda={esVivienda}
-              esPemar={esPemar}
-              proyecMostrarCod={proyecMostrarCod}
             />
           </>
-        )} */}
+        )}
       </div>
-      {/* {tipoPemar && (
-        <DatosPemar
-          codigoProyecto={codigoProyecto}
-          key={updateComponent}
-          selectedCodid={selectedCodid}
-          titulo={titulo}
-          desabilitarBUSA={desabilitarBUSA}
-        />
-      )}
-      {tipoVivien && (
-        <DatosComplViviend
-          codigoProyecto={codigoProyecto}
-          key={updateComponent}
-          selectedContCod={selectedContCod}
-          desabilitarBUSA={desabilitarBUSA}
-        />
-      )} */}
       <br />
     </>
   );

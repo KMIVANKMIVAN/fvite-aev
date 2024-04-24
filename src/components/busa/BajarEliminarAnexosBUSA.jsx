@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { obtenerToken } from "../utils/auth";
+import { obtenerToken } from "../../utils/auth";
 
-import { obtenerUserId, obtenerFirmadorUserId } from "../utils/userdata";
+import { obtenerUserId, obtenerFirmadorUserId } from "../../utils/userdata";
 
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -27,16 +27,16 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
-import StyledTableCell from "./stilostablas/EtilosTable";
+import StyledTableCell from "../stilostablas/EtilosTable";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 import { useDispatch, useSelector } from "react-redux";
-import { increment } from "../contexts/features/counter/counterSlice";
+import { increment } from "../../contexts/features/counter/counterSlice";
 
-import { Instructivo } from "./Instructivo";
+import { InstructivoBUSA } from "./InstructivoBUSA";
 
 const formatearFecha = (fecha) => {
   const fechaObj = new Date(fecha);
@@ -51,7 +51,7 @@ const formatearFecha = (fecha) => {
   return fechaObj.toLocaleDateString("es-ES", options);
 };
 
-export function BajarEliminarAnexos({
+export function BajarEliminarAnexosBUSA({
   nombrepdf,
   buttonAEV,
   codigoProyecto,
@@ -435,7 +435,7 @@ export function BajarEliminarAnexos({
               </Table>
             </TableContainer>
           </Paper>
-          <Instructivo
+          <InstructivoBUSA
             nombrepdf={nombrepdf}
             codigoProyecto={codigoProyecto}
             idDesembolso={idDesembolso}
